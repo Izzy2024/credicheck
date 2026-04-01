@@ -1,0 +1,25 @@
+{
+  "mcpServers": {
+    "playwright": {
+      "command": "xvfb-run",
+      "args": ["-a", "/home/fedora26/.local/bin/uvx", "playwright-mcp"],
+      "env": {
+        "FASTMCP_LOG_LEVEL": "ERROR",
+        "PATH": "/home/fedora26/.local/bin:/usr/local/bin:/usr/bin:/bin",
+        "DISPLAY": ":99"
+      },
+      "disabled": false,
+      "autoApprove": ["mcp_playwright_new_page", "mcp_playwright_navigate", "mcp_playwright_click", "mcp_playwright_type", "mcp_playwright_get_text"]
+    },
+    "shadcn-ui": {
+      "command": "uvx",
+      "args": ["shadcn-ui-mcp-server"],
+      "env": {
+        "FASTMCP_LOG_LEVEL": "ERROR",
+        "PATH": "/home/fedora26/.local/bin:/usr/local/bin:/usr/bin:/bin"
+      },
+      "disabled": false,
+      "autoApprove": []
+    }
+  }
+}

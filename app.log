@@ -1,0 +1,1874 @@
+nohup: no se tendrá en cuenta la entrada
+
+> credicheck-app@1.0.0 dev
+> concurrently "npm run dev:frontend" "npm run dev:backend"
+
+[0] 
+[0] > credicheck-app@1.0.0 dev:frontend
+[0] > next dev -p 3001
+[0] 
+[1] 
+[1] > credicheck-app@1.0.0 dev:backend
+[1] > cd backend && npm run dev
+[1] 
+[1] 
+[1] > credicheck-backend@1.0.0 dev
+[1] > nodemon src/index.ts
+[1] 
+[1] [33m[nodemon] 3.1.10[39m
+[1] [33m[nodemon] to restart at any time, enter `rs`[39m
+[1] [33m[nodemon] watching path(s): src/**/*[39m
+[1] [33m[nodemon] watching extensions: ts,json[39m
+[1] [32m[nodemon] starting `ts-node -r tsconfig-paths/register src/index.ts src/index.ts`[39m
+[0]    ▲ Next.js 15.2.4
+[0]    - Local:        http://localhost:3001
+[0]    - Network:      http://192.168.0.14:3001
+[0]    - Environments: .env.local
+[0] 
+[0]  ✓ Starting...
+[0]  ✓ Ready in 4.8s
+[1] prisma:info Starting a sqlite pool with 9 connections.
+[1] ✅ Conexión a base de datos establecida correctamente
+[1] 
+[1] 🚀 CrediCheck API iniciado exitosamente!
+[1] 📍 Entorno: development
+[1] 🌐 Puerto: 3002
+[1] 📋 Versión API: v1
+[1] 🔗 Health Check: http://localhost:3002/health
+[1] 📚 API Info: http://localhost:3002/api/v1/info
+[1] ⏰ Iniciado: 2026-03-30T00:29:11.194Z
+[1]       
+[0]  ○ Compiling / ...
+[0] 
+[0] 
+[0] Retrying 1/3...
+[0]  ✓ Compiled / in 7.6s (836 modules)
+[0]  GET / 200 in 9357ms
+[0]  ✓ Compiled in 1716ms (371 modules)
+[0]  GET / 200 in 1153ms
+[0]  GET / 200 in 1381ms
+[0]  GET / 200 in 1150ms
+[0]  GET / 200 in 1148ms
+[0]  ✓ Compiled in 1137ms (371 modules)
+[0]  ✓ Compiled in 432ms (371 modules)
+[0]  ✓ Compiled in 672ms (371 modules)
+[0]  ✓ Compiled in 392ms (371 modules)
+[0]  ✓ Compiled in 415ms (371 modules)
+[0]  ✓ Compiled in 408ms (371 modules)
+[0]  ✓ Compiled in 355ms (371 modules)
+[0]  ✓ Compiled in 377ms (371 modules)
+[0]  ✓ Compiled in 315ms (371 modules)
+[0]  ✓ Compiled in 435ms (371 modules)
+[0]  ✓ Compiled in 389ms (371 modules)
+[0]  ✓ Compiled in 393ms (371 modules)
+[0]  ✓ Compiled in 425ms (371 modules)
+[0]  GET / 200 in 303ms
+[0]  ✓ Compiled in 590ms (371 modules)
+[0]  GET / 200 in 338ms
+[0]  GET / 200 in 356ms
+[0]  ✓ Compiled in 541ms (371 modules)
+[0]  GET / 200 in 534ms
+[0]  ✓ Compiled in 536ms (371 modules)
+[0]  GET / 200 in 703ms
+[0]  ✓ Compiled in 473ms (371 modules)
+[0]  GET / 200 in 240ms
+[0]  ✓ Compiled in 542ms (371 modules)
+[0]  GET / 200 in 539ms
+[0]  GET / 200 in 255ms
+[0]  ✓ Compiled in 428ms (371 modules)
+[0]  GET / 200 in 256ms
+[0]  GET / 200 in 263ms
+[0]  ✓ Compiled in 410ms (371 modules)
+[0]  GET / 200 in 403ms
+[0]  ○ Compiling /dashboard ...
+[0]  ✓ Compiled /dashboard in 7.6s (1013 modules)
+[0]  GET / 200 in 8068ms
+[0]  GET / 200 in 8084ms
+[0]  GET / 200 in 8153ms
+[0]  GET /dashboard 200 in 8672ms
+[0]  ✓ Compiled in 1019ms (459 modules)
+[0]  GET / 200 in 299ms
+[0]  GET / 200 in 281ms
+[0]  ✓ Compiled in 524ms (459 modules)
+[0]  ✓ Compiled in 350ms (459 modules)
+[0]  ✓ Compiled in 369ms (459 modules)
+[0]  GET / 200 in 186ms
+[0]  GET / 200 in 187ms
+[0]  GET / 200 in 220ms
+[0]  GET / 200 in 224ms
+[0]  ✓ Compiled in 430ms (459 modules)
+[0]  GET / 200 in 272ms
+[0]  ✓ Compiled in 518ms (459 modules)
+[0]  GET / 200 in 323ms
+[0]  GET / 200 in 312ms
+[0]  ✓ Compiled in 667ms (459 modules)
+[0]  ✓ Compiled in 416ms (459 modules)
+[0]  GET / 200 in 213ms
+[0]  ✓ Compiled in 517ms (459 modules)
+[0]  GET / 200 in 214ms
+[0]  GET / 200 in 217ms
+[0]  GET / 200 in 392ms
+[0]  ✓ Compiled in 647ms (459 modules)
+[0]  GET / 200 in 418ms
+[0]  GET / 200 in 355ms
+[0]  ✓ Compiled in 433ms (459 modules)
+[0]  GET / 200 in 355ms
+[0]  GET / 200 in 193ms
+[0]  ✓ Compiled in 478ms (459 modules)
+[0]  GET / 200 in 167ms
+[0]  GET / 200 in 167ms
+[0]  ✓ Compiled in 411ms (459 modules)
+[0]  GET / 200 in 146ms
+[0]  ✓ Compiled in 417ms (459 modules)
+[0]  GET / 200 in 372ms
+[0]  GET / 200 in 146ms
+[0]  ✓ Compiled in 492ms (459 modules)
+[0]  ✓ Compiled in 451ms (459 modules)
+[0]  GET / 200 in 209ms
+[0]  GET / 200 in 213ms
+[0]  GET / 200 in 168ms
+[0]  ✓ Compiled in 438ms (459 modules)
+[0]  GET / 200 in 179ms
+[0]  GET / 200 in 135ms
+[0]  ✓ Compiled in 386ms (459 modules)
+[0]  GET / 200 in 150ms
+[0]  GET / 200 in 511ms
+[0]  ✓ Compiled in 615ms (459 modules)
+[0]  GET / 200 in 231ms
+[0]  ✓ Compiled in 520ms (459 modules)
+[0]  GET / 200 in 254ms
+[0]  ✓ Compiled in 365ms (459 modules)
+[0]  GET / 200 in 140ms
+[0]  GET / 200 in 141ms
+[0]  GET / 200 in 219ms
+[0]  GET / 200 in 229ms
+[0]  ✓ Compiled in 527ms (459 modules)
+[0]  GET / 200 in 207ms
+[0]  GET / 200 in 202ms
+[0]  ✓ Compiled in 406ms (459 modules)
+[0]  GET / 200 in 174ms
+[0]  GET / 200 in 176ms
+[0]  ✓ Compiled in 431ms (459 modules)
+[0]  GET / 200 in 193ms
+[0]  GET / 200 in 194ms
+[0]  ✓ Compiled in 429ms (459 modules)
+[0]  GET / 200 in 184ms
+[0]  GET / 200 in 180ms
+[0]  ✓ Compiled in 388ms (459 modules)
+[0]  ✓ Compiled in 359ms (459 modules)
+[0]  GET / 200 in 395ms
+[0]  GET / 200 in 399ms
+[0]  ✓ Compiled in 508ms (459 modules)
+[0]  GET / 200 in 280ms
+[0]  ✓ Compiled in 597ms (459 modules)
+[0]  GET / 200 in 283ms
+[0]  GET / 200 in 221ms
+[0]  GET / 200 in 213ms
+[0]  ✓ Compiled in 454ms (459 modules)
+[0]  ✓ Compiled in 308ms (459 modules)
+[0]  GET / 200 in 135ms
+[0]  GET / 200 in 138ms
+[0]  ✓ Compiled in 366ms (459 modules)
+[0]  GET / 200 in 170ms
+[0]  GET / 200 in 176ms
+[0]  ✓ Compiled in 384ms (459 modules)
+[0]  GET / 200 in 161ms
+[0]  GET / 200 in 165ms
+[0]  ✓ Compiled in 431ms (459 modules)
+[0]  ✓ Compiled in 302ms (459 modules)
+[0]  GET / 200 in 279ms
+[0]  GET / 200 in 279ms
+[0]  ✓ Compiled in 343ms (459 modules)
+[0]  GET / 200 in 147ms
+[0]  GET / 200 in 151ms
+[0]  ✓ Compiled in 383ms (459 modules)
+[0]  GET / 200 in 291ms
+[0]  GET / 200 in 160ms
+[0]  ✓ Compiled in 398ms (459 modules)
+[0]  GET / 200 in 162ms
+[0]  ✓ Compiled in 357ms (459 modules)
+[0]  GET / 200 in 164ms
+[0]  ✓ Compiled in 296ms (459 modules)
+[0]  GET / 200 in 177ms
+[0]  GET / 200 in 179ms
+[0]  ✓ Compiled in 530ms (459 modules)
+[0]  GET / 200 in 198ms
+[0]  GET / 200 in 204ms
+[0]  ✓ Compiled in 483ms (459 modules)
+[0]  GET / 200 in 247ms
+[0]  GET / 200 in 189ms
+[0]  ✓ Compiled in 378ms (459 modules)
+[0]  GET / 200 in 155ms
+[0]  GET / 200 in 167ms
+[0]  ✓ Compiled in 352ms (459 modules)
+[0]  GET / 200 in 118ms
+[0]  ✓ Compiled in 322ms (459 modules)
+[0]  GET / 200 in 142ms
+[0]  ✓ Compiled in 409ms (459 modules)
+[0]  GET / 200 in 119ms
+[0]  ✓ Compiled in 375ms (459 modules)
+[0]  GET / 200 in 123ms
+[0]  ✓ Compiled in 348ms (459 modules)
+[0]  GET / 200 in 139ms
+[0]  ✓ Compiled in 342ms (459 modules)
+[0]  GET / 200 in 150ms
+[0]  ✓ Compiled in 414ms (459 modules)
+[0]  GET / 200 in 126ms
+[0]  ✓ Compiled in 342ms (459 modules)
+[0]  ✓ Compiled in 353ms (459 modules)
+[0]  ✓ Compiled in 258ms (459 modules)
+[0]  ✓ Compiled in 346ms (459 modules)
+[0]  ✓ Compiled in 319ms (459 modules)
+[0]  ✓ Compiled in 294ms (459 modules)
+[0]  ✓ Compiled in 294ms (459 modules)
+[0]  ✓ Compiled in 254ms (459 modules)
+[0]  ✓ Compiled in 314ms (459 modules)
+[0]  ✓ Compiled in 355ms (459 modules)
+[0]  ✓ Compiled in 318ms (459 modules)
+[0]  ✓ Compiled in 274ms (459 modules)
+[0]  ✓ Compiled in 244ms (459 modules)
+[0]  ✓ Compiled in 394ms (459 modules)
+[0]  ✓ Compiled in 284ms (459 modules)
+[0]  ✓ Compiled in 260ms (459 modules)
+[0]  ✓ Compiled in 307ms (459 modules)
+[0]  ✓ Compiled in 268ms (459 modules)
+[0]  ✓ Compiled in 337ms (459 modules)
+[0]  ✓ Compiled in 317ms (459 modules)
+[0]  ✓ Compiled in 335ms (459 modules)
+[0]  ✓ Compiled in 338ms (459 modules)
+[0]  ✓ Compiled in 327ms (459 modules)
+[0]  ✓ Compiled in 391ms (459 modules)
+[0]  ✓ Compiled in 399ms (459 modules)
+[0]  ✓ Compiled in 264ms (459 modules)
+[0]  ✓ Compiled in 353ms (459 modules)
+[0]  ✓ Compiled in 324ms (459 modules)
+[0]  ✓ Compiled in 349ms (459 modules)
+[0]  ✓ Compiled in 340ms (459 modules)
+[0]  ✓ Compiled in 368ms (459 modules)
+[0]  ✓ Compiled in 344ms (459 modules)
+[0]  ✓ Compiled in 264ms (459 modules)
+[0]  ✓ Compiled in 276ms (459 modules)
+[0]  ✓ Compiled in 318ms (459 modules)
+[0]  ✓ Compiled in 329ms (459 modules)
+[0]  ✓ Compiled in 347ms (459 modules)
+[0]  ✓ Compiled in 381ms (459 modules)
+[0]  ✓ Compiled in 365ms (459 modules)
+[0]  ✓ Compiled in 339ms (459 modules)
+[0]  ✓ Compiled in 347ms (459 modules)
+[0]  ✓ Compiled in 313ms (459 modules)
+[0]  ✓ Compiled in 274ms (459 modules)
+[0]  ✓ Compiled in 576ms (459 modules)
+[0]  ✓ Compiled in 294ms (459 modules)
+[0]  ✓ Compiled in 377ms (459 modules)
+[0]  ✓ Compiled in 298ms (459 modules)
+[0]  ✓ Compiled in 249ms (459 modules)
+[0]  ✓ Compiled in 271ms (459 modules)
+[0]  ✓ Compiled in 279ms (459 modules)
+[0]  ✓ Compiled in 260ms (459 modules)
+[0]  ✓ Compiled in 293ms (459 modules)
+[0]  ✓ Compiled in 265ms (459 modules)
+[0]  ✓ Compiled in 270ms (459 modules)
+[0]  ✓ Compiled in 266ms (459 modules)
+[0]  ✓ Compiled in 251ms (459 modules)
+[0]  ✓ Compiled in 268ms (459 modules)
+[0]  ✓ Compiled in 244ms (459 modules)
+[0]  ✓ Compiled in 263ms (459 modules)
+[0]  ✓ Compiled in 274ms (459 modules)
+[0]  ✓ Compiled in 262ms (459 modules)
+[0]  ✓ Compiled in 258ms (459 modules)
+[0]  ✓ Compiled in 332ms (459 modules)
+[0]  ✓ Compiled in 313ms (459 modules)
+[0]  ✓ Compiled in 276ms (459 modules)
+[0]  ✓ Compiled in 275ms (459 modules)
+[0]  ✓ Compiled in 259ms (459 modules)
+[0]  ✓ Compiled in 246ms (459 modules)
+[0]  ✓ Compiled in 251ms (459 modules)
+[0]  ✓ Compiled in 266ms (459 modules)
+[0]  ✓ Compiled in 284ms (459 modules)
+[0]  ✓ Compiled in 340ms (459 modules)
+[0]  ✓ Compiled in 258ms (459 modules)
+[0]  ✓ Compiled in 233ms (459 modules)
+[0]  ✓ Compiled in 255ms (459 modules)
+[0]  ✓ Compiled in 304ms (459 modules)
+[0]  ✓ Compiled in 287ms (459 modules)
+[0]  ✓ Compiled in 251ms (459 modules)
+[0]  ✓ Compiled in 318ms (459 modules)
+[0]  ✓ Compiled in 314ms (459 modules)
+[0]  ✓ Compiled in 315ms (459 modules)
+[0]  ✓ Compiled in 281ms (459 modules)
+[0]  ✓ Compiled in 243ms (459 modules)
+[0]  ✓ Compiled in 241ms (459 modules)
+[0]  ✓ Compiled in 288ms (459 modules)
+[0]  ✓ Compiled in 306ms (459 modules)
+[0]  ✓ Compiled in 259ms (459 modules)
+[0]  ✓ Compiled in 254ms (459 modules)
+[0]  ✓ Compiled in 241ms (459 modules)
+[0]  ✓ Compiled in 325ms (459 modules)
+[0]  ✓ Compiled in 259ms (459 modules)
+[0]  ✓ Compiled in 272ms (459 modules)
+[0]  ✓ Compiled in 314ms (459 modules)
+[0]  ✓ Compiled in 327ms (459 modules)
+[0]  ✓ Compiled in 402ms (459 modules)
+[0]  ✓ Compiled in 344ms (459 modules)
+[0]  ✓ Compiled in 302ms (459 modules)
+[0]  ✓ Compiled in 261ms (459 modules)
+[0]  ✓ Compiled in 234ms (459 modules)
+[0]  ✓ Compiled in 334ms (459 modules)
+[0]  ✓ Compiled in 301ms (459 modules)
+[0]  ✓ Compiled in 328ms (459 modules)
+[0]  ✓ Compiled in 342ms (459 modules)
+[0]  ✓ Compiled in 327ms (459 modules)
+[0]  ✓ Compiled in 340ms (459 modules)
+[0]  ✓ Compiled in 336ms (459 modules)
+[0]  ✓ Compiled in 300ms (459 modules)
+[0]  ✓ Compiled in 341ms (459 modules)
+[0]  ✓ Compiled in 259ms (459 modules)
+[0]  ✓ Compiled in 274ms (459 modules)
+[0]  ✓ Compiled in 252ms (459 modules)
+[0]  ✓ Compiled in 266ms (459 modules)
+[0]  ✓ Compiled in 245ms (459 modules)
+[0]  ✓ Compiled in 238ms (459 modules)
+[0]  ✓ Compiled in 335ms (459 modules)
+[0]  ✓ Compiled in 262ms (459 modules)
+[0]  ✓ Compiled in 255ms (459 modules)
+[0]  ✓ Compiled in 333ms (459 modules)
+[0]  ✓ Compiled in 302ms (459 modules)
+[0]  ✓ Compiled in 290ms (459 modules)
+[0]  ✓ Compiled in 260ms (459 modules)
+[0]  ✓ Compiled in 282ms (459 modules)
+[0]  ✓ Compiled in 278ms (459 modules)
+[0]  ✓ Compiled in 322ms (459 modules)
+[0]  ✓ Compiled in 269ms (459 modules)
+[0]  ✓ Compiled in 324ms (459 modules)
+[0]  ✓ Compiled in 359ms (459 modules)
+[0]  ✓ Compiled in 335ms (459 modules)
+[0]  ✓ Compiled in 270ms (459 modules)
+[0]  ✓ Compiled in 270ms (459 modules)
+[0]  ✓ Compiled in 303ms (459 modules)
+[0]  ✓ Compiled in 252ms (459 modules)
+[0]  ✓ Compiled in 251ms (459 modules)
+[0]  ✓ Compiled in 231ms (459 modules)
+[0]  ✓ Compiled in 260ms (459 modules)
+[0]  ✓ Compiled in 259ms (459 modules)
+[0]  ✓ Compiled in 342ms (459 modules)
+[0]  ✓ Compiled in 342ms (459 modules)
+[0]  ✓ Compiled in 298ms (459 modules)
+[0]  ✓ Compiled in 431ms (459 modules)
+[0]  ✓ Compiled in 289ms (459 modules)
+[0]  ✓ Compiled in 286ms (459 modules)
+[0]  ✓ Compiled in 266ms (459 modules)
+[0]  ✓ Compiled in 347ms (459 modules)
+[0]  ✓ Compiled in 382ms (459 modules)
+[0]  ✓ Compiled in 277ms (459 modules)
+[0]  ✓ Compiled in 278ms (459 modules)
+[0]  ✓ Compiled in 286ms (459 modules)
+[0]  ✓ Compiled in 300ms (459 modules)
+[0]  ✓ Compiled in 284ms (459 modules)
+[0]  ✓ Compiled in 254ms (459 modules)
+[0]  ✓ Compiled in 285ms (459 modules)
+[0]  ✓ Compiled in 250ms (459 modules)
+[0]  ✓ Compiled in 241ms (459 modules)
+[0]  ✓ Compiled in 322ms (459 modules)
+[0]  ✓ Compiled in 376ms (459 modules)
+[0]  ✓ Compiled in 310ms (459 modules)
+[0]  ✓ Compiled in 287ms (459 modules)
+[0]  ✓ Compiled in 314ms (459 modules)
+[0]  ✓ Compiled in 337ms (459 modules)
+[0]  ✓ Compiled in 288ms (459 modules)
+[0]  ✓ Compiled in 262ms (459 modules)
+[0]  ✓ Compiled in 296ms (459 modules)
+[0]  ✓ Compiled in 276ms (459 modules)
+[0]  ✓ Compiled in 256ms (459 modules)
+[0]  ✓ Compiled in 293ms (459 modules)
+[0]  ✓ Compiled in 281ms (459 modules)
+[0]  ✓ Compiled in 259ms (459 modules)
+[0]  ✓ Compiled in 306ms (459 modules)
+[0]  ✓ Compiled in 372ms (459 modules)
+[0]  ✓ Compiled in 264ms (459 modules)
+[0]  ✓ Compiled in 266ms (459 modules)
+[0]  ✓ Compiled in 258ms (459 modules)
+[1] 2026-03-29 19:32:06 [[35mhttp[39m]: [0mOPTIONS /api/v1/auth/login [32m204[0m 10.528 ms - 0[0m {
+[1]   "service": "credicheck-api",
+[1]   "environment": "development",
+[1]   "version": "v1"
+[1] }
+[1] 2026-03-29 19:32:06 [[35mhttp[39m]: HTTP 204 - OPTIONS /api/v1/auth/login {
+[1]   "service": "credicheck-api",
+[1]   "environment": "development",
+[1]   "version": "v1",
+[1]   "operation": "/api/v1/auth/login",
+[1]   "durationMs": 30,
+[1]   "method": "OPTIONS",
+[1]   "statusCode": 204,
+[1]   "ip": "::ffff:127.0.0.1",
+[1]   "userAgent": "Mozilla/5.0 (X11; Linux x86_64; rv:148.0) Gecko/20100101 Firefox/148.0",
+[1]   "category": "performance"
+[1] }
+[0]  ✓ Compiled in 336ms (459 modules)
+[1] 2026-03-29 19:32:06 [[34mdebug[39m]: Auth Route: POST /login - 2026-03-30T00:32:06.147Z {
+[1]   "service": "credicheck-api",
+[1]   "environment": "development",
+[1]   "version": "v1",
+[1]   "method": "POST",
+[1]   "path": "/login",
+[1]   "ip": "::ffff:127.0.0.1",
+[1]   "requestId": "req_1774830726146_eq1h8q3o0"
+[1] }
+[1] prisma:query SELECT 1
+[1] prisma:query SELECT `main`.`users`.`id`, `main`.`users`.`email`, `main`.`users`.`password_hash`, `main`.`users`.`first_name`, `main`.`users`.`last_name`, `main`.`users`.`role`, `main`.`users`.`is_active`, `main`.`users`.`last_login`, `main`.`users`.`deleted_at`, `main`.`users`.`created_at`, `main`.`users`.`updated_at` FROM `main`.`users` WHERE (`main`.`users`.`email` = ? AND 1=1) LIMIT ? OFFSET ?
+[1] 2026-03-29 19:32:06 [[35mhttp[39m]: [0mPOST /api/v1/auth/login [33m401[0m 106.125 ms - 171[0m {
+[1]   "service": "credicheck-api",
+[1]   "environment": "development",
+[1]   "version": "v1"
+[1] }
+[1] 2026-03-29 19:32:06 [[33mwarn[39m]: HTTP 401 - POST /login {
+[1]   "service": "credicheck-api",
+[1]   "environment": "development",
+[1]   "version": "v1",
+[1]   "operation": "/login",
+[1]   "durationMs": 109,
+[1]   "method": "POST",
+[1]   "statusCode": 401,
+[1]   "ip": "::ffff:127.0.0.1",
+[1]   "userAgent": "Mozilla/5.0 (X11; Linux x86_64; rv:148.0) Gecko/20100101 Firefox/148.0",
+[1]   "requestId": "req_1774830726146_eq1h8q3o0",
+[1]   "category": "performance"
+[1] }
+[0]  ✓ Compiled in 348ms (459 modules)
+[0]  ✓ Compiled in 391ms (459 modules)
+[0]  ✓ Compiled in 299ms (459 modules)
+[0]  ✓ Compiled in 290ms (459 modules)
+[0]  ✓ Compiled in 247ms (459 modules)
+[0]  ✓ Compiled in 260ms (459 modules)
+[0]  ✓ Compiled in 281ms (459 modules)
+[0]  ✓ Compiled in 267ms (459 modules)
+[0]  ✓ Compiled in 270ms (459 modules)
+[0]  ✓ Compiled in 246ms (459 modules)
+[0]  ✓ Compiled in 265ms (459 modules)
+[0]  ✓ Compiled in 265ms (459 modules)
+[0]  ✓ Compiled in 251ms (459 modules)
+[0]  ✓ Compiled in 268ms (459 modules)
+[0]  ✓ Compiled in 232ms (459 modules)
+[0]  ✓ Compiled in 341ms (459 modules)
+[0]  ✓ Compiled in 264ms (459 modules)
+[0]  ✓ Compiled in 324ms (459 modules)
+[0]  ✓ Compiled in 324ms (459 modules)
+[0]  ✓ Compiled in 321ms (459 modules)
+[0]  ✓ Compiled in 328ms (459 modules)
+[0]  ✓ Compiled in 294ms (459 modules)
+[0]  ✓ Compiled in 275ms (459 modules)
+[0]  ✓ Compiled in 249ms (459 modules)
+[0]  ✓ Compiled in 231ms (459 modules)
+[0]  ✓ Compiled in 262ms (459 modules)
+[0]  ✓ Compiled in 283ms (459 modules)
+[0]  ✓ Compiled in 277ms (459 modules)
+[0]  ✓ Compiled in 339ms (459 modules)
+[0]  ✓ Compiled in 241ms (459 modules)
+[0]  ✓ Compiled in 294ms (459 modules)
+[0]  ✓ Compiled in 287ms (459 modules)
+[0]  ✓ Compiled in 294ms (459 modules)
+[0]  ✓ Compiled in 290ms (459 modules)
+[0]  ✓ Compiled in 302ms (459 modules)
+[0]  ✓ Compiled in 279ms (459 modules)
+[0]  ✓ Compiled in 265ms (459 modules)
+[0]  ✓ Compiled in 259ms (459 modules)
+[0]  ✓ Compiled in 262ms (459 modules)
+[0]  ✓ Compiled in 242ms (459 modules)
+[0]  ✓ Compiled in 244ms (459 modules)
+[0]  ✓ Compiled in 255ms (459 modules)
+[0]  ✓ Compiled in 314ms (459 modules)
+[0]  ✓ Compiled in 331ms (459 modules)
+[0]  ✓ Compiled in 248ms (459 modules)
+[0]  ✓ Compiled in 311ms (459 modules)
+[0]  ✓ Compiled in 321ms (459 modules)
+[0]  ✓ Compiled in 332ms (459 modules)
+[0]  ✓ Compiled in 341ms (459 modules)
+[0]  ✓ Compiled in 245ms (459 modules)
+[0]  ✓ Compiled in 257ms (459 modules)
+[0]  ✓ Compiled in 263ms (459 modules)
+[0]  ✓ Compiled in 248ms (459 modules)
+[0]  ✓ Compiled in 285ms (459 modules)
+[0]  ✓ Compiled in 246ms (459 modules)
+[0]  ✓ Compiled in 256ms (459 modules)
+[0]  ✓ Compiled in 267ms (459 modules)
+[0]  ✓ Compiled in 256ms (459 modules)
+[0]  ✓ Compiled in 331ms (459 modules)
+[0]  ✓ Compiled in 244ms (459 modules)
+[0]  ✓ Compiled in 287ms (459 modules)
+[0]  ✓ Compiled in 553ms (459 modules)
+[1] 2026-03-29 19:32:24 [[35mhttp[39m]: [0mOPTIONS /api/v1/auth/login [32m204[0m 2.156 ms - 0[0m {
+[1]   "service": "credicheck-api",
+[1]   "environment": "development",
+[1]   "version": "v1"
+[1] }
+[1] 2026-03-29 19:32:24 [[35mhttp[39m]: HTTP 204 - OPTIONS /api/v1/auth/login {
+[1]   "service": "credicheck-api",
+[1]   "environment": "development",
+[1]   "version": "v1",
+[1]   "operation": "/api/v1/auth/login",
+[1]   "durationMs": 6,
+[1]   "method": "OPTIONS",
+[1]   "statusCode": 204,
+[1]   "ip": "::ffff:127.0.0.1",
+[1]   "userAgent": "Mozilla/5.0 (X11; Linux x86_64; rv:148.0) Gecko/20100101 Firefox/148.0",
+[1]   "category": "performance"
+[1] }
+[1] 2026-03-29 19:32:24 [[34mdebug[39m]: Auth Route: POST /login - 2026-03-30T00:32:24.549Z {
+[1]   "service": "credicheck-api",
+[1]   "environment": "development",
+[1]   "version": "v1",
+[1]   "method": "POST",
+[1]   "path": "/login",
+[1]   "ip": "::ffff:127.0.0.1",
+[1]   "requestId": "req_1774830744549_x6dn6yo5r"
+[1] }
+[1] prisma:query SELECT 1
+[1] prisma:query SELECT `main`.`users`.`id`, `main`.`users`.`email`, `main`.`users`.`password_hash`, `main`.`users`.`first_name`, `main`.`users`.`last_name`, `main`.`users`.`role`, `main`.`users`.`is_active`, `main`.`users`.`last_login`, `main`.`users`.`deleted_at`, `main`.`users`.`created_at`, `main`.`users`.`updated_at` FROM `main`.`users` WHERE (`main`.`users`.`email` = ? AND 1=1) LIMIT ? OFFSET ?
+[1] 2026-03-29 19:32:24 [[35mhttp[39m]: [0mPOST /api/v1/auth/login [33m401[0m 26.450 ms - 171[0m {
+[1]   "service": "credicheck-api",
+[1]   "environment": "development",
+[1]   "version": "v1"
+[1] }
+[1] 2026-03-29 19:32:24 [[33mwarn[39m]: HTTP 401 - POST /login {
+[1]   "service": "credicheck-api",
+[1]   "environment": "development",
+[1]   "version": "v1",
+[1]   "operation": "/login",
+[1]   "durationMs": 35,
+[1]   "method": "POST",
+[1]   "statusCode": 401,
+[1]   "ip": "::ffff:127.0.0.1",
+[1]   "userAgent": "Mozilla/5.0 (X11; Linux x86_64; rv:148.0) Gecko/20100101 Firefox/148.0",
+[1]   "requestId": "req_1774830744549_x6dn6yo5r",
+[1]   "category": "performance"
+[1] }
+[0]  ✓ Compiled in 364ms (459 modules)
+[0]  ✓ Compiled in 296ms (459 modules)
+[0]  ✓ Compiled in 289ms (459 modules)
+[0]  ✓ Compiled in 316ms (459 modules)
+[0]  ✓ Compiled in 349ms (459 modules)
+[0]  ✓ Compiled in 287ms (459 modules)
+[0]  ✓ Compiled in 253ms (459 modules)
+[0]  ✓ Compiled in 246ms (459 modules)
+[0]  ✓ Compiled in 259ms (459 modules)
+[0]  ✓ Compiled in 259ms (459 modules)
+[0]  ✓ Compiled in 268ms (459 modules)
+[0]  ✓ Compiled in 252ms (459 modules)
+[0]  ✓ Compiled in 321ms (459 modules)
+[0]  ✓ Compiled in 248ms (459 modules)
+[0]  ✓ Compiled in 354ms (459 modules)
+[0]  ✓ Compiled in 277ms (459 modules)
+[0]  ✓ Compiled in 263ms (459 modules)
+[0]  ✓ Compiled in 261ms (459 modules)
+[0]  ✓ Compiled in 254ms (459 modules)
+[0]  ✓ Compiled in 256ms (459 modules)
+[0]  ✓ Compiled in 266ms (459 modules)
+[0]  ✓ Compiled in 338ms (459 modules)
+[0]  ✓ Compiled in 249ms (459 modules)
+[0]  ✓ Compiled in 225ms (459 modules)
+[0]  ✓ Compiled in 338ms (459 modules)
+[0]  ✓ Compiled in 339ms (459 modules)
+[0]  ✓ Compiled in 265ms (459 modules)
+[0]  ✓ Compiled in 255ms (459 modules)
+[0]  ✓ Compiled in 232ms (459 modules)
+[0]  ✓ Compiled in 275ms (459 modules)
+[0]  ✓ Compiled in 364ms (459 modules)
+[0]  ✓ Compiled in 301ms (459 modules)
+[0]  ✓ Compiled in 331ms (459 modules)
+[0]  ✓ Compiled in 251ms (459 modules)
+[0]  ✓ Compiled in 259ms (459 modules)
+[0]  ✓ Compiled in 278ms (459 modules)
+[0]  ✓ Compiled in 268ms (459 modules)
+[0]  ✓ Compiled in 266ms (459 modules)
+[0]  ✓ Compiled in 239ms (459 modules)
+[0]  ✓ Compiled in 274ms (459 modules)
+[0]  ✓ Compiled in 287ms (459 modules)
+[0]  ✓ Compiled in 271ms (459 modules)
+[0]  ✓ Compiled in 252ms (459 modules)
+[0]  ✓ Compiled in 231ms (459 modules)
+[0]  ✓ Compiled in 280ms (459 modules)
+[0]  ✓ Compiled in 317ms (459 modules)
+[0]  ✓ Compiled in 616ms (459 modules)
+[0]  GET / 200 in 309ms
+[0]  ✓ Compiled in 353ms (459 modules)
+[0]  ✓ Compiled in 297ms (459 modules)
+[0]  ✓ Compiled in 285ms (459 modules)
+[0]  ✓ Compiled in 301ms (459 modules)
+[0]  ✓ Compiled in 297ms (459 modules)
+[0]  GET / 200 in 342ms
+[0]  ✓ Compiled in 466ms (459 modules)
+[0]  ✓ Compiled in 344ms (459 modules)
+[0]  ✓ Compiled in 242ms (459 modules)
+[0]  ✓ Compiled in 236ms (459 modules)
+[0]  ✓ Compiled in 261ms (459 modules)
+[0]  ✓ Compiled in 258ms (459 modules)
+[0]  ✓ Compiled in 228ms (459 modules)
+[0]  ✓ Compiled in 259ms (459 modules)
+[0]  ✓ Compiled in 250ms (459 modules)
+[0]  ✓ Compiled in 300ms (459 modules)
+[0]  ✓ Compiled in 277ms (459 modules)
+[0]  GET / 200 in 205ms
+[0]  ✓ Compiled in 322ms (459 modules)
+[0]  GET / 200 in 181ms
+[0]  ✓ Compiled in 302ms (459 modules)
+[0]  GET / 200 in 147ms
+[0]  ✓ Compiled in 325ms (459 modules)
+[0]  GET / 200 in 129ms
+[0]  ✓ Compiled in 338ms (459 modules)
+[0]  GET / 200 in 126ms
+[0]  ✓ Compiled in 364ms (459 modules)
+[0]  GET / 200 in 133ms
+[0]  ✓ Compiled in 337ms (459 modules)
+[0]  GET / 200 in 120ms
+[0]  ✓ Compiled in 309ms (459 modules)
+[0]  GET / 200 in 148ms
+[0]  ✓ Compiled in 313ms (459 modules)
+[0]  GET / 200 in 126ms
+[0]  ✓ Compiled in 294ms (459 modules)
+[0]  ✓ Compiled in 233ms (459 modules)
+[0]  GET / 200 in 272ms
+[0]  ✓ Compiled in 377ms (459 modules)
+[0]  GET / 200 in 127ms
+[0]  ✓ Compiled in 331ms (459 modules)
+[0]  GET / 200 in 119ms
+[0]  ✓ Compiled in 298ms (459 modules)
+[0]  GET / 200 in 126ms
+[0]  ✓ Compiled in 283ms (459 modules)
+[0]  GET / 200 in 133ms
+[0]  ✓ Compiled in 304ms (459 modules)
+[0]  GET / 200 in 120ms
+[0]  ✓ Compiled in 293ms (459 modules)
+[0]  ✓ Compiled in 307ms (459 modules)
+[0]  GET / 200 in 128ms
+[0]  GET / 200 in 140ms
+[0]  ✓ Compiled in 339ms (459 modules)
+[0]  ✓ Compiled in 245ms (459 modules)
+[0]  ✓ Compiled in 244ms (459 modules)
+[0]  ✓ Compiled in 246ms (459 modules)
+[0]  ✓ Compiled in 228ms (459 modules)
+[0]  ✓ Compiled in 247ms (459 modules)
+[0]  ✓ Compiled in 247ms (459 modules)
+[0]  ✓ Compiled in 235ms (459 modules)
+[0]  ✓ Compiled in 237ms (459 modules)
+[0]  ✓ Compiled in 263ms (459 modules)
+[0]  ✓ Compiled in 474ms (459 modules)
+[0]  ✓ Compiled in 300ms (459 modules)
+[0]  ✓ Compiled in 346ms (459 modules)
+[0]  ✓ Compiled in 262ms (459 modules)
+[0]  ✓ Compiled in 216ms (459 modules)
+[0]  ✓ Compiled in 238ms (459 modules)
+[0]  ✓ Compiled in 253ms (459 modules)
+[0]  ✓ Compiled in 294ms (459 modules)
+[0]  ✓ Compiled in 302ms (459 modules)
+[0]  ✓ Compiled in 250ms (459 modules)
+[0]  ✓ Compiled in 288ms (459 modules)
+[0]  ✓ Compiled in 265ms (459 modules)
+[0]  ✓ Compiled in 234ms (459 modules)
+[0]  ✓ Compiled in 255ms (459 modules)
+[0]  ✓ Compiled in 236ms (459 modules)
+[0]  ✓ Compiled in 253ms (459 modules)
+[0]  ✓ Compiled in 247ms (459 modules)
+[0]  ✓ Compiled in 224ms (459 modules)
+[0]  ✓ Compiled in 245ms (459 modules)
+[0]  ✓ Compiled in 236ms (459 modules)
+[0]  ✓ Compiled in 246ms (459 modules)
+[0]  ✓ Compiled in 221ms (459 modules)
+[0]  ✓ Compiled in 261ms (459 modules)
+[0]  ✓ Compiled in 243ms (459 modules)
+[0]  ✓ Compiled in 244ms (459 modules)
+[0]  ✓ Compiled in 306ms (459 modules)
+[0]  ✓ Compiled in 381ms (459 modules)
+[0]  ✓ Compiled in 314ms (459 modules)
+[0]  ✓ Compiled in 273ms (459 modules)
+[0]  ✓ Compiled in 211ms (459 modules)
+[0]  ✓ Compiled in 260ms (459 modules)
+[0]  ✓ Compiled in 229ms (459 modules)
+[0]  ✓ Compiled in 246ms (459 modules)
+[0]  ✓ Compiled in 253ms (459 modules)
+[0]  ✓ Compiled in 220ms (459 modules)
+[0]  ✓ Compiled in 307ms (459 modules)
+[0]  ✓ Compiled in 249ms (459 modules)
+[0]  ✓ Compiled in 249ms (459 modules)
+[0]  ✓ Compiled in 234ms (459 modules)
+[0]  ✓ Compiled in 282ms (459 modules)
+[0]  ✓ Compiled in 284ms (459 modules)
+[0]  ✓ Compiled in 281ms (459 modules)
+[0]  ✓ Compiled in 264ms (459 modules)
+[0]  ✓ Compiled in 231ms (459 modules)
+[0]  ✓ Compiled in 220ms (459 modules)
+[0]  ✓ Compiled in 249ms (459 modules)
+[0]  ✓ Compiled in 252ms (459 modules)
+[0]  ✓ Compiled in 229ms (459 modules)
+[0]  ✓ Compiled in 290ms (459 modules)
+[0]  ✓ Compiled in 200ms (459 modules)
+[0]  ✓ Compiled in 256ms (459 modules)
+[0]  ✓ Compiled in 249ms (459 modules)
+[0]  ✓ Compiled in 227ms (459 modules)
+[0]  ✓ Compiled in 227ms (459 modules)
+[0]  ✓ Compiled in 212ms (459 modules)
+[0]  ✓ Compiled in 229ms (459 modules)
+[0]  ✓ Compiled in 239ms (459 modules)
+[0]  ✓ Compiled in 246ms (459 modules)
+[0]  ✓ Compiled in 222ms (459 modules)
+[0]  ✓ Compiled in 237ms (459 modules)
+[0]  ✓ Compiled in 243ms (459 modules)
+[0]  ✓ Compiled in 222ms (459 modules)
+[0]  ✓ Compiled in 242ms (459 modules)
+[0]  ✓ Compiled in 236ms (459 modules)
+[0]  ✓ Compiled in 301ms (459 modules)
+[0]  ✓ Compiled in 350ms (459 modules)
+[0]  ✓ Compiled in 227ms (459 modules)
+[0]  ✓ Compiled in 227ms (459 modules)
+[0]  ✓ Compiled in 233ms (459 modules)
+[0]  ✓ Compiled in 239ms (459 modules)
+[0]  ✓ Compiled in 267ms (459 modules)
+[0]  ✓ Compiled in 241ms (459 modules)
+[0]  ✓ Compiled in 273ms (459 modules)
+[0]  ✓ Compiled in 233ms (459 modules)
+[0]  ✓ Compiled in 240ms (459 modules)
+[0]  ✓ Compiled in 254ms (459 modules)
+[0]  ✓ Compiled in 236ms (459 modules)
+[0]  ✓ Compiled in 248ms (459 modules)
+[0]  ✓ Compiled in 257ms (459 modules)
+[0]  ✓ Compiled in 228ms (459 modules)
+[0]  ✓ Compiled in 236ms (459 modules)
+[0]  ✓ Compiled in 231ms (459 modules)
+[0]  ✓ Compiled in 227ms (459 modules)
+[0]  ✓ Compiled in 227ms (459 modules)
+[0]  ✓ Compiled in 334ms (459 modules)
+[0]  ✓ Compiled in 321ms (459 modules)
+[0]  ✓ Compiled in 492ms (459 modules)
+[0]  ✓ Compiled in 329ms (459 modules)
+[0]  ✓ Compiled in 300ms (459 modules)
+[0]  ✓ Compiled in 394ms (459 modules)
+[0]  ✓ Compiled in 353ms (459 modules)
+[0]  ✓ Compiled in 345ms (459 modules)
+[0]  ✓ Compiled in 329ms (459 modules)
+[0]  ✓ Compiled in 297ms (459 modules)
+[0]  ✓ Compiled in 412ms (459 modules)
+[0]  ✓ Compiled in 250ms (459 modules)
+[0]  ✓ Compiled in 299ms (459 modules)
+[0]  ✓ Compiled in 274ms (459 modules)
+[0]  ✓ Compiled in 244ms (459 modules)
+[0]  ✓ Compiled in 282ms (459 modules)
+[0]  ✓ Compiled in 413ms (459 modules)
+[0]  ✓ Compiled in 289ms (459 modules)
+[0]  ✓ Compiled in 282ms (459 modules)
+[0]  ✓ Compiled in 334ms (459 modules)
+[0]  ✓ Compiled in 309ms (459 modules)
+[0]  ✓ Compiled in 259ms (459 modules)
+[0]  ✓ Compiled in 320ms (459 modules)
+[0]  ✓ Compiled in 321ms (459 modules)
+[0]  ✓ Compiled in 385ms (459 modules)
+[0]  ✓ Compiled in 329ms (459 modules)
+[0]  ✓ Compiled in 260ms (459 modules)
+[0]  ✓ Compiled in 228ms (459 modules)
+[0]  ✓ Compiled in 233ms (459 modules)
+[0]  ✓ Compiled in 240ms (459 modules)
+[0]  ✓ Compiled in 247ms (459 modules)
+[0]  ✓ Compiled in 248ms (459 modules)
+[0]  ✓ Compiled in 239ms (459 modules)
+[0]  ✓ Compiled in 283ms (459 modules)
+[0]  ✓ Compiled in 379ms (459 modules)
+[0]  ✓ Compiled in 291ms (459 modules)
+[0]  ✓ Compiled in 358ms (459 modules)
+[0]  ✓ Compiled in 344ms (459 modules)
+[0]  ✓ Compiled in 490ms (459 modules)
+[0]  ✓ Compiled in 307ms (459 modules)
+[0]  ✓ Compiled in 326ms (459 modules)
+[0]  ✓ Compiled in 294ms (459 modules)
+[0]  ✓ Compiled in 262ms (459 modules)
+[0]  ✓ Compiled in 288ms (459 modules)
+[0]  ✓ Compiled in 258ms (459 modules)
+[0]  ✓ Compiled in 291ms (459 modules)
+[0]  ✓ Compiled in 307ms (459 modules)
+[0]  ✓ Compiled in 553ms (459 modules)
+[0]  ✓ Compiled in 535ms (459 modules)
+[0]  ✓ Compiled in 334ms (459 modules)
+[0]  ✓ Compiled in 324ms (459 modules)
+[0]  ✓ Compiled in 324ms (459 modules)
+[0]  ✓ Compiled in 246ms (459 modules)
+[0]  ✓ Compiled in 316ms (459 modules)
+[0]  ✓ Compiled in 267ms (459 modules)
+[0]  ✓ Compiled in 279ms (459 modules)
+[0]  ✓ Compiled in 252ms (459 modules)
+[0]  ✓ Compiled in 302ms (459 modules)
+[0]  ✓ Compiled in 318ms (459 modules)
+[0]  ✓ Compiled in 418ms (459 modules)
+[0]  ✓ Compiled in 265ms (459 modules)
+[0]  ✓ Compiled in 227ms (459 modules)
+[0]  ✓ Compiled in 229ms (459 modules)
+[0]  ✓ Compiled in 244ms (459 modules)
+[0]  ✓ Compiled in 217ms (459 modules)
+[0]  ✓ Compiled in 240ms (459 modules)
+[0]  ✓ Compiled in 263ms (459 modules)
+[0]  ✓ Compiled in 365ms (459 modules)
+[0]  ✓ Compiled in 286ms (459 modules)
+[0]  ✓ Compiled in 337ms (459 modules)
+[0]  ✓ Compiled in 378ms (459 modules)
+[0]  ✓ Compiled in 256ms (459 modules)
+[0]  ✓ Compiled in 220ms (459 modules)
+[0]  ✓ Compiled in 226ms (459 modules)
+[0]  ✓ Compiled in 223ms (459 modules)
+[0]  ✓ Compiled in 243ms (459 modules)
+[0]  ✓ Compiled in 256ms (459 modules)
+[0]  ✓ Compiled in 395ms (459 modules)
+[0]  ✓ Compiled in 319ms (459 modules)
+[0]  ✓ Compiled in 260ms (459 modules)
+[0]  ✓ Compiled in 386ms (459 modules)
+[0]  ✓ Compiled in 390ms (459 modules)
+[0]  ✓ Compiled in 378ms (459 modules)
+[0]  ✓ Compiled in 286ms (459 modules)
+[0]  ✓ Compiled in 311ms (459 modules)
+[0]  ✓ Compiled in 236ms (459 modules)
+[0]  ✓ Compiled in 239ms (459 modules)
+[0]  ✓ Compiled in 239ms (459 modules)
+[0]  ✓ Compiled in 233ms (459 modules)
+[0]  ✓ Compiled in 228ms (459 modules)
+[0]  ✓ Compiled in 236ms (459 modules)
+[0]  ✓ Compiled in 228ms (459 modules)
+[0]  ✓ Compiled in 225ms (459 modules)
+[0]  ✓ Compiled in 225ms (459 modules)
+[0]  ✓ Compiled in 222ms (459 modules)
+[0]  ✓ Compiled in 251ms (459 modules)
+[0]  ✓ Compiled in 251ms (459 modules)
+[0]  ✓ Compiled in 310ms (459 modules)
+[0]  ✓ Compiled in 273ms (459 modules)
+[0]  ✓ Compiled in 340ms (459 modules)
+[0]  ✓ Compiled in 310ms (459 modules)
+[0]  ✓ Compiled in 305ms (459 modules)
+[0]  ✓ Compiled in 328ms (459 modules)
+[0]  ✓ Compiled in 308ms (459 modules)
+[0]  ✓ Compiled in 441ms (459 modules)
+[0]  ✓ Compiled in 256ms (459 modules)
+[0]  ✓ Compiled in 298ms (459 modules)
+[0]  ✓ Compiled in 256ms (459 modules)
+[0]  ✓ Compiled in 246ms (459 modules)
+[0]  ✓ Compiled in 272ms (459 modules)
+[0]  ✓ Compiled in 258ms (459 modules)
+[0]  ✓ Compiled in 253ms (459 modules)
+[0]  ✓ Compiled in 282ms (459 modules)
+[0]  ✓ Compiled in 302ms (459 modules)
+[0]  ✓ Compiled in 370ms (459 modules)
+[0]  ✓ Compiled in 581ms (459 modules)
+[0]  ✓ Compiled in 415ms (459 modules)
+[0]  ✓ Compiled in 412ms (459 modules)
+[0]  ✓ Compiled in 308ms (459 modules)
+[0]  ✓ Compiled in 526ms (459 modules)
+[0]  ✓ Compiled in 304ms (459 modules)
+[0]  ✓ Compiled in 271ms (459 modules)
+[0]  ✓ Compiled in 281ms (459 modules)
+[0]  ✓ Compiled in 256ms (459 modules)
+[0]  ✓ Compiled in 258ms (459 modules)
+[0]  ✓ Compiled in 265ms (459 modules)
+[0]  ✓ Compiled in 244ms (459 modules)
+[0]  ✓ Compiled in 259ms (459 modules)
+[0]  ✓ Compiled in 242ms (459 modules)
+[0]  ✓ Compiled in 270ms (459 modules)
+[0]  ✓ Compiled in 247ms (459 modules)
+[0]  ✓ Compiled in 310ms (459 modules)
+[0]  ✓ Compiled in 277ms (459 modules)
+[0]  ✓ Compiled in 446ms (459 modules)
+[0]  ✓ Compiled in 353ms (459 modules)
+[0]  ✓ Compiled in 343ms (459 modules)
+[0]  ✓ Compiled in 333ms (459 modules)
+[0]  ✓ Compiled in 274ms (459 modules)
+[0]  ✓ Compiled in 235ms (459 modules)
+[0]  ✓ Compiled in 246ms (459 modules)
+[0]  ✓ Compiled in 287ms (459 modules)
+[0]  ✓ Compiled in 310ms (459 modules)
+[0]  ✓ Compiled in 389ms (459 modules)
+[0]  ✓ Compiled in 232ms (459 modules)
+[0]  ✓ Compiled in 247ms (459 modules)
+[0]  ✓ Compiled in 236ms (459 modules)
+[0]  ✓ Compiled in 238ms (459 modules)
+[0]  ✓ Compiled in 291ms (459 modules)
+[0]  ✓ Compiled in 287ms (459 modules)
+[0]  ✓ Compiled in 273ms (459 modules)
+[0]  ✓ Compiled in 348ms (459 modules)
+[0]  ✓ Compiled in 327ms (459 modules)
+[0]  ✓ Compiled in 310ms (459 modules)
+[0]  ✓ Compiled in 290ms (459 modules)
+[0]  ✓ Compiled in 336ms (459 modules)
+[0]  ✓ Compiled in 285ms (459 modules)
+[0]  ✓ Compiled in 279ms (459 modules)
+[0]  ✓ Compiled in 266ms (459 modules)
+[0]  ✓ Compiled in 357ms (459 modules)
+[0]  ✓ Compiled in 305ms (459 modules)
+[0]  ✓ Compiled in 267ms (459 modules)
+[0]  ✓ Compiled in 286ms (459 modules)
+[0]  ✓ Compiled in 369ms (459 modules)
+[0]  ✓ Compiled in 390ms (459 modules)
+[0]  ✓ Compiled in 353ms (459 modules)
+[0]  ✓ Compiled in 355ms (459 modules)
+[0]  ✓ Compiled in 324ms (459 modules)
+[0]  ✓ Compiled in 386ms (459 modules)
+[0]  ✓ Compiled in 262ms (459 modules)
+[0]  ✓ Compiled in 263ms (459 modules)
+[0]  ✓ Compiled in 276ms (459 modules)
+[0]  ✓ Compiled in 257ms (459 modules)
+[0]  ✓ Compiled in 261ms (459 modules)
+[0]  ✓ Compiled in 234ms (459 modules)
+[0]  ✓ Compiled in 279ms (459 modules)
+[0]  ✓ Compiled in 242ms (459 modules)
+[0]  ✓ Compiled in 250ms (459 modules)
+[0]  ✓ Compiled in 251ms (459 modules)
+[0]  ✓ Compiled in 261ms (459 modules)
+[0]  ✓ Compiled in 260ms (459 modules)
+[0]  ✓ Compiled in 289ms (459 modules)
+[0]  ✓ Compiled in 280ms (459 modules)
+[0]  ✓ Compiled in 294ms (459 modules)
+[0]  ✓ Compiled in 340ms (459 modules)
+[0]  ✓ Compiled in 286ms (459 modules)
+[0]  ✓ Compiled in 301ms (459 modules)
+[0]  ✓ Compiled in 261ms (459 modules)
+[0]  ✓ Compiled in 282ms (459 modules)
+[0]  ✓ Compiled in 297ms (459 modules)
+[0]  ✓ Compiled in 330ms (459 modules)
+[0]  ✓ Compiled in 320ms (459 modules)
+[0]  ✓ Compiled in 310ms (459 modules)
+[0]  ✓ Compiled in 283ms (459 modules)
+[0]  ✓ Compiled in 250ms (459 modules)
+[0]  ✓ Compiled in 250ms (459 modules)
+[0]  ✓ Compiled in 244ms (459 modules)
+[0]  ✓ Compiled in 252ms (459 modules)
+[0]  ✓ Compiled in 308ms (459 modules)
+[0]  ✓ Compiled in 405ms (459 modules)
+[0]  ✓ Compiled in 282ms (459 modules)
+[0]  ✓ Compiled in 282ms (459 modules)
+[0]  ✓ Compiled in 302ms (459 modules)
+[0]  ✓ Compiled in 248ms (459 modules)
+[0]  ✓ Compiled in 251ms (459 modules)
+[0]  ✓ Compiled in 283ms (459 modules)
+[0]  ✓ Compiled in 349ms (459 modules)
+[0]  ✓ Compiled in 362ms (459 modules)
+[0]  ✓ Compiled in 322ms (459 modules)
+[0]  ✓ Compiled in 323ms (459 modules)
+[0]  ✓ Compiled in 360ms (459 modules)
+[0]  ✓ Compiled in 306ms (459 modules)
+[0]  ✓ Compiled in 287ms (459 modules)
+[0]  ✓ Compiled in 244ms (459 modules)
+[0]  ✓ Compiled in 308ms (459 modules)
+[0]  ✓ Compiled in 333ms (459 modules)
+[0]  ✓ Compiled in 261ms (459 modules)
+[0]  ✓ Compiled in 226ms (459 modules)
+[0]  ✓ Compiled in 217ms (459 modules)
+[0]  ✓ Compiled in 244ms (459 modules)
+[0]  ✓ Compiled in 232ms (459 modules)
+[0]  ✓ Compiled in 222ms (459 modules)
+[0]  ✓ Compiled in 230ms (459 modules)
+[0]  ✓ Compiled in 232ms (459 modules)
+[0]  ✓ Compiled in 346ms (459 modules)
+[0]  ✓ Compiled in 316ms (459 modules)
+[0]  ✓ Compiled in 420ms (459 modules)
+[0]  ✓ Compiled in 340ms (459 modules)
+[0]  ✓ Compiled in 284ms (459 modules)
+[0]  ✓ Compiled in 317ms (459 modules)
+[0]  ✓ Compiled in 259ms (459 modules)
+[0]  ✓ Compiled in 236ms (459 modules)
+[0]  ✓ Compiled in 269ms (459 modules)
+[0]  ✓ Compiled in 251ms (459 modules)
+[0]  ✓ Compiled in 238ms (459 modules)
+[0]  ✓ Compiled in 253ms (459 modules)
+[0]  ✓ Compiled in 239ms (459 modules)
+[0]  ✓ Compiled in 264ms (459 modules)
+[0]  ✓ Compiled in 207ms (459 modules)
+[0]  ✓ Compiled in 257ms (459 modules)
+[0]  ✓ Compiled in 236ms (459 modules)
+[0]  ✓ Compiled in 252ms (459 modules)
+[0]  ✓ Compiled in 233ms (459 modules)
+[0]  ✓ Compiled in 213ms (459 modules)
+[0]  ✓ Compiled in 247ms (459 modules)
+[0]  ✓ Compiled in 300ms (459 modules)
+[0]  ✓ Compiled in 338ms (459 modules)
+[0]  ✓ Compiled in 285ms (459 modules)
+[0]  ✓ Compiled in 327ms (459 modules)
+[0]  ✓ Compiled in 377ms (459 modules)
+[0]  ✓ Compiled in 425ms (459 modules)
+[0]  ✓ Compiled in 295ms (459 modules)
+[0]  ✓ Compiled in 276ms (459 modules)
+[0]  ✓ Compiled in 250ms (459 modules)
+[0]  ✓ Compiled in 325ms (459 modules)
+[0]  ✓ Compiled in 304ms (459 modules)
+[0]  ✓ Compiled in 307ms (459 modules)
+[0]  ✓ Compiled in 266ms (459 modules)
+[0]  ✓ Compiled in 297ms (459 modules)
+[0]  ✓ Compiled in 347ms (459 modules)
+[0]  ✓ Compiled in 466ms (459 modules)
+[0]  ✓ Compiled in 335ms (459 modules)
+[0]  ✓ Compiled in 416ms (459 modules)
+[0]  ✓ Compiled in 351ms (459 modules)
+[0]  ✓ Compiled in 292ms (459 modules)
+[0]  ✓ Compiled in 292ms (459 modules)
+[0]  ✓ Compiled in 311ms (459 modules)
+[0]  ✓ Compiled in 254ms (459 modules)
+[0]  ✓ Compiled in 245ms (459 modules)
+[0]  ✓ Compiled in 255ms (459 modules)
+[0]  ✓ Compiled in 250ms (459 modules)
+[0]  ✓ Compiled in 275ms (459 modules)
+[0]  ✓ Compiled in 252ms (459 modules)
+[0]  ✓ Compiled in 236ms (459 modules)
+[0]  ✓ Compiled in 267ms (459 modules)
+[0]  ✓ Compiled in 284ms (459 modules)
+[0]  ✓ Compiled in 301ms (459 modules)
+[0]  ✓ Compiled in 334ms (459 modules)
+[0]  ✓ Compiled in 317ms (459 modules)
+[0]  ✓ Compiled in 313ms (459 modules)
+[0]  ✓ Compiled in 361ms (459 modules)
+[0]  ✓ Compiled in 395ms (459 modules)
+[0]  ✓ Compiled in 313ms (459 modules)
+[0]  ✓ Compiled in 261ms (459 modules)
+[0]  ✓ Compiled in 253ms (459 modules)
+[0]  ✓ Compiled in 313ms (459 modules)
+[0]  ✓ Compiled in 364ms (459 modules)
+[0]  ✓ Compiled in 263ms (459 modules)
+[0]  ✓ Compiled in 210ms (459 modules)
+[0]  ✓ Compiled in 242ms (459 modules)
+[0]  ✓ Compiled in 223ms (459 modules)
+[0]  ✓ Compiled in 234ms (459 modules)
+[0]  ✓ Compiled in 216ms (459 modules)
+[0]  ✓ Compiled in 560ms (459 modules)
+[0]  ✓ Compiled in 256ms (459 modules)
+[0]  ✓ Compiled in 382ms (459 modules)
+[0]  ✓ Compiled in 357ms (459 modules)
+[0]  ✓ Compiled in 485ms (459 modules)
+[0]  ✓ Compiled in 414ms (459 modules)
+[0]  ✓ Compiled in 403ms (459 modules)
+[0]  ✓ Compiled in 372ms (459 modules)
+[0]  ✓ Compiled in 252ms (459 modules)
+[0]  ✓ Compiled in 235ms (459 modules)
+[0]  ✓ Compiled in 246ms (459 modules)
+[0]  ✓ Compiled in 230ms (459 modules)
+[0]  ✓ Compiled in 258ms (459 modules)
+[0]  ✓ Compiled in 215ms (459 modules)
+[0]  ✓ Compiled in 234ms (459 modules)
+[0]  ✓ Compiled in 232ms (459 modules)
+[0]  ✓ Compiled in 274ms (459 modules)
+[0]  ✓ Compiled in 309ms (459 modules)
+[0]  ✓ Compiled in 270ms (459 modules)
+[0]  ✓ Compiled in 382ms (459 modules)
+[0]  ✓ Compiled in 334ms (459 modules)
+[0]  ✓ Compiled in 344ms (459 modules)
+[0]  ✓ Compiled in 305ms (459 modules)
+[0]  ✓ Compiled in 261ms (459 modules)
+[0]  ✓ Compiled in 322ms (459 modules)
+[0]  ✓ Compiled in 309ms (459 modules)
+[0]  ✓ Compiled in 296ms (459 modules)
+[0]  ✓ Compiled in 264ms (459 modules)
+[0]  ✓ Compiled in 284ms (459 modules)
+[0]  ✓ Compiled in 362ms (459 modules)
+[0]  ✓ Compiled in 368ms (459 modules)
+[0]  ✓ Compiled in 858ms (459 modules)
+[0]  ✓ Compiled in 345ms (459 modules)
+[0]  ✓ Compiled in 313ms (459 modules)
+[0]  ✓ Compiled in 314ms (459 modules)
+[0]  ✓ Compiled in 282ms (459 modules)
+[0]  ✓ Compiled in 282ms (459 modules)
+[0]  ✓ Compiled in 244ms (459 modules)
+[0]  ✓ Compiled in 268ms (459 modules)
+[0]  ✓ Compiled in 257ms (459 modules)
+[0]  ✓ Compiled in 244ms (459 modules)
+[0]  ✓ Compiled in 289ms (459 modules)
+[0]  ✓ Compiled in 268ms (459 modules)
+[0]  ✓ Compiled in 239ms (459 modules)
+[0]  ✓ Compiled in 247ms (459 modules)
+[0]  ✓ Compiled in 259ms (459 modules)
+[0]  ✓ Compiled in 290ms (459 modules)
+[0]  ✓ Compiled in 267ms (459 modules)
+[0]  ✓ Compiled in 238ms (459 modules)
+[0]  ✓ Compiled in 235ms (459 modules)
+[0]  ✓ Compiled in 228ms (459 modules)
+[0]  ✓ Compiled in 254ms (459 modules)
+[0]  ✓ Compiled in 279ms (459 modules)
+[0]  ✓ Compiled in 250ms (459 modules)
+[0]  ✓ Compiled in 280ms (459 modules)
+[0]  ✓ Compiled in 382ms (459 modules)
+[0]  ✓ Compiled in 257ms (459 modules)
+[0]  ✓ Compiled in 294ms (459 modules)
+[0]  ✓ Compiled in 273ms (459 modules)
+[0]  ✓ Compiled in 267ms (459 modules)
+[0]  ✓ Compiled in 239ms (459 modules)
+[0]  ✓ Compiled in 239ms (459 modules)
+[0]  ✓ Compiled in 209ms (459 modules)
+[0]  ✓ Compiled in 228ms (459 modules)
+[0]  ✓ Compiled in 250ms (459 modules)
+[0]  ✓ Compiled in 293ms (459 modules)
+[0]  ✓ Compiled in 266ms (459 modules)
+[0]  ✓ Compiled in 270ms (459 modules)
+[0]  ✓ Compiled in 332ms (459 modules)
+[0]  ✓ Compiled in 391ms (459 modules)
+[0]  ✓ Compiled in 285ms (459 modules)
+[0]  ✓ Compiled in 264ms (459 modules)
+[0]  ✓ Compiled in 312ms (459 modules)
+[0]  ✓ Compiled in 224ms (459 modules)
+[0]  ✓ Compiled in 257ms (459 modules)
+[0]  ✓ Compiled in 256ms (459 modules)
+[0]  ✓ Compiled in 241ms (459 modules)
+[0]  ✓ Compiled in 234ms (459 modules)
+[0]  ✓ Compiled in 235ms (459 modules)
+[0]  ✓ Compiled in 228ms (459 modules)
+[0]  ✓ Compiled in 227ms (459 modules)
+[0]  ✓ Compiled in 226ms (459 modules)
+[0]  ✓ Compiled in 225ms (459 modules)
+[0]  ✓ Compiled in 226ms (459 modules)
+[0]  ✓ Compiled in 272ms (459 modules)
+[0]  ✓ Compiled in 306ms (459 modules)
+[0]  ✓ Compiled in 338ms (459 modules)
+[0]  ✓ Compiled in 366ms (459 modules)
+[0]  ✓ Compiled in 275ms (459 modules)
+[0]  ✓ Compiled in 331ms (459 modules)
+[0]  ✓ Compiled in 266ms (459 modules)
+[0]  ✓ Compiled in 256ms (459 modules)
+[0]  ✓ Compiled in 251ms (459 modules)
+[0]  ✓ Compiled in 356ms (459 modules)
+[0]  ✓ Compiled in 538ms (459 modules)
+[0]  ✓ Compiled in 330ms (459 modules)
+[0]  ✓ Compiled in 272ms (459 modules)
+[0]  ✓ Compiled in 258ms (459 modules)
+[0]  ✓ Compiled in 253ms (459 modules)
+[0]  ✓ Compiled in 277ms (459 modules)
+[0]  ✓ Compiled in 253ms (459 modules)
+[0]  ✓ Compiled in 267ms (459 modules)
+[0]  ✓ Compiled in 242ms (459 modules)
+[0]  ✓ Compiled in 239ms (459 modules)
+[0]  ✓ Compiled in 278ms (459 modules)
+[0]  ✓ Compiled in 241ms (459 modules)
+[0]  ✓ Compiled in 296ms (459 modules)
+[0]  ✓ Compiled in 330ms (459 modules)
+[0]  ✓ Compiled in 310ms (459 modules)
+[0]  ✓ Compiled in 327ms (459 modules)
+[0]  ✓ Compiled in 277ms (459 modules)
+[0]  ✓ Compiled in 333ms (459 modules)
+[0]  ✓ Compiled in 301ms (459 modules)
+[0]  ✓ Compiled in 424ms (459 modules)
+[0]  ✓ Compiled in 318ms (459 modules)
+[0]  ✓ Compiled in 253ms (459 modules)
+[0]  ✓ Compiled in 233ms (459 modules)
+[0]  ✓ Compiled in 237ms (459 modules)
+[0]  ✓ Compiled in 215ms (459 modules)
+[0]  ✓ Compiled in 234ms (459 modules)
+[0]  ✓ Compiled in 307ms (459 modules)
+[0]  ✓ Compiled in 296ms (459 modules)
+[0]  ✓ Compiled in 326ms (459 modules)
+[0]  ✓ Compiled in 293ms (459 modules)
+[0]  ✓ Compiled in 337ms (459 modules)
+[0]  ✓ Compiled in 306ms (459 modules)
+[0]  ✓ Compiled in 278ms (459 modules)
+[0]  ✓ Compiled in 280ms (459 modules)
+[0]  ✓ Compiled in 330ms (459 modules)
+[0]  ✓ Compiled in 299ms (459 modules)
+[0]  ✓ Compiled in 278ms (459 modules)
+[0]  ✓ Compiled in 290ms (459 modules)
+[0]  ✓ Compiled in 288ms (459 modules)
+[0]  ✓ Compiled in 347ms (459 modules)
+[0]  ✓ Compiled in 377ms (459 modules)
+[0]  ✓ Compiled in 353ms (459 modules)
+[0]  ✓ Compiled in 349ms (459 modules)
+[0]  ✓ Compiled in 409ms (459 modules)
+[0]  ✓ Compiled in 392ms (459 modules)
+[0]  ✓ Compiled in 338ms (459 modules)
+[0]  ✓ Compiled in 286ms (459 modules)
+[0]  ✓ Compiled in 317ms (459 modules)
+[0]  ✓ Compiled in 300ms (459 modules)
+[0]  ✓ Compiled in 325ms (459 modules)
+[0]  ✓ Compiled in 288ms (459 modules)
+[0]  ✓ Compiled in 255ms (459 modules)
+[0]  ✓ Compiled in 266ms (459 modules)
+[0]  ✓ Compiled in 246ms (459 modules)
+[0]  ✓ Compiled in 270ms (459 modules)
+[0]  ✓ Compiled in 272ms (459 modules)
+[0]  ✓ Compiled in 270ms (459 modules)
+[0]  ✓ Compiled in 252ms (459 modules)
+[0]  ✓ Compiled in 252ms (459 modules)
+[0]  ✓ Compiled in 239ms (459 modules)
+[0]  ✓ Compiled in 247ms (459 modules)
+[0]  ✓ Compiled in 247ms (459 modules)
+[0]  ✓ Compiled in 248ms (459 modules)
+[0]  ✓ Compiled in 254ms (459 modules)
+[0]  ✓ Compiled in 232ms (459 modules)
+[0]  ✓ Compiled in 288ms (459 modules)
+[0]  ✓ Compiled in 414ms (459 modules)
+[0]  ✓ Compiled in 384ms (459 modules)
+[0]  ✓ Compiled in 367ms (459 modules)
+[0]  ✓ Compiled in 310ms (459 modules)
+[0]  ✓ Compiled in 305ms (459 modules)
+[0]  ✓ Compiled in 286ms (459 modules)
+[0]  ✓ Compiled in 240ms (459 modules)
+[0]  ✓ Compiled in 455ms (459 modules)
+[0]  GET / 200 in 224ms
+[0]  ✓ Compiled in 269ms (459 modules)
+[0]  ✓ Compiled in 247ms (459 modules)
+[0]  ✓ Compiled in 247ms (459 modules)
+[0]  ✓ Compiled in 303ms (459 modules)
+[0]  ✓ Compiled in 301ms (459 modules)
+[0]  ✓ Compiled in 320ms (459 modules)
+[0]  ✓ Compiled in 296ms (459 modules)
+[0]  ✓ Compiled in 304ms (459 modules)
+[0]  ✓ Compiled in 468ms (459 modules)
+[0]  ✓ Compiled in 348ms (459 modules)
+[0]  GET / 200 in 430ms
+[0]  ✓ Compiled in 647ms (459 modules)
+[0]  GET / 200 in 438ms
+[0]  ✓ Compiled in 682ms (459 modules)
+[0]  GET / 200 in 426ms
+[0]  ✓ Compiled in 1251ms (459 modules)
+[0]  ✓ Compiled in 537ms (459 modules)
+[0]  ✓ Compiled in 668ms (459 modules)
+[0]  ✓ Compiled in 638ms (459 modules)
+[0]  ✓ Compiled in 673ms (459 modules)
+[0]  ✓ Compiled in 531ms (459 modules)
+[0]  ✓ Compiled in 543ms (459 modules)
+[0]  ✓ Compiled in 865ms (459 modules)
+[0]  ✓ Compiled in 523ms (459 modules)
+[0]  ✓ Compiled in 584ms (459 modules)
+[0]  ✓ Compiled in 786ms (459 modules)
+[0]  ✓ Compiled in 384ms (459 modules)
+[0]  ✓ Compiled in 421ms (459 modules)
+[0]  ✓ Compiled in 350ms (459 modules)
+[0]  ✓ Compiled in 372ms (459 modules)
+[0]  ✓ Compiled in 320ms (459 modules)
+[0]  ✓ Compiled in 348ms (459 modules)
+[0]  ✓ Compiled in 347ms (459 modules)
+[0]  ✓ Compiled in 359ms (459 modules)
+[0]  ✓ Compiled in 472ms (459 modules)
+[0]  ✓ Compiled in 487ms (459 modules)
+[0]  ✓ Compiled in 388ms (459 modules)
+[0]  ✓ Compiled in 496ms (459 modules)
+[0]  ✓ Compiled in 351ms (459 modules)
+[0]  ✓ Compiled in 318ms (459 modules)
+[0]  ✓ Compiled in 378ms (459 modules)
+[0]  ✓ Compiled in 449ms (459 modules)
+[0]  ✓ Compiled in 502ms (459 modules)
+[0]  ✓ Compiled in 321ms (459 modules)
+[0]  ✓ Compiled in 325ms (459 modules)
+[0]  ✓ Compiled in 320ms (459 modules)
+[0]  ✓ Compiled in 349ms (459 modules)
+[0]  ✓ Compiled in 396ms (459 modules)
+[0]  ✓ Compiled in 414ms (459 modules)
+[0]  ✓ Compiled in 561ms (459 modules)
+[0]  ✓ Compiled in 411ms (459 modules)
+[0]  ✓ Compiled in 339ms (459 modules)
+[0]  ✓ Compiled in 369ms (459 modules)
+[0]  ✓ Compiled in 335ms (459 modules)
+[0]  ✓ Compiled in 325ms (459 modules)
+[0]  ✓ Compiled in 285ms (459 modules)
+[0]  ✓ Compiled in 279ms (459 modules)
+[0]  ✓ Compiled in 295ms (459 modules)
+[0]  ✓ Compiled in 313ms (459 modules)
+[0]  ✓ Compiled in 356ms (459 modules)
+[0]  ✓ Compiled in 343ms (459 modules)
+[0]  ✓ Compiled in 405ms (459 modules)
+[0]  ✓ Compiled in 434ms (459 modules)
+[0]  ✓ Compiled in 520ms (459 modules)
+[0]  ✓ Compiled in 478ms (459 modules)
+[0]  ✓ Compiled in 459ms (459 modules)
+[0]  ✓ Compiled in 401ms (459 modules)
+[0]  ✓ Compiled in 442ms (459 modules)
+[0]  ✓ Compiled in 473ms (459 modules)
+[0]  ✓ Compiled in 340ms (459 modules)
+[0]  ✓ Compiled in 350ms (459 modules)
+[0]  ✓ Compiled in 316ms (459 modules)
+[0]  ✓ Compiled in 376ms (459 modules)
+[0]  ✓ Compiled in 358ms (459 modules)
+[0]  ✓ Compiled in 306ms (459 modules)
+[0]  ✓ Compiled in 288ms (459 modules)
+[0]  ✓ Compiled in 295ms (459 modules)
+[0]  ✓ Compiled in 378ms (459 modules)
+[0]  ✓ Compiled in 306ms (459 modules)
+[0]  ✓ Compiled in 272ms (459 modules)
+[0]  ✓ Compiled in 331ms (459 modules)
+[0]  ✓ Compiled in 335ms (459 modules)
+[0]  ✓ Compiled in 303ms (459 modules)
+[0]  ✓ Compiled in 310ms (459 modules)
+[0]  ✓ Compiled in 401ms (459 modules)
+[0]  ✓ Compiled in 347ms (459 modules)
+[0]  ✓ Compiled in 357ms (459 modules)
+[0]  ✓ Compiled in 364ms (459 modules)
+[0]  ✓ Compiled in 353ms (459 modules)
+[0]  ✓ Compiled in 320ms (459 modules)
+[0]  ✓ Compiled in 330ms (459 modules)
+[0]  ✓ Compiled in 340ms (459 modules)
+[0]  ✓ Compiled in 408ms (459 modules)
+[0]  ✓ Compiled in 419ms (459 modules)
+[0]  ✓ Compiled in 399ms (459 modules)
+[0]  ✓ Compiled in 476ms (459 modules)
+[0]  ✓ Compiled in 364ms (459 modules)
+[0]  ✓ Compiled in 342ms (459 modules)
+[0]  ✓ Compiled in 445ms (459 modules)
+[0]  ✓ Compiled in 393ms (459 modules)
+[0]  ✓ Compiled in 448ms (459 modules)
+[0]  ✓ Compiled in 438ms (459 modules)
+[0]  ✓ Compiled in 512ms (459 modules)
+[0]  ✓ Compiled in 506ms (459 modules)
+[0]  ✓ Compiled in 366ms (459 modules)
+[0]  ✓ Compiled in 397ms (459 modules)
+[0]  ✓ Compiled in 351ms (459 modules)
+[0]  ✓ Compiled in 384ms (459 modules)
+[0]  ✓ Compiled in 347ms (459 modules)
+[0]  ✓ Compiled in 283ms (459 modules)
+[0]  ✓ Compiled in 303ms (459 modules)
+[0]  ✓ Compiled in 263ms (459 modules)
+[0]  ✓ Compiled in 297ms (459 modules)
+[0]  ✓ Compiled in 320ms (459 modules)
+[0]  ✓ Compiled in 282ms (459 modules)
+[0]  ✓ Compiled in 309ms (459 modules)
+[0]  ✓ Compiled in 443ms (459 modules)
+[0]  ✓ Compiled in 290ms (459 modules)
+[0]  ✓ Compiled in 365ms (459 modules)
+[0]  ✓ Compiled in 329ms (459 modules)
+[0]  ✓ Compiled in 272ms (459 modules)
+[0]  ✓ Compiled in 255ms (459 modules)
+[0]  ✓ Compiled in 281ms (459 modules)
+[0]  ✓ Compiled in 280ms (459 modules)
+[0]  ✓ Compiled in 298ms (459 modules)
+[0]  ✓ Compiled in 278ms (459 modules)
+[0]  ✓ Compiled in 275ms (459 modules)
+[0]  ✓ Compiled in 391ms (459 modules)
+[0]  ✓ Compiled in 350ms (459 modules)
+[0]  ✓ Compiled in 373ms (459 modules)
+[0]  ✓ Compiled in 385ms (459 modules)
+[0]  ✓ Compiled in 238ms (459 modules)
+[0]  ✓ Compiled in 271ms (459 modules)
+[0]  ✓ Compiled in 280ms (459 modules)
+[0]  ✓ Compiled in 269ms (459 modules)
+[0]  ✓ Compiled in 278ms (459 modules)
+[0]  ✓ Compiled in 314ms (459 modules)
+[0]  ✓ Compiled in 290ms (459 modules)
+[0]  ✓ Compiled in 246ms (459 modules)
+[0]  ✓ Compiled in 268ms (459 modules)
+[0]  ✓ Compiled in 236ms (459 modules)
+[0]  ✓ Compiled in 233ms (459 modules)
+[0]  ✓ Compiled in 233ms (459 modules)
+[0]  ✓ Compiled in 234ms (459 modules)
+[0]  ✓ Compiled in 223ms (459 modules)
+[0]  ✓ Compiled in 238ms (459 modules)
+[0]  ✓ Compiled in 231ms (459 modules)
+[0]  ✓ Compiled in 258ms (459 modules)
+[0]  ✓ Compiled in 251ms (459 modules)
+[0]  ✓ Compiled in 253ms (459 modules)
+[0]  ✓ Compiled in 238ms (459 modules)
+[0]  ✓ Compiled in 237ms (459 modules)
+[0]  ✓ Compiled in 235ms (459 modules)
+[0]  ✓ Compiled in 248ms (459 modules)
+[0]  ✓ Compiled in 243ms (459 modules)
+[0]  ✓ Compiled in 254ms (459 modules)
+[0]  ✓ Compiled in 213ms (459 modules)
+[0]  ✓ Compiled in 238ms (459 modules)
+[0]  ✓ Compiled in 263ms (459 modules)
+[0]  ✓ Compiled in 304ms (459 modules)
+[0]  ✓ Compiled in 232ms (459 modules)
+[0]  ✓ Compiled in 222ms (459 modules)
+[0]  ✓ Compiled in 335ms (459 modules)
+[0]  ✓ Compiled in 421ms (459 modules)
+[0]  ✓ Compiled in 343ms (459 modules)
+[0]  ✓ Compiled in 473ms (459 modules)
+[0]  ✓ Compiled in 346ms (459 modules)
+[0]  ✓ Compiled in 448ms (459 modules)
+[0]  ✓ Compiled in 337ms (459 modules)
+[0]  ✓ Compiled in 254ms (459 modules)
+[0]  ✓ Compiled in 238ms (459 modules)
+[0]  ✓ Compiled in 218ms (459 modules)
+[0]  ✓ Compiled in 243ms (459 modules)
+[0]  ✓ Compiled in 247ms (459 modules)
+[0]  ✓ Compiled in 249ms (459 modules)
+[0]  ✓ Compiled in 228ms (459 modules)
+[0]  ✓ Compiled in 236ms (459 modules)
+[0]  ✓ Compiled in 241ms (459 modules)
+[0]  ✓ Compiled in 245ms (459 modules)
+[0]  ✓ Compiled in 220ms (459 modules)
+[0]  ✓ Compiled in 276ms (459 modules)
+[0]  ✓ Compiled in 333ms (459 modules)
+[0]  ✓ Compiled in 457ms (459 modules)
+[0]  ✓ Compiled in 406ms (459 modules)
+[0]  ✓ Compiled in 417ms (459 modules)
+[0]  ✓ Compiled in 352ms (459 modules)
+[0]  ✓ Compiled in 281ms (459 modules)
+[0]  ✓ Compiled in 334ms (459 modules)
+[0]  ✓ Compiled in 306ms (459 modules)
+[0]  ✓ Compiled in 293ms (459 modules)
+[0]  ✓ Compiled in 281ms (459 modules)
+[0]  ✓ Compiled in 265ms (459 modules)
+[0]  ✓ Compiled in 301ms (459 modules)
+[0]  ✓ Compiled in 263ms (459 modules)
+[0]  ✓ Compiled in 325ms (459 modules)
+[0]  ✓ Compiled in 395ms (459 modules)
+[0]  ✓ Compiled in 351ms (459 modules)
+[0]  ✓ Compiled in 436ms (459 modules)
+[0]  ✓ Compiled in 431ms (459 modules)
+[0]  ✓ Compiled in 408ms (459 modules)
+[0]  ✓ Compiled in 359ms (459 modules)
+[0]  ✓ Compiled in 453ms (459 modules)
+[0]  ✓ Compiled in 323ms (459 modules)
+[0]  ✓ Compiled in 305ms (459 modules)
+[0]  ✓ Compiled in 295ms (459 modules)
+[0]  ✓ Compiled in 320ms (459 modules)
+[0]  ✓ Compiled in 310ms (459 modules)
+[0]  ✓ Compiled in 307ms (459 modules)
+[0]  ✓ Compiled in 338ms (459 modules)
+[0]  ✓ Compiled in 308ms (459 modules)
+[0]  ✓ Compiled in 286ms (459 modules)
+[0]  ✓ Compiled in 449ms (459 modules)
+[0]  ✓ Compiled in 263ms (459 modules)
+[0]  ✓ Compiled in 303ms (459 modules)
+[0]  ✓ Compiled in 265ms (459 modules)
+[0]  ✓ Compiled in 250ms (459 modules)
+[0]  ✓ Compiled in 281ms (459 modules)
+[0]  ✓ Compiled in 285ms (459 modules)
+[0]  ✓ Compiled in 279ms (459 modules)
+[0]  ✓ Compiled in 306ms (459 modules)
+[0]  ✓ Compiled in 317ms (459 modules)
+[0]  ✓ Compiled in 461ms (459 modules)
+[0]  ✓ Compiled in 394ms (459 modules)
+[0]  ✓ Compiled in 352ms (459 modules)
+[0]  ✓ Compiled in 262ms (459 modules)
+[0]  ✓ Compiled in 305ms (459 modules)
+[0]  ✓ Compiled in 347ms (459 modules)
+[0]  ✓ Compiled in 308ms (459 modules)
+[0]  ✓ Compiled in 299ms (459 modules)
+[0]  ✓ Compiled in 284ms (459 modules)
+[0]  ✓ Compiled in 323ms (459 modules)
+[0]  ✓ Compiled in 450ms (459 modules)
+[0]  ✓ Compiled in 384ms (459 modules)
+[0]  ✓ Compiled in 369ms (459 modules)
+[0]  ✓ Compiled in 322ms (459 modules)
+[0]  ✓ Compiled in 274ms (459 modules)
+[0]  ✓ Compiled in 256ms (459 modules)
+[0]  ✓ Compiled in 244ms (459 modules)
+[0]  ✓ Compiled in 265ms (459 modules)
+[0]  ✓ Compiled in 241ms (459 modules)
+[0]  ✓ Compiled in 235ms (459 modules)
+[0]  ✓ Compiled in 255ms (459 modules)
+[0]  ✓ Compiled in 272ms (459 modules)
+[0]  ✓ Compiled in 274ms (459 modules)
+[0]  ✓ Compiled in 237ms (459 modules)
+[0]  ✓ Compiled in 281ms (459 modules)
+[0]  ✓ Compiled in 388ms (459 modules)
+[0]  ✓ Compiled in 373ms (459 modules)
+[0]  ✓ Compiled in 331ms (459 modules)
+[0]  ✓ Compiled in 377ms (459 modules)
+[0]  ✓ Compiled in 313ms (459 modules)
+[0]  ✓ Compiled in 420ms (459 modules)
+[0]  ✓ Compiled in 366ms (459 modules)
+[0]  ✓ Compiled in 378ms (459 modules)
+[0]  ✓ Compiled in 327ms (459 modules)
+[0]  ✓ Compiled in 333ms (459 modules)
+[0]  ✓ Compiled in 383ms (459 modules)
+[0]  ✓ Compiled in 359ms (459 modules)
+[0]  ✓ Compiled in 342ms (459 modules)
+[0]  ✓ Compiled in 333ms (459 modules)
+[0]  ✓ Compiled in 330ms (459 modules)
+[0]  ✓ Compiled in 340ms (459 modules)
+[0]  ✓ Compiled in 329ms (459 modules)
+[0]  ✓ Compiled in 350ms (459 modules)
+[0]  ✓ Compiled in 539ms (459 modules)
+[0]  ✓ Compiled in 451ms (459 modules)
+[0]  ✓ Compiled in 356ms (459 modules)
+[0]  ✓ Compiled in 357ms (459 modules)
+[0]  ✓ Compiled in 389ms (459 modules)
+[0]  ✓ Compiled in 291ms (459 modules)
+[0]  ✓ Compiled in 254ms (459 modules)
+[0]  ✓ Compiled in 282ms (459 modules)
+[0]  ✓ Compiled in 280ms (459 modules)
+[0]  ✓ Compiled in 274ms (459 modules)
+[0]  ✓ Compiled in 265ms (459 modules)
+[0]  ✓ Compiled in 258ms (459 modules)
+[0]  ✓ Compiled in 307ms (459 modules)
+[0]  ✓ Compiled in 412ms (459 modules)
+[0]  ✓ Compiled in 315ms (459 modules)
+[0]  ✓ Compiled in 365ms (459 modules)
+[0]  ✓ Compiled in 300ms (459 modules)
+[0]  ✓ Compiled in 261ms (459 modules)
+[0]  ✓ Compiled in 258ms (459 modules)
+[0]  ✓ Compiled in 249ms (459 modules)
+[0]  ✓ Compiled in 262ms (459 modules)
+[0]  ✓ Compiled in 249ms (459 modules)
+[0]  ✓ Compiled in 272ms (459 modules)
+[0]  ✓ Compiled in 268ms (459 modules)
+[0]  ✓ Compiled in 403ms (459 modules)
+[0]  ✓ Compiled in 357ms (459 modules)
+[0]  ✓ Compiled in 470ms (459 modules)
+[0]  ✓ Compiled in 334ms (459 modules)
+[0]  ✓ Compiled in 351ms (459 modules)
+[0]  ✓ Compiled in 388ms (459 modules)
+[0]  ✓ Compiled in 393ms (459 modules)
+[0]  ✓ Compiled in 324ms (459 modules)
+[0]  ✓ Compiled in 373ms (459 modules)
+[0]  ✓ Compiled in 357ms (459 modules)
+[0]  ✓ Compiled in 382ms (459 modules)
+[0]  ✓ Compiled in 359ms (459 modules)
+[0]  ✓ Compiled in 348ms (459 modules)
+[0]  ✓ Compiled in 331ms (459 modules)
+[0]  ✓ Compiled in 285ms (459 modules)
+[0]  ✓ Compiled in 261ms (459 modules)
+[0]  ✓ Compiled in 317ms (459 modules)
+[0]  ✓ Compiled in 469ms (459 modules)
+[0]  ✓ Compiled in 399ms (459 modules)
+[0]  ✓ Compiled in 504ms (459 modules)
+[0]  ✓ Compiled in 321ms (459 modules)
+[0]  ✓ Compiled in 254ms (459 modules)
+[0]  ✓ Compiled in 378ms (459 modules)
+[1] [32m[nodemon] restarting child process[39m
+[1] [32m[nodemon] starting `ts-node -r tsconfig-paths/register src/index.ts src/index.ts`[39m
+[0] npm run dev:frontend exited with code SIGHUP
+[1] prisma:info Starting a sqlite pool with 9 connections.
+[1] ✅ Conexión a base de datos establecida correctamente
+[1] 
+[1] 🚀 CrediCheck API iniciado exitosamente!
+[1] 📍 Entorno: development
+[1] 🌐 Puerto: 3002
+[1] 📋 Versión API: v1
+[1] 🔗 Health Check: http://localhost:3002/health
+[1] 📚 API Info: http://localhost:3002/api/v1/info
+[1] ⏰ Iniciado: 2026-03-30T00:37:34.197Z
+[1]       
+[1] 2026-03-29 19:39:44 [[35mhttp[39m]: [0mOPTIONS /api/v1/auth/signup [32m204[0m 5.465 ms - 0[0m {
+[1]   "service": "credicheck-api",
+[1]   "environment": "development",
+[1]   "version": "v1"
+[1] }
+[1] 2026-03-29 19:39:44 [[35mhttp[39m]: HTTP 204 - OPTIONS /api/v1/auth/signup {
+[1]   "service": "credicheck-api",
+[1]   "environment": "development",
+[1]   "version": "v1",
+[1]   "operation": "/api/v1/auth/signup",
+[1]   "durationMs": 16,
+[1]   "method": "OPTIONS",
+[1]   "statusCode": 204,
+[1]   "ip": "::ffff:127.0.0.1",
+[1]   "userAgent": "Mozilla/5.0 (X11; Linux x86_64; rv:148.0) Gecko/20100101 Firefox/148.0",
+[1]   "category": "performance"
+[1] }
+[1] 2026-03-29 19:39:44 [[34mdebug[39m]: Auth Route: POST /signup - 2026-03-30T00:39:44.366Z {
+[1]   "service": "credicheck-api",
+[1]   "environment": "development",
+[1]   "version": "v1",
+[1]   "method": "POST",
+[1]   "path": "/signup",
+[1]   "ip": "::ffff:127.0.0.1",
+[1]   "requestId": "req_1774831184365_j84p4ti6f"
+[1] }
+[1] 2026-03-29 19:39:44 [[35mhttp[39m]: [0mPOST /api/v1/auth/signup [33m400[0m 41.359 ms - 515[0m {
+[1]   "service": "credicheck-api",
+[1]   "environment": "development",
+[1]   "version": "v1"
+[1] }
+[1] 2026-03-29 19:39:44 [[33mwarn[39m]: HTTP 400 - POST /signup {
+[1]   "service": "credicheck-api",
+[1]   "environment": "development",
+[1]   "version": "v1",
+[1]   "operation": "/signup",
+[1]   "durationMs": 45,
+[1]   "method": "POST",
+[1]   "statusCode": 400,
+[1]   "ip": "::ffff:127.0.0.1",
+[1]   "userAgent": "Mozilla/5.0 (X11; Linux x86_64; rv:148.0) Gecko/20100101 Firefox/148.0",
+[1]   "requestId": "req_1774831184365_j84p4ti6f",
+[1]   "category": "performance"
+[1] }
+[1] 2026-03-29 19:40:01 [[35mhttp[39m]: [0mOPTIONS /api/v1/auth/signup [32m204[0m 0.856 ms - 0[0m {
+[1]   "service": "credicheck-api",
+[1]   "environment": "development",
+[1]   "version": "v1"
+[1] }
+[1] 2026-03-29 19:40:01 [[35mhttp[39m]: HTTP 204 - OPTIONS /api/v1/auth/signup {
+[1]   "service": "credicheck-api",
+[1]   "environment": "development",
+[1]   "version": "v1",
+[1]   "operation": "/api/v1/auth/signup",
+[1]   "durationMs": 2,
+[1]   "method": "OPTIONS",
+[1]   "statusCode": 204,
+[1]   "ip": "::ffff:127.0.0.1",
+[1]   "userAgent": "Mozilla/5.0 (X11; Linux x86_64; rv:148.0) Gecko/20100101 Firefox/148.0",
+[1]   "category": "performance"
+[1] }
+[1] 2026-03-29 19:40:01 [[34mdebug[39m]: Auth Route: POST /signup - 2026-03-30T00:40:01.718Z {
+[1]   "service": "credicheck-api",
+[1]   "environment": "development",
+[1]   "version": "v1",
+[1]   "method": "POST",
+[1]   "path": "/signup",
+[1]   "ip": "::ffff:127.0.0.1",
+[1]   "requestId": "req_1774831201718_wnkhbiscn"
+[1] }
+[1] 2026-03-29 19:40:01 [[35mhttp[39m]: [0mPOST /api/v1/auth/signup [33m400[0m 4.189 ms - 515[0m {
+[1]   "service": "credicheck-api",
+[1]   "environment": "development",
+[1]   "version": "v1"
+[1] }
+[1] 2026-03-29 19:40:01 [[33mwarn[39m]: HTTP 400 - POST /signup {
+[1]   "service": "credicheck-api",
+[1]   "environment": "development",
+[1]   "version": "v1",
+[1]   "operation": "/signup",
+[1]   "durationMs": 5,
+[1]   "method": "POST",
+[1]   "statusCode": 400,
+[1]   "ip": "::ffff:127.0.0.1",
+[1]   "userAgent": "Mozilla/5.0 (X11; Linux x86_64; rv:148.0) Gecko/20100101 Firefox/148.0",
+[1]   "requestId": "req_1774831201718_wnkhbiscn",
+[1]   "category": "performance"
+[1] }
+[1] 2026-03-29 19:40:03 [[34mdebug[39m]: Auth Route: POST /signup - 2026-03-30T00:40:03.747Z {
+[1]   "service": "credicheck-api",
+[1]   "environment": "development",
+[1]   "version": "v1",
+[1]   "method": "POST",
+[1]   "path": "/signup",
+[1]   "ip": "::ffff:127.0.0.1",
+[1]   "requestId": "req_1774831203747_b7iy2z7s2"
+[1] }
+[1] 2026-03-29 19:40:03 [[35mhttp[39m]: [0mPOST /api/v1/auth/signup [33m400[0m 3.258 ms - 515[0m {
+[1]   "service": "credicheck-api",
+[1]   "environment": "development",
+[1]   "version": "v1"
+[1] }
+[1] 2026-03-29 19:40:03 [[33mwarn[39m]: HTTP 400 - POST /signup {
+[1]   "service": "credicheck-api",
+[1]   "environment": "development",
+[1]   "version": "v1",
+[1]   "operation": "/signup",
+[1]   "durationMs": 5,
+[1]   "method": "POST",
+[1]   "statusCode": 400,
+[1]   "ip": "::ffff:127.0.0.1",
+[1]   "userAgent": "Mozilla/5.0 (X11; Linux x86_64; rv:148.0) Gecko/20100101 Firefox/148.0",
+[1]   "requestId": "req_1774831203747_b7iy2z7s2",
+[1]   "category": "performance"
+[1] }
+[1] 2026-03-29 19:40:30 [[35mhttp[39m]: [0mOPTIONS /api/v1/auth/signup [32m204[0m 0.987 ms - 0[0m {
+[1]   "service": "credicheck-api",
+[1]   "environment": "development",
+[1]   "version": "v1"
+[1] }
+[1] 2026-03-29 19:40:30 [[35mhttp[39m]: HTTP 204 - OPTIONS /api/v1/auth/signup {
+[1]   "service": "credicheck-api",
+[1]   "environment": "development",
+[1]   "version": "v1",
+[1]   "operation": "/api/v1/auth/signup",
+[1]   "durationMs": 3,
+[1]   "method": "OPTIONS",
+[1]   "statusCode": 204,
+[1]   "ip": "::ffff:127.0.0.1",
+[1]   "userAgent": "Mozilla/5.0 (X11; Linux x86_64; rv:148.0) Gecko/20100101 Firefox/148.0",
+[1]   "category": "performance"
+[1] }
+[1] 2026-03-29 19:40:30 [[34mdebug[39m]: Auth Route: POST /signup - 2026-03-30T00:40:30.121Z {
+[1]   "service": "credicheck-api",
+[1]   "environment": "development",
+[1]   "version": "v1",
+[1]   "method": "POST",
+[1]   "path": "/signup",
+[1]   "ip": "::ffff:127.0.0.1",
+[1]   "requestId": "req_1774831230121_txw4ocei3"
+[1] }
+[1] 2026-03-29 19:40:30 [[35mhttp[39m]: [0mPOST /api/v1/auth/signup [33m400[0m 4.010 ms - 515[0m {
+[1]   "service": "credicheck-api",
+[1]   "environment": "development",
+[1]   "version": "v1"
+[1] }
+[1] 2026-03-29 19:40:30 [[33mwarn[39m]: HTTP 400 - POST /signup {
+[1]   "service": "credicheck-api",
+[1]   "environment": "development",
+[1]   "version": "v1",
+[1]   "operation": "/signup",
+[1]   "durationMs": 5,
+[1]   "method": "POST",
+[1]   "statusCode": 400,
+[1]   "ip": "::ffff:127.0.0.1",
+[1]   "userAgent": "Mozilla/5.0 (X11; Linux x86_64; rv:148.0) Gecko/20100101 Firefox/148.0",
+[1]   "requestId": "req_1774831230121_txw4ocei3",
+[1]   "category": "performance"
+[1] }
+[1] 2026-03-29 19:40:59 [[35mhttp[39m]: [0mOPTIONS /api/v1/auth/login [32m204[0m 0.597 ms - 0[0m {
+[1]   "service": "credicheck-api",
+[1]   "environment": "development",
+[1]   "version": "v1"
+[1] }
+[1] 2026-03-29 19:40:59 [[35mhttp[39m]: HTTP 204 - OPTIONS /api/v1/auth/login {
+[1]   "service": "credicheck-api",
+[1]   "environment": "development",
+[1]   "version": "v1",
+[1]   "operation": "/api/v1/auth/login",
+[1]   "durationMs": 2,
+[1]   "method": "OPTIONS",
+[1]   "statusCode": 204,
+[1]   "ip": "::ffff:127.0.0.1",
+[1]   "userAgent": "Mozilla/5.0 (X11; Linux x86_64; rv:148.0) Gecko/20100101 Firefox/148.0",
+[1]   "category": "performance"
+[1] }
+[1] 2026-03-29 19:40:59 [[34mdebug[39m]: Auth Route: POST /login - 2026-03-30T00:40:59.821Z {
+[1]   "service": "credicheck-api",
+[1]   "environment": "development",
+[1]   "version": "v1",
+[1]   "method": "POST",
+[1]   "path": "/login",
+[1]   "ip": "::ffff:127.0.0.1",
+[1]   "requestId": "req_1774831259821_xl5ojvlio"
+[1] }
+[1] prisma:query SELECT 1
+[1] prisma:query SELECT `main`.`users`.`id`, `main`.`users`.`email`, `main`.`users`.`password_hash`, `main`.`users`.`first_name`, `main`.`users`.`last_name`, `main`.`users`.`role`, `main`.`users`.`is_active`, `main`.`users`.`last_login`, `main`.`users`.`deleted_at`, `main`.`users`.`created_at`, `main`.`users`.`updated_at` FROM `main`.`users` WHERE (`main`.`users`.`email` = ? AND 1=1) LIMIT ? OFFSET ?
+[1] 2026-03-29 19:40:59 [[35mhttp[39m]: [0mPOST /api/v1/auth/login [33m401[0m 18.712 ms - 171[0m {
+[1]   "service": "credicheck-api",
+[1]   "environment": "development",
+[1]   "version": "v1"
+[1] }
+[1] 2026-03-29 19:40:59 [[33mwarn[39m]: HTTP 401 - POST /login {
+[1]   "service": "credicheck-api",
+[1]   "environment": "development",
+[1]   "version": "v1",
+[1]   "operation": "/login",
+[1]   "durationMs": 20,
+[1]   "method": "POST",
+[1]   "statusCode": 401,
+[1]   "ip": "::ffff:127.0.0.1",
+[1]   "userAgent": "Mozilla/5.0 (X11; Linux x86_64; rv:148.0) Gecko/20100101 Firefox/148.0",
+[1]   "requestId": "req_1774831259821_xl5ojvlio",
+[1]   "category": "performance"
+[1] }
+[1] [32m[nodemon] restarting due to changes...[39m
+[1] [32m[nodemon] starting `ts-node -r tsconfig-paths/register src/index.ts src/index.ts`[39m
+[1] prisma:info Starting a sqlite pool with 9 connections.
+[1] ✅ Conexión a base de datos establecida correctamente
+[1] ❌ Excepción no capturada: Error: listen EADDRINUSE: address already in use :::3002
+[1]     at Server.setupListenHandle [as _listen2] (node:net:2008:16)
+[1]     at listenInCluster (node:net:2065:12)
+[1]     at Server.listen (node:net:2170:7)
+[1]     at app.listen (/home/fedora26/Descargas/credicheck-app/backend/node_modules/express/lib/application.js:635:24)
+[1]     at startServer (/home/fedora26/Descargas/credicheck-app/backend/src/index.ts:11:24) {
+[1]   code: 'EADDRINUSE',
+[1]   errno: -98,
+[1]   syscall: 'listen',
+[1]   address: '::',
+[1]   port: 3002
+[1] }
+[1] [31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[1] [32m[nodemon] restarting due to changes...[39m
+[1] [32m[nodemon] starting `ts-node -r tsconfig-paths/register src/index.ts src/index.ts`[39m
+[1] /home/fedora26/Descargas/credicheck-app/backend/node_modules/ts-node/src/index.ts:859
+[1]     return new TSError(diagnosticText, diagnosticCodes, diagnostics);
+[1]            ^
+[1] TSError: ⨯ Unable to compile TypeScript:
+[1] src/controllers/auth.controller.ts(8,3): error TS6133: 'signupSchema' is declared but its value is never read.
+[1] src/controllers/auth.controller.ts(87,29): error TS2552: Cannot find name 'createUserSchema'. Did you mean 'updateUserSchema'?
+[1] 
+[1]     at createTSError (/home/fedora26/Descargas/credicheck-app/backend/node_modules/ts-node/src/index.ts:859:12)
+[1]     at reportTSError (/home/fedora26/Descargas/credicheck-app/backend/node_modules/ts-node/src/index.ts:863:19)
+[1]     at getOutput (/home/fedora26/Descargas/credicheck-app/backend/node_modules/ts-node/src/index.ts:1077:36)
+[1]     at Object.compile (/home/fedora26/Descargas/credicheck-app/backend/node_modules/ts-node/src/index.ts:1433:41)
+[1]     at Module.m._compile (/home/fedora26/Descargas/credicheck-app/backend/node_modules/ts-node/src/index.ts:1617:30)
+[1]     at Module._extensions..js (node:internal/modules/cjs/loader:1969:10)
+[1]     at Object.require.extensions.<computed> [as .ts] (/home/fedora26/Descargas/credicheck-app/backend/node_modules/ts-node/src/index.ts:1621:12)
+[1]     at Module.load (node:internal/modules/cjs/loader:1552:32)
+[1]     at Module._load (node:internal/modules/cjs/loader:1354:12)
+[1]     at wrapModuleLoad (node:internal/modules/cjs/loader:255:19) {
+[1]   diagnosticCodes: [ 6133, 2552 ]
+[1] }
+[1] [31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[1] [32m[nodemon] restarting due to changes...[39m
+[1] [32m[nodemon] starting `ts-node -r tsconfig-paths/register src/index.ts src/index.ts`[39m
+[1] /home/fedora26/Descargas/credicheck-app/backend/node_modules/ts-node/src/index.ts:859
+[1]     return new TSError(diagnosticText, diagnosticCodes, diagnostics);
+[1]            ^
+[1] TSError: ⨯ Unable to compile TypeScript:
+[1] src/controllers/auth.controller.ts(90,48): error TS2345: Argument of type '{ email: string; firstName: string; lastName: string; password: string; }' is not assignable to parameter of type '{ email: string; firstName: string; lastName: string; role: "ANALYST" | "ADMIN"; password: string; isActive?: boolean | undefined; }'.
+[1]   Property 'role' is missing in type '{ email: string; firstName: string; lastName: string; password: string; }' but required in type '{ email: string; firstName: string; lastName: string; role: "ANALYST" | "ADMIN"; password: string; isActive?: boolean | undefined; }'.
+[1] 
+[1]     at createTSError (/home/fedora26/Descargas/credicheck-app/backend/node_modules/ts-node/src/index.ts:859:12)
+[1]     at reportTSError (/home/fedora26/Descargas/credicheck-app/backend/node_modules/ts-node/src/index.ts:863:19)
+[1]     at getOutput (/home/fedora26/Descargas/credicheck-app/backend/node_modules/ts-node/src/index.ts:1077:36)
+[1]     at Object.compile (/home/fedora26/Descargas/credicheck-app/backend/node_modules/ts-node/src/index.ts:1433:41)
+[1]     at Module.m._compile (/home/fedora26/Descargas/credicheck-app/backend/node_modules/ts-node/src/index.ts:1617:30)
+[1]     at Module._extensions..js (node:internal/modules/cjs/loader:1969:10)
+[1]     at Object.require.extensions.<computed> [as .ts] (/home/fedora26/Descargas/credicheck-app/backend/node_modules/ts-node/src/index.ts:1621:12)
+[1]     at Module.load (node:internal/modules/cjs/loader:1552:32)
+[1]     at Module._load (node:internal/modules/cjs/loader:1354:12)
+[1]     at wrapModuleLoad (node:internal/modules/cjs/loader:255:19) {
+[1]   diagnosticCodes: [ 2345 ]
+[1] }
+[1] [31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[1] [32m[nodemon] restarting due to changes...[39m
+[1] [32m[nodemon] starting `ts-node -r tsconfig-paths/register src/index.ts src/index.ts`[39m
+[1] /home/fedora26/Descargas/credicheck-app/backend/node_modules/ts-node/src/index.ts:859
+[1]     return new TSError(diagnosticText, diagnosticCodes, diagnostics);
+[1]            ^
+[1] TSError: ⨯ Unable to compile TypeScript:
+[1] src/controllers/auth.controller.ts(88,13): error TS6133: 'signupData' is declared but its value is never read.
+[1] src/controllers/auth.controller.ts(91,48): error TS2345: Argument of type '{ email: string; firstName: string; lastName: string; password: string; }' is not assignable to parameter of type '{ email: string; firstName: string; lastName: string; role: "ANALYST" | "ADMIN"; password: string; isActive?: boolean | undefined; }'.
+[1]   Property 'role' is missing in type '{ email: string; firstName: string; lastName: string; password: string; }' but required in type '{ email: string; firstName: string; lastName: string; role: "ANALYST" | "ADMIN"; password: string; isActive?: boolean | undefined; }'.
+[1] 
+[1]     at createTSError (/home/fedora26/Descargas/credicheck-app/backend/node_modules/ts-node/src/index.ts:859:12)
+[1]     at reportTSError (/home/fedora26/Descargas/credicheck-app/backend/node_modules/ts-node/src/index.ts:863:19)
+[1]     at getOutput (/home/fedora26/Descargas/credicheck-app/backend/node_modules/ts-node/src/index.ts:1077:36)
+[1]     at Object.compile (/home/fedora26/Descargas/credicheck-app/backend/node_modules/ts-node/src/index.ts:1433:41)
+[1]     at Module.m._compile (/home/fedora26/Descargas/credicheck-app/backend/node_modules/ts-node/src/index.ts:1617:30)
+[1]     at Module._extensions..js (node:internal/modules/cjs/loader:1969:10)
+[1]     at Object.require.extensions.<computed> [as .ts] (/home/fedora26/Descargas/credicheck-app/backend/node_modules/ts-node/src/index.ts:1621:12)
+[1]     at Module.load (node:internal/modules/cjs/loader:1552:32)
+[1]     at Module._load (node:internal/modules/cjs/loader:1354:12)
+[1]     at wrapModuleLoad (node:internal/modules/cjs/loader:255:19) {
+[1]   diagnosticCodes: [ 6133, 2345 ]
+[1] }
+[1] [31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[1] [32m[nodemon] restarting due to changes...[39m
+[1] [32m[nodemon] starting `ts-node -r tsconfig-paths/register src/index.ts src/index.ts`[39m
+[1] /home/fedora26/Descargas/credicheck-app/backend/node_modules/ts-node/src/index.ts:859
+[1]     return new TSError(diagnosticText, diagnosticCodes, diagnostics);
+[1]            ^
+[1] TSError: ⨯ Unable to compile TypeScript:
+[1] src/controllers/auth.controller.ts(88,13): error TS6133: 'signupData' is declared but its value is never read.
+[1] src/controllers/auth.controller.ts(91,48): error TS2345: Argument of type '{ email: string; firstName: string; lastName: string; password: string; }' is not assignable to parameter of type '{ email: string; firstName: string; lastName: string; role: "ANALYST" | "ADMIN"; password: string; isActive?: boolean | undefined; }'.
+[1]   Property 'role' is missing in type '{ email: string; firstName: string; lastName: string; password: string; }' but required in type '{ email: string; firstName: string; lastName: string; role: "ANALYST" | "ADMIN"; password: string; isActive?: boolean | undefined; }'.
+[1] 
+[1]     at createTSError (/home/fedora26/Descargas/credicheck-app/backend/node_modules/ts-node/src/index.ts:859:12)
+[1]     at reportTSError (/home/fedora26/Descargas/credicheck-app/backend/node_modules/ts-node/src/index.ts:863:19)
+[1]     at getOutput (/home/fedora26/Descargas/credicheck-app/backend/node_modules/ts-node/src/index.ts:1077:36)
+[1]     at Object.compile (/home/fedora26/Descargas/credicheck-app/backend/node_modules/ts-node/src/index.ts:1433:41)
+[1]     at Module.m._compile (/home/fedora26/Descargas/credicheck-app/backend/node_modules/ts-node/src/index.ts:1617:30)
+[1]     at Module._extensions..js (node:internal/modules/cjs/loader:1969:10)
+[1]     at Object.require.extensions.<computed> [as .ts] (/home/fedora26/Descargas/credicheck-app/backend/node_modules/ts-node/src/index.ts:1621:12)
+[1]     at Module.load (node:internal/modules/cjs/loader:1552:32)
+[1]     at Module._load (node:internal/modules/cjs/loader:1354:12)
+[1]     at wrapModuleLoad (node:internal/modules/cjs/loader:255:19) {
+[1]   diagnosticCodes: [ 6133, 2345 ]
+[1] }
+[1] [31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[1] [32m[nodemon] restarting due to changes...[39m
+[1] [32m[nodemon] starting `ts-node -r tsconfig-paths/register src/index.ts src/index.ts`[39m
+[1] /home/fedora26/Descargas/credicheck-app/backend/node_modules/ts-node/src/index.ts:859
+[1]     return new TSError(diagnosticText, diagnosticCodes, diagnostics);
+[1]            ^
+[1] TSError: ⨯ Unable to compile TypeScript:
+[1] src/controllers/auth.controller.ts(88,13): error TS6133: 'signupData' is declared but its value is never read.
+[1] 
+[1]     at createTSError (/home/fedora26/Descargas/credicheck-app/backend/node_modules/ts-node/src/index.ts:859:12)
+[1]     at reportTSError (/home/fedora26/Descargas/credicheck-app/backend/node_modules/ts-node/src/index.ts:863:19)
+[1]     at getOutput (/home/fedora26/Descargas/credicheck-app/backend/node_modules/ts-node/src/index.ts:1077:36)
+[1]     at Object.compile (/home/fedora26/Descargas/credicheck-app/backend/node_modules/ts-node/src/index.ts:1433:41)
+[1]     at Module.m._compile (/home/fedora26/Descargas/credicheck-app/backend/node_modules/ts-node/src/index.ts:1617:30)
+[1]     at Module._extensions..js (node:internal/modules/cjs/loader:1969:10)
+[1]     at Object.require.extensions.<computed> [as .ts] (/home/fedora26/Descargas/credicheck-app/backend/node_modules/ts-node/src/index.ts:1621:12)
+[1]     at Module.load (node:internal/modules/cjs/loader:1552:32)
+[1]     at Module._load (node:internal/modules/cjs/loader:1354:12)
+[1]     at wrapModuleLoad (node:internal/modules/cjs/loader:255:19) {
+[1]   diagnosticCodes: [ 6133 ]
+[1] }
+[1] [31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[1] [32m[nodemon] restarting due to changes...[39m
+[1] [32m[nodemon] starting `ts-node -r tsconfig-paths/register src/index.ts src/index.ts`[39m
+[1] prisma:info Starting a sqlite pool with 9 connections.
+[1] ✅ Conexión a base de datos establecida correctamente
+[1] ❌ Excepción no capturada: Error: listen EADDRINUSE: address already in use :::3002
+[1]     at Server.setupListenHandle [as _listen2] (node:net:2008:16)
+[1]     at listenInCluster (node:net:2065:12)
+[1]     at Server.listen (node:net:2170:7)
+[1]     at app.listen (/home/fedora26/Descargas/credicheck-app/backend/node_modules/express/lib/application.js:635:24)
+[1]     at startServer (/home/fedora26/Descargas/credicheck-app/backend/src/index.ts:11:24) {
+[1]   code: 'EADDRINUSE',
+[1]   errno: -98,
+[1]   syscall: 'listen',
+[1]   address: '::',
+[1]   port: 3002
+[1] }
+[1] [31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[1] npm run dev:backend exited with code SIGHUP

@@ -1,0 +1,215 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Enum para los estados de la referencia de crédito
+enum RecordStatus {
+  ACTIVE
+  PAID
+  INACTIVE
+  PAYMENT_PLAN
+  DISPUTED
+}
+
+// Enum para el tipo de notificación
+enum NotificationType {
+  NEW_RECORD_MATCH    // Nueva referencia coincide con watchlist
+  SEARCH_MATCH        // Alguien buscó una persona en watchlist
+  STATUS_CHANGE       // Cambio de estado en referencia vigilada
+}
+
+// Enum para el estado de notificación
+enum NotificationStatus {
+  UNREAD
+  READ
+  ARCHIVED
+}
+
+// Enum para el tipo de verificación
+enum VerificationType {
+  CONFIRMED     // Usuario confirma que la referencia es válida
+  DISPUTED      // Usuario disputa la validez de la referencia
+  ADDITIONAL_INFO  // Usuario aporta información adicional
+}
+
+model User {
+  id                String            @id @default(cuid())
+  email             String            @unique
+  passwordHash      String            @map("password_hash")
+  firstName         String            @map("first_name")
+  lastName          String            @map("last_name")
+  role              String            @default("ANALYST") // CORREGIDO: Usar mayúsculas para consistencia
+  isActive          Boolean           @default(true) @map("is_active")
+  lastLogin         DateTime?         @map("last_login")
+  deletedAt         DateTime?         @map("deleted_at") // AGREGADO: Para soft delete apropiado
+  createdAt         DateTime          @default(now()) @map("created_at")
+  updatedAt         DateTime          @updatedAt @map("updated_at")
+  createdReferences CreditReference[]
+  searchHistory     SearchHistory[]
+  auditLogs         AuditLog[]
+  tokenBlacklists   TokenBlacklist[]
+  appConfigs        AppConfig[]
+  watchlistItems    WatchlistItem[]
+  notifications     Notification[]
+  verifications     RecordVerification[]
+
+  @@map("users")
+}
+
+model CreditReference {
+  id           String        @id @default(cuid())
+  fullName     String        @map("full_name")
+  idNumber     String        @map("id_number")
+  idType       String        @map("id_type")
+  birthDate    DateTime?     @map("birth_date")
+  phone        String?
+  email        String?
+  address      String?
+  city         String?
+  department   String?
+  debtAmount   Decimal       @map("debt_amount")
+  debtDate     DateTime      @map("debt_date")
+  creditorName String        @map("creditor_name")
+  debtStatus   RecordStatus  @default(ACTIVE) @map("debt_status")
+  notes        String?
+  createdBy    String        @map("created_by")
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime      @updatedAt @map("updated_at")
+  deletedAt    DateTime?     @map("deleted_at") // Para soft delete
+
+  creator User @relation(fields: [createdBy], references: [id])
+  verifications RecordVerification[]
+
+  @@index([fullName])
+  @@index([idNumber])
+  @@index([idType])
+  @@index([debtStatus])
+  @@index([createdAt])
+  @@map("credit_references")
+}
+
+model SearchHistory {
+  id              String   @id @default(cuid())
+  userId          String   @map("user_id")
+  searchType      String   @map("search_type")
+  searchTerm      String   @map("search_term")
+  resultsCount    Int      @default(0) @map("results_count")
+  executionTimeMs Int      @map("execution_time_ms")
+  ipAddress       String   @map("ip_address")
+  userAgent       String   @map("user_agent")
+  createdAt       DateTime @default(now()) @map("created_at")
+  user            User     @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([searchType])
+  @@index([createdAt])
+  @@map("search_history")
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  userId     String   @map("user_id")
+  action     String
+  resource   String
+  resourceId String?  @map("resource_id")
+  details    String?
+  ipAddress  String?  @map("ip_address")
+  userAgent  String?  @map("user_agent")
+  createdAt  DateTime @default(now()) @map("created_at")
+  user       User     @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([action])
+  @@index([resource])
+  @@index([createdAt])
+  @@map("audit_logs")
+}
+
+model TokenBlacklist {
+  id         String   @id @default(cuid())
+  tokenHash  String   @unique @map("token_hash")
+  userId     String   @map("user_id")
+  expiresAt  DateTime @map("expires_at")
+  createdAt  DateTime @default(now()) @map("created_at")
+  user       User     @relation(fields: [userId], references: [id])
+
+  @@index([tokenHash])
+  @@index([expiresAt])
+  @@map("token_blacklist")
+}
+
+model AppConfig {
+  id           String   @id @default(cuid())
+  key          String   @unique
+  value        String
+  updatedAt    DateTime @updatedAt @map("updated_at")
+  updatedBy    String?  @map("updated_by")
+  updatedByUser User?   @relation(fields: [updatedBy], references: [id])
+
+  @@map("app_config")
+}
+
+// M5.1: Sistema de notificaciones - Watchlist de personas
+model WatchlistItem {
+  id           String   @id @default(cuid())
+  userId       String   @map("user_id")
+  watchType    String   @map("watch_type") // "NAME", "ID_NUMBER", "PHONE", "EMAIL"
+  watchValue   String   @map("watch_value") // El valor a vigilar
+  notes        String?  // Notas personales del usuario
+  isActive     Boolean  @default(true) @map("is_active")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+  user         User     @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([watchType, watchValue])
+  @@index([isActive])
+  @@map("watchlist_items")
+}
+
+// M5.1: Notificaciones generadas por el sistema
+model Notification {
+  id               String             @id @default(cuid())
+  userId           String             @map("user_id")
+  type             NotificationType
+  status           NotificationStatus @default(UNREAD)
+  title            String
+  message          String
+  relatedRecordId  String?            @map("related_record_id") // ID de la referencia relacionada
+  relatedSearchId  String?            @map("related_search_id") // ID de la búsqueda relacionada
+  metadata         String?            // JSON con datos adicionales
+  readAt           DateTime?          @map("read_at")
+  createdAt        DateTime           @default(now()) @map("created_at")
+  user             User               @relation(fields: [userId], references: [id])
+
+  @@index([userId, status])
+  @@index([createdAt])
+  @@index([type])
+  @@map("notifications")
+}
+
+// M5.7: Verificación colaborativa de referencias
+model RecordVerification {
+  id         String           @id @default(cuid())
+  recordId   String           @map("record_id")
+  userId     String           @map("user_id")
+  type       VerificationType
+  confidence Int
+  comment    String?
+  createdAt  DateTime         @default(now()) @map("created_at")
+  updatedAt  DateTime         @updatedAt @map("updated_at")
+
+  record CreditReference @relation(fields: [recordId], references: [id])
+  user   User            @relation(fields: [userId], references: [id])
+
+  @@index([recordId])
+  @@index([userId])
+  @@index([type])
+  @@unique([recordId, userId])
+  @@map("record_verifications")
+}
