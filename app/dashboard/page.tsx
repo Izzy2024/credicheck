@@ -137,6 +137,8 @@ export default function Dashboard() {
     if (!searchQuery.trim()) return;
 
     setIsSearching(true);
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15000);
 
     // Determine search type
     const searchType = /^[0-9]+$/.test(searchQuery) ? "id" : "name";
@@ -154,6 +156,7 @@ export default function Dashboard() {
           headers: {
             Authorization: `Bearer ${token}`,
           },
+          signal: controller.signal,
         },
       );
 
@@ -175,7 +178,9 @@ export default function Dashboard() {
       }
     } catch (error) {
       console.error("Error during search:", error);
-      // Aquí podrías mostrar una notificación de error al usuario
+      alert("No se pudo completar la búsqueda. Intenta nuevamente.");
+    } finally {
+      clearTimeout(timeoutId);
       setIsSearching(false);
     }
   };
@@ -274,7 +279,9 @@ export default function Dashboard() {
             >
               <Bell className="w-4 h-4" />
               <span>No leídas</span>
-              {unreadCount > 0 && <Badge variant="secondary">{unreadCount}</Badge>}
+              {unreadCount > 0 && (
+                <Badge variant="secondary">{unreadCount}</Badge>
+              )}
             </Button>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>

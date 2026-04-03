@@ -7,15 +7,26 @@ import * as fs from 'fs';
 // Cargar variables de entorno de test
 dotenv.config({ path: '.env.test' });
 
-const testDbPath = path.join(__dirname, '..', 'test.db');
+const workerId = process.env['JEST_WORKER_ID'] || '1';
+const testDbFile = `test-${workerId}.db`;
+const testDbPath = path.join(__dirname, '..', testDbFile);
 
-// Remove existing test database
-if (fs.existsSync(testDbPath)) {
-  fs.unlinkSync(testDbPath);
+// Remove existing test database and stale journal/wal files
+const staleDbArtifacts = [
+  testDbPath,
+  `${testDbPath}-journal`,
+  `${testDbPath}-shm`,
+  `${testDbPath}-wal`,
+];
+
+for (const artifactPath of staleDbArtifacts) {
+  if (fs.existsSync(artifactPath)) {
+    fs.unlinkSync(artifactPath);
+  }
 }
 
 process.env['NODE_ENV'] ??= 'test';
-process.env['DATABASE_URL'] ??= 'file:./test.db';
+process.env['DATABASE_URL'] = `file:./${testDbFile}`;
 process.env['REDIS_URL'] ??= 'redis://localhost:6379';
 process.env['JWT_ACCESS_SECRET'] ??= 'test-access-secret-test-access-secret';
 process.env['JWT_REFRESH_SECRET'] ??= 'test-refresh-secret-test-refresh-secret';
@@ -27,7 +38,7 @@ try {
   execSync('npx prisma migrate deploy', {
     env: {
       ...process.env,
-      DATABASE_URL: 'file:./test.db',
+      DATABASE_URL: `file:./${testDbFile}`,
     },
     stdio: 'inherit',
     cwd: path.join(__dirname, '..'),
