@@ -7,7 +7,7 @@ import logger from '../utils/logger.util';
  */
 export async function uploadCSV(req: Request, res: Response): Promise<void> {
   try {
-    const userId = (req as any).user?.userId;
+    const userId = req.user?.id;
     if (!userId) {
       res.status(401).json({ error: 'Usuario no autenticado' });
       return;
