@@ -41,7 +41,6 @@ router.get('/', authenticateToken, CreditReferenceController.getAllReferences);
  */
 router.get(
   '/search',
-  authenticateToken,
   CreditReferenceController.searchReferences
 );
 

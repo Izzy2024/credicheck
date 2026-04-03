@@ -2,9 +2,11 @@
 
 import React, { useState, useEffect } from "react";
 import { RecordsManagement } from "./_components/records-management";
-import { Loader2, AlertTriangle } from "lucide-react";
+import { AlertTriangle } from "lucide-react";
 import { api } from "@/lib/api";
 import { TableSkeleton } from "@/components/loading-skeletons";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export type RecordStatus =
   | "ACTIVE"
@@ -120,6 +122,9 @@ export default function AdminRecordsPage() {
           Gestiona los estados de los registros crediticios, realiza
           actualizaciones masivas y exporta datos.
         </p>
+        <Button asChild variant="outline" className="mt-4">
+          <Link href="/admin/disputes">Ir a disputas pendientes</Link>
+        </Button>
       </div>
 
       {records.length > 0 ? (

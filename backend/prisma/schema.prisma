@@ -37,6 +37,13 @@ enum VerificationType {
   ADDITIONAL_INFO  // Usuario aporta información adicional
 }
 
+// Enum para el estado de disputa
+enum DisputeStatus {
+  PENDING      // Disputa pendiente de revisión
+  APPROVED     // Disputa aprobada (referencia removida/modificada)
+  REJECTED     // Disputa rechazada (referencia permanece)
+}
+
 model User {
   id                String            @id @default(cuid())
   email             String            @unique
@@ -57,6 +64,8 @@ model User {
   watchlistItems    WatchlistItem[]
   notifications     Notification[]
   verifications     RecordVerification[]
+  disputes          Dispute[]
+  uploadedAttachments DisputeAttachment[] @relation("UploadedBy")
 
   @@map("users")
 }
@@ -212,4 +221,46 @@ model RecordVerification {
   @@index([type])
   @@unique([recordId, userId])
   @@map("record_verifications")
+}
+
+// M6: Sistema de disputas y apelaciones
+model Dispute {
+  id              String          @id @default(cuid())
+  recordId        String          @map("record_id")
+  userId          String          @map("user_id")
+  reason          String          // Razón de la disputa
+  description     String          // Descripción detallada
+  status          DisputeStatus   @default(PENDING)
+  adminNotes      String?         @map("admin_notes")  // Notas del administrador
+  resolvedBy      String?         @map("resolved_by")  // ID del admin que resolvió
+  resolvedAt      DateTime?       @map("resolved_at")
+  createdAt       DateTime        @default(now()) @map("created_at")
+  updatedAt       DateTime        @updatedAt @map("updated_at")
+  
+  user            User            @relation(fields: [userId], references: [id])
+  attachments     DisputeAttachment[]
+  
+  @@index([recordId])
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
+  @@map("disputes")
+}
+
+model DisputeAttachment {
+  id              String    @id @default(cuid())
+  disputeId       String    @map("dispute_id")
+  fileName        String    @map("file_name")
+  mimeType        String    @map("mime_type")
+  sizeBytes       Int       @map("size_bytes")
+  storagePath     String    @map("storage_path")
+  uploadedById    String    @map("uploaded_by_id")
+  createdAt       DateTime  @default(now()) @map("created_at")
+  
+  dispute         Dispute   @relation(fields: [disputeId], references: [id], onDelete: Cascade)
+  uploadedBy      User      @relation("UploadedBy", fields: [uploadedById], references: [id])
+  
+  @@index([disputeId])
+  @@index([uploadedById])
+  @@map("dispute_attachments")
 }

@@ -18,6 +18,8 @@ import personTimelineRoutes from './routes/person-timeline.routes';
 import bulkUploadRoutes from './routes/bulk-upload.routes';
 import aggregateReportsRoutes from './routes/aggregate-reports.routes';
 import verificationRoutes from './routes/verification.routes';
+import disputeRoutes from './routes/dispute.routes';
+import disputeAttachmentRoutes from './routes/dispute-attachment.routes';
 import logger, { httpLogger, morganStream } from './utils/logger.util';
 import { publicRateLimit } from './middleware/rate-limit.middleware';
 
@@ -168,6 +170,8 @@ app.use(
 app.use(`/api/${config.server.apiVersion}/bulk-upload`, bulkUploadRoutes);
 app.use(`/api/${config.server.apiVersion}/reports`, aggregateReportsRoutes);
 app.use(`/api/${config.server.apiVersion}/verifications`, verificationRoutes);
+app.use(`/api/${config.server.apiVersion}/disputes`, disputeRoutes);
+app.use(`/api/${config.server.apiVersion}/disputes`, disputeAttachmentRoutes);
 
 // API Info endpoint
 app.get(

@@ -1,5 +1,6 @@
 import { PrismaClient, Prisma } from '@prisma/client';
 import { config } from './env.config';
+import { seedDefaultUsers } from './default-users';
 
 // Configuración del cliente Prisma
 const prismaConfig: Prisma.PrismaClientOptions = {
@@ -100,38 +101,18 @@ export const cleanDatabase = async (): Promise<void> => {
 export const seedDatabase = async (): Promise<void> => {
   if (config.server.isDevelopment) {
     try {
-      // Verificar si ya existen datos
-      const userCount = await prisma.user.count();
-      if (userCount > 0) {
-        console.log('📊 Base de datos ya contiene datos, omitiendo seed');
-        return;
-      }
+      await seedDefaultUsers(prisma);
 
-      // Crear usuario administrador por defecto
-      const adminUser = await prisma.user.create({
-        data: {
-          email: 'admin@credicheck.com',
-          passwordHash: '$2b$10$example.hash.for.development.only', // Cambiar por hash real
-          firstName: 'Administrador',
-          lastName: 'Sistema',
-          role: 'ADMIN',
-        },
+      const adminUser = await prisma.user.findUnique({
+        where: { email: 'admin@credicheck.com' },
       });
-
-      // Crear usuario analista por defecto
-      const analystUser = await prisma.user.create({
-        data: {
-          email: 'analista@credicheck.com',
-          passwordHash: '$2b$10$example.hash.for.development.only', // Cambiar por hash real
-          firstName: 'Analista',
-          lastName: 'Crédito',
-          role: 'ANALYST',
-        },
+      const analystUser = await prisma.user.findUnique({
+        where: { email: 'analista@credicheck.com' },
       });
 
       console.log('🌱 Datos de desarrollo creados exitosamente');
-      console.log(`👤 Admin: ${adminUser.email}`);
-      console.log(`👤 Analista: ${analystUser.email}`);
+      console.log(`👤 Admin: ${adminUser?.email}`);
+      console.log(`👤 Analista: ${analystUser?.email}`);
     } catch (error) {
       console.error('❌ Error al crear datos de desarrollo:', error);
       throw error;

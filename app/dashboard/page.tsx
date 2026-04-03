@@ -24,6 +24,8 @@ import {
   AlertTriangle,
   Plus,
   Loader2,
+  LayoutGrid,
+  Bell,
 } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import {
@@ -46,6 +48,7 @@ export default function Dashboard() {
     matchRate: "0.00",
   });
   const [loadingStats, setLoadingStats] = useState(true);
+  const [unreadCount, setUnreadCount] = useState(0);
   const [user, setUser] = useState<{
     firstName: string;
     lastName: string;
@@ -103,6 +106,23 @@ export default function Dashboard() {
         if (statsResult.success) {
           setStats(statsResult.data);
         }
+
+        const unreadResponse = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/v1/notifications/unread-count`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        );
+
+        if (unreadResponse.status === 401) {
+          window.location.href = "/";
+          return;
+        }
+
+        const unreadResult = await unreadResponse.json();
+        setUnreadCount(unreadResult.count ?? 0);
       } catch (error) {
         console.error("Error fetching dashboard data:", error);
       } finally {
@@ -247,6 +267,15 @@ export default function Dashboard() {
 
           <div className="flex items-center gap-2">
             <ThemeToggle />
+            <Button
+              variant="outline"
+              onClick={() => (window.location.href = "/notifications")}
+              className="flex items-center gap-2"
+            >
+              <Bell className="w-4 h-4" />
+              <span>No leídas</span>
+              {unreadCount > 0 && <Badge variant="secondary">{unreadCount}</Badge>}
+            </Button>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
@@ -408,6 +437,27 @@ export default function Dashboard() {
 
         {/* Acciones Rápidas */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <Card
+            className="border-0 dark:border-gray-700 shadow-sm dark:bg-gray-800 hover:shadow-md transition-shadow cursor-pointer"
+            onClick={() => (window.location.href = "/feature-center")}
+          >
+            <CardContent className="p-6">
+              <div className="flex items-center gap-4">
+                <div className="p-3 bg-violet-100 dark:bg-violet-900 rounded-xl">
+                  <LayoutGrid className="w-6 h-6 text-violet-600 dark:text-violet-400" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-card-foreground dark:text-gray-100 mb-1">
+                    Centro de Funciones
+                  </h3>
+                  <p className="text-sm text-muted-foreground dark:text-gray-400">
+                    Navegación visible para usuarios autenticados
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
           <Card
             className="border-0 dark:border-gray-700 shadow-sm dark:bg-gray-800 hover:shadow-md transition-shadow cursor-pointer"
             onClick={() => (window.location.href = "/add-record")}

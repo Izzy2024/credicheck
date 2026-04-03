@@ -8,6 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
   Table,
@@ -25,6 +26,8 @@ import {
   Activity,
   Shield,
   Clock,
+  LayoutGrid,
+  Bell,
 } from "lucide-react";
 import { AdminSkeleton } from "@/components/loading-skeletons";
 import {
@@ -134,6 +137,27 @@ export default function AdminDashboardPage() {
 
   return (
     <div className="space-y-6">
+      <div className="flex justify-end">
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            onClick={() => (window.location.href = "/notifications")}
+            className="flex items-center gap-2"
+          >
+            <Bell className="w-4 h-4" />
+            No leídas
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => (window.location.href = "/feature-center")}
+            className="flex items-center gap-2"
+          >
+            <LayoutGrid className="w-4 h-4" />
+            Centro de Funciones
+          </Button>
+        </div>
+      </div>
+
       <div>
         <h1 className="text-2xl font-bold text-slate-800 dark:text-gray-100">
           Panel General

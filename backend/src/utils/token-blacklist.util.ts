@@ -35,9 +35,11 @@ export class TokenBlacklistUtil {
   }
 }
 
-setInterval(
-  () => {
-    TokenBlacklistUtil.cleanupExpired().catch(console.error);
-  },
-  60 * 60 * 1000
-);
+if (process.env['NODE_ENV'] !== 'test') {
+  setInterval(
+    () => {
+      TokenBlacklistUtil.cleanupExpired().catch(console.error);
+    },
+    60 * 60 * 1000
+  );
+}

@@ -42,7 +42,7 @@ const FEATURES = [
   {
     title: "Disputas",
     description: "Centro de revisión y resolución para casos en conflicto.",
-    href: "/history",
+    href: "/disputes",
     icon: AlertTriangle,
   },
 ];

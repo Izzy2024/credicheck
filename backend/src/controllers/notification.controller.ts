@@ -10,7 +10,7 @@ export async function getNotifications(
   res: Response
 ): Promise<void> {
   try {
-    const userId = (req as any).user?.userId;
+    const userId = (req as any).user?.id;
     if (!userId) {
       res.status(401).json({ error: 'Usuario no autenticado' });
       return;
@@ -50,7 +50,7 @@ export async function getUnreadCount(
   res: Response
 ): Promise<void> {
   try {
-    const userId = (req as any).user?.userId;
+    const userId = (req as any).user?.id;
     if (!userId) {
       res.status(401).json({ error: 'Usuario no autenticado' });
       return;
@@ -74,7 +74,7 @@ export async function getUnreadCount(
  */
 export async function markAsRead(req: Request, res: Response): Promise<void> {
   try {
-    const userId = (req as any).user?.userId;
+    const userId = (req as any).user?.id;
     if (!userId) {
       res.status(401).json({ error: 'Usuario no autenticado' });
       return;
@@ -107,7 +107,7 @@ export async function markAllAsRead(
   res: Response
 ): Promise<void> {
   try {
-    const userId = (req as any).user?.userId;
+    const userId = (req as any).user?.id;
     if (!userId) {
       res.status(401).json({ error: 'Usuario no autenticado' });
       return;
@@ -134,7 +134,7 @@ export async function archiveNotification(
   res: Response
 ): Promise<void> {
   try {
-    const userId = (req as any).user?.userId;
+    const userId = (req as any).user?.id;
     if (!userId) {
       res.status(401).json({ error: 'Usuario no autenticado' });
       return;

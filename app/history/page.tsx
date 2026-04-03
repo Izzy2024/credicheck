@@ -40,6 +40,7 @@ import {
   AlertTriangle,
   ChevronLeft,
   ChevronRight,
+  LayoutGrid,
 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -231,6 +232,22 @@ export default function HistoryPage() {
 
           <div className="flex items-center gap-2">
             <ThemeToggle />
+            <Button
+              variant="outline"
+              onClick={() => (window.location.href = "/disputes")}
+              className="flex items-center gap-2"
+            >
+              <AlertTriangle className="w-4 h-4" />
+              Disputas
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => (window.location.href = "/feature-center")}
+              className="flex items-center gap-2"
+            >
+              <LayoutGrid className="w-4 h-4" />
+              Centro de Funciones
+            </Button>
             <Button
               variant="outline"
               onClick={() => (window.location.href = "/dashboard")}

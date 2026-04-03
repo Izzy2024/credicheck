@@ -1,61 +1,22 @@
 import { PrismaClient } from '@prisma/client';
-import bcrypt from 'bcrypt';
+import { seedDefaultUsers } from '../src/config/default-users';
 
 const prisma = new PrismaClient();
 
 async function main() {
   console.log('🌱 Iniciando seed de la base de datos...');
 
-  // Verificar si los usuarios por defecto ya existen
-  const adminExists = await prisma.user.findUnique({
-    where: { email: 'admin@credicheck.com' }
+  await seedDefaultUsers(prisma);
+  const adminUser = await prisma.user.findUnique({
+    where: { email: 'admin@credicheck.com' },
   });
-
-  const analystExists = await prisma.user.findUnique({
-    where: { email: 'analista@credicheck.com' }
+  const analystUser = await prisma.user.findUnique({
+    where: { email: 'analista@credicheck.com' },
   });
-
-  let adminUser, analystUser;
-
-  // Crear usuario admin si no existe
-  if (!adminExists) {
-    const adminPasswordHash = await bcrypt.hash('admin123', 10);
-    adminUser = await prisma.user.create({
-      data: {
-        email: 'admin@credicheck.com',
-        passwordHash: adminPasswordHash,
-        firstName: 'Administrador',
-        lastName: 'Sistema',
-        role: 'ADMIN',
-      },
-    });
-    console.log('👤 Usuario Admin creado');
-  } else {
-    adminUser = adminExists;
-    console.log('👤 Usuario Admin ya existe');
-  }
-
-  // Crear usuario analista si no existe
-  if (!analystExists) {
-    const analystPasswordHash = await bcrypt.hash('analyst123', 10);
-    analystUser = await prisma.user.create({
-      data: {
-        email: 'analista@credicheck.com',
-        passwordHash: analystPasswordHash,
-        firstName: 'Ana',
-        lastName: 'Rodríguez',
-        role: 'ANALYST',
-      },
-    });
-    console.log('👤 Usuario Analista creado');
-  } else {
-    analystUser = analystExists;
-    console.log('👤 Usuario Analista ya existe');
-  }
 
   // Solo crear datos de ejemplo si es una base de datos nueva
-  const userCount = await prisma.user.count();
-  if (userCount <= 2) {
+  const creditReferenceCount = await prisma.creditReference.count();
+  if (creditReferenceCount === 0 && analystUser) {
     console.log('📊 Creando datos de ejemplo para base de datos nueva...');
 
     // Crear algunos registros de ejemplo
@@ -163,8 +124,8 @@ async function main() {
   }
 
   console.log('✅ Seed completado exitosamente!');
-  console.log(`👤 Usuario Admin: ${adminUser.email} (password: admin123)`);
-  console.log(`👤 Usuario Analista: ${analystUser.email} (password: analyst123)`);
+  console.log(`👤 Usuario Admin: ${adminUser?.email} (password: admin123)`);
+  console.log(`👤 Usuario Analista: ${analystUser?.email} (password: analyst123)`);
 }
 
 main()

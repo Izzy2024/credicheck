@@ -17,6 +17,7 @@ import {
   X,
   Shield,
   Activity,
+  AlertTriangle,
 } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
 
@@ -101,6 +102,12 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       href: "/admin/users",
       icon: Users,
       description: "Administrar usuarios y roles",
+    },
+    {
+      name: "Disputas",
+      href: "/admin/disputes",
+      icon: AlertTriangle,
+      description: "Revisar y resolver disputas pendientes",
     },
     {
       name: "Configuración",
