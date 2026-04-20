@@ -1,4 +1,19 @@
 import "@testing-library/jest-dom/vitest";
+import { vi } from "vitest";
+
+// Minimal Next.js navigation mocks for client components under test.
+vi.mock("next/navigation", () => {
+  return {
+    useRouter: () => ({
+      push: vi.fn(),
+      replace: vi.fn(),
+      prefetch: vi.fn(),
+      back: vi.fn(),
+    }),
+    useSearchParams: () => new URLSearchParams(),
+    usePathname: () => "/",
+  };
+});
 
 const storage = new Map<string, string>();
 

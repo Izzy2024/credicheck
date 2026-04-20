@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CrediCheck Executive Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary": "#0056FF",
+                        "primary-container": "#E6F0FF",
+                        "on-primary": "#FFFFFF",
+                        "secondary": "#475569",
+                        "background": "#F8FAFC",
+                        "surface": "#FFFFFF",
+                        "surface-variant": "#F1F5F9",
+                        "outline": "#E2E8F0",
+                        "on-surface": "#0F172A",
+                        "on-surface-variant": "#64748B",
+                        "success": "#10B981",
+                        "error": "#EF4444"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.5rem",
+                        "lg": "0.75rem",
+                        "xl": "1rem",
+                        "2xl": "1.5rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Inter"],
+                        "body": ["Inter"],
+                        "label": ["Manrope"]
+                    },
+                    "boxShadow": {
+                        "soft": "0 2px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
+                        "deep": "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)"
+                    }
+                },
+            },
+        }
+    </script>
+<style type="text/tailwindcss">
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .card-shadow {
+            @apply shadow-soft border border-outline bg-white;
+        }
+        body {
+            @apply bg-background text-on-surface font-body antialiased;
+        }
+    </style>
+</head>
+<body>
+<div class="flex min-h-screen">
+<aside class="h-screen w-72 left-0 sticky bg-white border-r border-outline flex flex-col py-8 gap-2">
+<div class="px-8 mb-10">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-xl bg-primary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-3xl" style="font-variation-settings: 'FILL' 1;">security</span>
+</div>
+<div>
+<h2 class="text-on-surface font-bold text-lg leading-tight">Isaac Rios</h2>
+<p class="text-on-surface-variant text-xs font-semibold uppercase tracking-wider">Executive Access</p>
+</div>
+</div>
+</div>
+<nav class="flex-1 space-y-1 px-4">
+<a class="flex items-center gap-4 px-4 py-3 bg-primary-container text-primary rounded-xl font-bold transition-all" href="/dashboard">
+<span class="material-symbols-outlined">search</span>
+<span>Búsqueda</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 text-on-surface-variant hover:bg-surface-variant hover:text-on-surface rounded-xl transition-all" href="/risk-score">
+<span class="material-symbols-outlined">query_stats</span>
+<span>Métricas</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 text-on-surface-variant hover:bg-surface-variant hover:text-on-surface rounded-xl transition-all" href="/history">
+<span class="material-symbols-outlined">history</span>
+<span>Historial</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 text-on-surface-variant hover:bg-surface-variant hover:text-on-surface rounded-xl transition-all" href="/feature-center">
+<span class="material-symbols-outlined">widgets</span>
+<span>Funciones</span>
+</a>
+</nav>
+<div class="mt-auto px-6">
+<div class="p-5 rounded-2xl bg-surface-variant border border-outline">
+<p class="text-[10px] font-bold text-on-surface-variant mb-3 uppercase tracking-[0.2em]">System Status</p>
+<div class="flex items-center gap-3">
+<div class="relative flex h-3 w-3">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-success opacity-75"></span>
+<span class="relative inline-flex rounded-full h-3 w-3 bg-success"></span>
+</div>
+<span class="text-sm font-semibold text-on-surface">Operational</span>
+</div>
+</div>
+</div>
+</aside>
+<main class="flex-1 min-w-0 overflow-y-auto">
+<header class="flex justify-between items-center px-10 h-24 w-full bg-white border-b border-outline sticky top-0 z-50">
+<div class="flex items-center gap-12">
+<span class="text-2xl font-black text-primary tracking-tighter font-['Inter']">CrediCheck</span>
+<div class="hidden lg:flex gap-8">
+<a class="text-primary font-extrabold border-b-2 border-primary py-1 text-sm tracking-widest uppercase" href="/dashboard">BÚSQUEDA</a>
+<a class="text-on-surface-variant font-bold hover:text-primary transition-colors text-sm tracking-widest uppercase" href="/history">HISTORIAL</a>
+</div>
+</div>
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-2 px-4 py-2 rounded-full bg-primary-container border border-primary/10">
+<span class="material-symbols-outlined text-sm text-primary font-bold">bolt</span>
+<span class="text-xs font-black text-primary uppercase">PREMIUM API</span>
+</div>
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors p-2 rounded-full hover:bg-surface-variant">notifications</button>
+<div class="w-12 h-12 rounded-full border-2 border-primary-container p-0.5 shadow-sm">
+<img alt="Isaac Rios" class="w-full h-full object-cover rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBMIx08CuTyXI4Qjccu0N3zMRkNhXXBlNipll_sKgfs1ZGBINT8FIK6n1hpb3ZnjJlx0vP0nP2i1ukC3k6mDmsYFLaQGsTVs6F7PiFu-Z15F3GGjBzHOyJGEELNluIyj0j1-e8aWfsdI3KH3pMSTHHP16p7g01ao8upEy_R3RncJQoqDNNzIy2C8aWixXzKbPVfRuDGo-4ynyUZXWdHubER5zHyr_5NaNxWUq3dAAxvmrhSbdEMGVXV8iYeFv5WVuoYJVvZ8gDd7rU"/>
+</div>
+</div>
+</header>
+<div class="p-10 space-y-10">
+<section class="card-shadow p-10 rounded-2xl bg-white" id="consulta">
+<div class="max-w-4xl">
+<h1 class="text-4xl font-black tracking-tight mb-3 text-on-surface">Consultar Referencias Crediticias</h1>
+<p class="text-on-surface-variant font-label text-lg mb-8">Realiza búsquedas por nombre, cédula o NIT y obtén resultados al instante.</p>
+<form class="relative group" onsubmit="event.preventDefault(); window.location.href='/results/found';">
+<div class="absolute inset-y-0 left-6 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-primary text-3xl">search</span>
+</div>
+<input class="w-full bg-surface-variant border-2 border-transparent focus:border-primary/20 focus:bg-white text-xl py-7 pl-16 pr-52 rounded-2xl focus:ring-4 focus:ring-primary/5 transition-all placeholder:text-on-surface-variant/50 shadow-inner" placeholder="Ingrese nombre, número de identificación o NIT..." type="text"/>
+<div class="absolute inset-y-3 right-3 flex items-center">
+<button class="h-full px-10 bg-primary text-on-primary font-black rounded-xl hover:bg-blue-700 active:scale-95 transition-all shadow-lg shadow-primary/20 uppercase tracking-wider" type="submit">
+                                CONSULTAR
+                            </button>
+</div>
+</form>
+<div class="mt-5 flex flex-wrap gap-2 text-xs">
+<span class="px-3 py-1.5 rounded-full bg-primary-container text-primary font-bold">Búsqueda rápida</span>
+<span class="px-3 py-1.5 rounded-full bg-surface-variant text-on-surface-variant font-semibold">Consulta por documento</span>
+<span class="px-3 py-1.5 rounded-full bg-surface-variant text-on-surface-variant font-semibold">Consulta por empresa</span>
+</div>
+</div>
+</section>
+<section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" id="metricas">
+<div class="card-shadow p-6 rounded-2xl group hover:border-primary/50 transition-all duration-300">
+<div class="flex justify-between items-start mb-6">
+<div class="p-2 bg-primary-container rounded-lg">
+<span class="material-symbols-outlined text-primary">insights</span>
+</div>
+<p class="font-label text-[10px] uppercase font-black tracking-[0.2em] text-on-surface-variant">Consultas Hoy</p>
+</div>
+<div class="flex items-end gap-3">
+<h3 class="text-4xl font-black text-on-surface">124</h3>
+<span class="text-success text-xs font-bold mb-1.5 flex items-center bg-success/10 px-2 py-0.5 rounded-full">
+                            +12% <span class="material-symbols-outlined text-xs ml-0.5">arrow_upward</span>
+</span>
+</div>
+<div class="mt-6 h-1.5 bg-surface-variant rounded-full overflow-hidden">
+<div class="h-full bg-primary rounded-full w-[65%]"></div>
+</div>
+</div>
+<div class="card-shadow p-6 rounded-2xl group hover:border-primary/50 transition-all duration-300">
+<div class="flex justify-between items-start mb-6">
+<div class="p-2 bg-primary-container rounded-lg">
+<span class="material-symbols-outlined text-primary">database</span>
+</div>
+<p class="font-label text-[10px] uppercase font-black tracking-[0.2em] text-on-surface-variant">Referencias Activas</p>
+</div>
+<div class="flex items-end gap-3">
+<h3 class="text-4xl font-black text-on-surface">8,432</h3>
+</div>
+<div class="mt-6 h-1.5 bg-surface-variant rounded-full overflow-hidden">
+<div class="h-full bg-primary/40 rounded-full w-[80%]"></div>
+</div>
+</div>
+<div class="card-shadow p-6 rounded-2xl group hover:border-primary/50 transition-all duration-300">
+<div class="flex justify-between items-start mb-6">
+<div class="p-2 bg-primary-container rounded-lg">
+<span class="material-symbols-outlined text-primary">group</span>
+</div>
+<p class="font-label text-[10px] uppercase font-black tracking-[0.2em] text-on-surface-variant">Usuarios Activos</p>
+</div>
+<div class="flex items-end gap-3">
+<h3 class="text-4xl font-black text-on-surface">42</h3>
+</div>
+<div class="mt-6 h-1.5 bg-surface-variant rounded-full overflow-hidden">
+<div class="h-full bg-primary/40 rounded-full w-[30%]"></div>
+</div>
+</div>
+<div class="card-shadow p-6 rounded-2xl group hover:border-primary/50 transition-all duration-300">
+<div class="flex justify-between items-start mb-6">
+<div class="p-2 bg-primary-container rounded-lg">
+<span class="material-symbols-outlined text-primary">query_stats</span>
+</div>
+<p class="font-label text-[10px] uppercase font-black tracking-[0.2em] text-on-surface-variant">Tasa de Coincidencia</p>
+</div>
+<div class="flex items-end gap-3">
+<h3 class="text-4xl font-black text-on-surface">71.43%</h3>
+</div>
+<div class="mt-6 flex gap-1 items-center h-1.5">
+<div class="flex-1 h-full bg-primary rounded-full"></div>
+<div class="flex-1 h-full bg-primary rounded-full"></div>
+<div class="flex-1 h-full bg-primary rounded-full"></div>
+<div class="flex-1 h-full bg-surface-variant rounded-full"></div>
+</div>
+</div>
+</section>
+<div class="grid grid-cols-1 xl:grid-cols-12 gap-10">
+<section class="xl:col-span-4 space-y-6" id="acciones">
+<div class="flex items-center gap-3 px-2">
+<div class="w-1.5 h-6 bg-primary rounded-full"></div>
+<h2 class="text-xl font-black text-on-surface tracking-tight uppercase text-sm tracking-widest">Centro de Funciones</h2>
+</div>
+<div class="grid grid-cols-1 gap-4">
+<a class="card-shadow p-5 rounded-2xl group cursor-pointer hover:shadow-deep transition-all active:scale-95 block" href="/dashboard">
+<div class="flex items-center gap-5">
+<div class="w-14 h-14 rounded-xl bg-primary-container flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300">
+<span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1;">add_circle</span>
+</div>
+<div>
+<h4 class="font-bold text-on-surface text-base">Nueva Consulta</h4>
+<p class="text-xs font-medium text-on-surface-variant mt-1">Iniciar búsqueda manual de referencia</p>
+</div>
+</div>
+</a>
+<a class="card-shadow p-5 rounded-2xl group cursor-pointer hover:shadow-deep transition-all active:scale-95 block" href="/risk-score">
+<div class="flex items-center gap-5">
+<div class="w-14 h-14 rounded-xl bg-surface-variant flex items-center justify-center text-on-surface-variant group-hover:bg-primary group-hover:text-white transition-all duration-300">
+<span class="material-symbols-outlined text-2xl">query_stats</span>
+</div>
+<div>
+<h4 class="font-bold text-on-surface text-base">Ver Métricas</h4>
+<p class="text-xs font-medium text-on-surface-variant mt-1">Consultar actividad y rendimiento del día</p>
+</div>
+</div>
+</a>
+<a class="card-shadow p-5 rounded-2xl group cursor-pointer hover:shadow-deep transition-all active:scale-95 block" href="/history">
+<div class="flex items-center gap-5">
+<div class="w-14 h-14 rounded-xl bg-surface-variant flex items-center justify-center text-on-surface-variant group-hover:bg-primary group-hover:text-white transition-all duration-300">
+<span class="material-symbols-outlined text-2xl">history</span>
+</div>
+<div>
+<h4 class="font-bold text-on-surface text-base">Ver Historial</h4>
+<p class="text-xs font-medium text-on-surface-variant mt-1">Revisar consultas y estados recientes</p>
+</div>
+</div>
+</a>
+</div>
+</section>
+<section class="xl:col-span-8 space-y-6" id="historial">
+<div class="flex justify-between items-center px-2">
+<div class="flex items-center gap-3">
+<div class="w-1.5 h-6 bg-primary rounded-full"></div>
+<h2 class="text-xl font-black text-on-surface tracking-tight uppercase text-sm tracking-widest">Historial de Consultas</h2>
+</div>
+<a class="text-[10px] font-black text-primary flex items-center gap-2 hover:bg-primary-container px-4 py-2 rounded-full transition-all uppercase tracking-[0.1em]" href="/history">
+                            VER TODO <span class="material-symbols-outlined text-xs">open_in_new</span>
+</a>
+</div>
+<div class="card-shadow rounded-2xl overflow-hidden">
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead>
+<tr class="bg-surface-variant/50 border-b border-outline">
+<th class="px-8 py-5 font-bold text-[10px] uppercase tracking-[0.15em] text-on-surface-variant">Fecha</th>
+<th class="px-8 py-5 font-bold text-[10px] uppercase tracking-[0.15em] text-on-surface-variant">Referencia</th>
+<th class="px-8 py-5 font-bold text-[10px] uppercase tracking-[0.15em] text-on-surface-variant">ID / NIT</th>
+<th class="px-8 py-5 font-bold text-[10px] uppercase tracking-[0.15em] text-on-surface-variant">Estado</th>
+<th class="px-8 py-5 font-bold text-[10px] uppercase tracking-[0.15em] text-on-surface-variant text-center">Acción</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline">
+<tr class="hover:bg-primary-container/30 transition-colors group cursor-default">
+<td class="px-8 py-6 text-sm font-semibold text-on-surface-variant">Hoy, 10:45 AM</td>
+<td class="px-8 py-6">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all">
+<span class="material-symbols-outlined text-lg">person</span>
+</div>
+<span class="font-bold text-on-surface">Marcos Valenzuela</span>
+</div>
+</td>
+<td class="px-8 py-6 font-mono text-xs font-bold text-on-surface-variant">774.232.001-K</td>
+<td class="px-8 py-6">
+<span class="px-3 py-1.5 rounded-full bg-success/10 text-success text-[10px] font-black uppercase tracking-widest">Encontrado</span>
+</td>
+<td class="px-8 py-6 text-center">
+<button class="text-on-surface-variant hover:text-primary transition-colors hover:scale-110"><span class="material-symbols-outlined">visibility</span></button>
+</td>
+</tr>
+<tr class="hover:bg-primary-container/30 transition-colors group cursor-default">
+<td class="px-8 py-6 text-sm font-semibold text-on-surface-variant">Hoy, 09:12 AM</td>
+<td class="px-8 py-6">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-surface-variant flex items-center justify-center text-on-surface-variant group-hover:bg-primary group-hover:text-white transition-all">
+<span class="material-symbols-outlined text-lg">apartment</span>
+</div>
+<span class="font-bold text-on-surface">Constructora Alpin</span>
+</div>
+</td>
+<td class="px-8 py-6 font-mono text-xs font-bold text-on-surface-variant">800.123.456-7</td>
+<td class="px-8 py-6">
+<span class="px-3 py-1.5 rounded-full bg-error/10 text-error text-[10px] font-black uppercase tracking-widest">Sin Registro</span>
+</td>
+<td class="px-8 py-6 text-center">
+<button class="text-on-surface-variant hover:text-primary transition-colors hover:scale-110"><span class="material-symbols-outlined">visibility</span></button>
+</td>
+</tr>
+<tr class="hover:bg-primary-container/30 transition-colors group cursor-default">
+<td class="px-8 py-6 text-sm font-semibold text-on-surface-variant">Ayer, 04:30 PM</td>
+<td class="px-8 py-6">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all">
+<span class="material-symbols-outlined text-lg">person</span>
+</div>
+<span class="font-bold text-on-surface">Sofía Benítez</span>
+</div>
+</td>
+<td class="px-8 py-6 font-mono text-xs font-bold text-on-surface-variant">552.112.980-2</td>
+<td class="px-8 py-6">
+<span class="px-3 py-1.5 rounded-full bg-success/10 text-success text-[10px] font-black uppercase tracking-widest">Encontrado</span>
+</td>
+<td class="px-8 py-6 text-center">
+<button class="text-on-surface-variant hover:text-primary transition-colors hover:scale-110"><span class="material-symbols-outlined">visibility</span></button>
+</td>
+</tr>
+<tr class="hover:bg-primary-container/30 transition-colors group cursor-default">
+<td class="px-8 py-6 text-sm font-semibold text-on-surface-variant">Ayer, 01:15 PM</td>
+<td class="px-8 py-6">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-surface-variant flex items-center justify-center text-on-surface-variant group-hover:bg-primary group-hover:text-white transition-all">
+<span class="material-symbols-outlined text-lg">apartment</span>
+</div>
+<span class="font-bold text-on-surface">AgroIndustria S.A.</span>
+</div>
+</td>
+<td class="px-8 py-6 font-mono text-xs font-bold text-on-surface-variant">911.442.233-1</td>
+<td class="px-8 py-6">
+<span class="px-3 py-1.5 rounded-full bg-success/10 text-success text-[10px] font-black uppercase tracking-widest">Encontrado</span>
+</td>
+<td class="px-8 py-6 text-center">
+<button class="text-on-surface-variant hover:text-primary transition-colors hover:scale-110"><span class="material-symbols-outlined">visibility</span></button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</div>
+</div>
+<footer class="px-10 py-12 mt-12 bg-white border-t border-outline flex flex-col md:flex-row justify-between items-center gap-6">
+<p class="text-xs font-bold text-on-surface-variant opacity-70 uppercase tracking-[0.1em]">© 2024 CrediCheck Systems. Institutional Access Only.</p>
+<div class="flex gap-10">
+<span class="text-[10px] font-black text-on-surface-variant uppercase tracking-[0.2em] cursor-pointer hover:text-primary transition-colors">Help Center</span>
+<span class="text-[10px] font-black text-on-surface-variant uppercase tracking-[0.2em] cursor-pointer hover:text-primary transition-colors">API Docs</span>
+<span class="text-[10px] font-black text-on-surface-variant uppercase tracking-[0.2em] cursor-pointer hover:text-primary transition-colors">Compliance</span>
+</div>
+</footer>
+</main>
+</div>
+
+</body></html>

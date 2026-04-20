@@ -11,11 +11,14 @@ export default defineConfig({
     environment: "jsdom",
     globals: true,
     setupFiles: ["./vitest.setup.ts"],
+    // Frontend tests only. Backend has its own runner (npm run test:backend).
+    include: ["app/__tests__/**/*.{test,spec}.{ts,tsx}", "components/**/__tests__/**/*.{test,spec}.{ts,tsx}"],
     exclude: [
       "**/node_modules/**",
       "**/dist/**",
       "**/.next/**",
       "**/.worktrees/**",
+      "**/backend/**",
     ],
   },
 });

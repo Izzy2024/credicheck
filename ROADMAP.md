@@ -3,7 +3,7 @@
 ## Estado del Proyecto
 
 App de registro de referencias crediticias negativas (malos pagadores).
-Stack: Next.js 15 + Express + TypeScript + Prisma + SQLite
+Stack: Next.js 15 + Express + TypeScript + Prisma + PostgreSQL + Redis
 
 ---
 
@@ -207,16 +207,16 @@ Stack: Next.js 15 + Express + TypeScript + Prisma + SQLite
 
 ---
 
-## M6 - Escalabilidad [PENDIENTE]
+## M6 - Escalabilidad [EN PROGRESO]
 
 > Cuando haya mas usuarios
 
-- [ ] **M6.1** Migrar de SQLite a PostgreSQL
-- [ ] **M6.2** Implementar Redis para cache y sesiones (ya en config pero no se usa)
-- [ ] **M6.3** Paginacion server-side en todas las vistas
-- [ ] **M6.4** CI/CD pipeline (tests automatizados antes de deploy)
-- [ ] **M6.5** Tests de integracion para controllers faltantes (User, CreditReference, Dashboard)
-- [ ] **M6.6** Monitoreo y health checks avanzados
+- [x] **M6.1** Migrar de SQLite a PostgreSQL _(COMPLETADO: Prisma datasource, migraciones y Neon listos)_
+- [x] **M6.2** Implementar Redis para cache y sesiones _(COMPLETADO: Redis client, blacklist y cache dashboard)_
+- [ ] **M6.3** Paginacion server-side en todas las vistas _(PARCIAL: usuarios si, registros aun no)_
+- [ ] **M6.4** CI/CD pipeline (tests automatizados antes de deploy) _(PENDIENTE)_
+- [x] **M6.5** Tests de integracion para controllers (User, CreditReference, Dashboard, Audit, Settings, Export) _(COMPLETADO: 120 tests, 6 suites)_
+- [ ] **M6.6** Monitoreo y health checks avanzados _(PENDIENTE)_
 
 ---
 

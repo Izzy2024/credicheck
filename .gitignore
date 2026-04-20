@@ -28,3 +28,14 @@ next-env.d.ts
 
 # local git worktrees
 .worktrees/
+
+# local agent / tooling state
+.agents/
+.hermes/
+skills-lock.json
+
+# local logs and temp artifacts
+logs/
+backend/logs/
+backend/uploads/
+backend/dev.db.backup-before-user-center-admin
