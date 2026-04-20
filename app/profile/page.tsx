@@ -94,7 +94,7 @@ export default function ProfilePage() {
     try {
       const token = localStorage.getItem("accessToken");
       if (!token) {
-        window.location.href = "/";
+        window.location.href = "/login";
         return;
       }
 
@@ -108,7 +108,7 @@ export default function ProfilePage() {
       );
 
       if (response.status === 401) {
-        window.location.href = "/";
+        window.location.href = "/login";
         return;
       }
 
@@ -180,7 +180,7 @@ export default function ProfilePage() {
     try {
       const token = localStorage.getItem("accessToken");
       if (!token) {
-        window.location.href = "/";
+        window.location.href = "/login";
         return;
       }
 
@@ -230,7 +230,7 @@ export default function ProfilePage() {
     try {
       const token = localStorage.getItem("accessToken");
       if (!token) {
-        window.location.href = "/";
+        window.location.href = "/login";
         return;
       }
 
@@ -275,7 +275,7 @@ export default function ProfilePage() {
       toast.error("Sesión expirada", {
         description: "Por favor inicia sesión nuevamente",
       });
-      window.location.href = "/";
+      window.location.href = "/login";
       return;
     }
 
@@ -650,13 +650,6 @@ export default function ProfilePage() {
                                       ? "bg-yellow-200 dark:bg-yellow-900"
                                       : "bg-red-200 dark:bg-red-900"
                                 }`}
-                                indicatorClassName={
-                                  passwordStrength.score >= 4
-                                    ? "bg-green-600"
-                                    : passwordStrength.score >= 3
-                                      ? "bg-yellow-600"
-                                      : "bg-red-600"
-                                }
                               />
 
                               {checkingCompromised && (

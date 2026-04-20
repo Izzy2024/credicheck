@@ -77,6 +77,21 @@ export interface CreditReference {
   debtDate: string;
   creditorName: string;
   debtStatus: RecordStatus;
+  caseType?: "FORMAL" | "P2P" | "SERVICE";
+  publishState?:
+    | "DRAFT"
+    | "PENDING_AUTOMATION"
+    | "PENDING_REVIEW"
+    | "PUBLISHED"
+    | "REJECTED"
+    | "UNDER_DISPUTE";
+  reviewStatus?:
+    | "PENDING"
+    | "AUTO_APPROVED"
+    | "NEEDS_REVIEW"
+    | "APPROVED"
+    | "REJECTED";
+  riskScore?: number;
   createdAt: string;
   deletedAt: string | null;
   notes?: string;
@@ -84,9 +99,15 @@ export interface CreditReference {
 
 interface RecordsManagementProps {
   initialRecords: CreditReference[];
+  startInModerationMode?: boolean;
+  hideModeToggle?: boolean;
 }
 
-export function RecordsManagement({ initialRecords }: RecordsManagementProps) {
+export function RecordsManagement({
+  initialRecords,
+  startInModerationMode = false,
+  hideModeToggle = false,
+}: RecordsManagementProps) {
   const [records, setRecords] = useState<CreditReference[]>(initialRecords);
   const [filteredRecords, setFilteredRecords] =
     useState<CreditReference[]>(initialRecords);
@@ -99,6 +120,15 @@ export function RecordsManagement({ initialRecords }: RecordsManagementProps) {
     action: "PAID" | "INACTIVE" | "PAYMENT_PLAN" | "DISPUTED" | null;
   }>({ open: false, action: null });
   const [bulkNotes, setBulkNotes] = useState("");
+  const [moderationMode, setModerationMode] = useState(startInModerationMode);
+  const [minRiskFilter, setMinRiskFilter] = useState("55");
+  const [maxRiskFilter, setMaxRiskFilter] = useState("");
+  const [riskSort, setRiskSort] = useState<"DESC" | "ASC" | "CREATED">("DESC");
+  const [rejectDialog, setRejectDialog] = useState<{ open: boolean; id: string | null }>({
+    open: false,
+    id: null,
+  });
+  const [rejectReason, setRejectReason] = useState("");
 
   useEffect(() => {
     let filtered = records;
@@ -118,18 +148,49 @@ export function RecordsManagement({ initialRecords }: RecordsManagementProps) {
       );
     }
 
-    setFilteredRecords(filtered);
-  }, [records, searchTerm, statusFilter]);
+    if (moderationMode) {
+      filtered = [...filtered].sort((a, b) => {
+        if (riskSort === "ASC") {
+          return (a.riskScore ?? 0) - (b.riskScore ?? 0);
+        }
 
-  const refreshData = async () => {
+        if (riskSort === "CREATED") {
+          return (
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          );
+        }
+
+        return (b.riskScore ?? 0) - (a.riskScore ?? 0);
+      });
+    }
+
+    setFilteredRecords(filtered);
+  }, [records, searchTerm, statusFilter, moderationMode, riskSort]);
+
+  useEffect(() => {
+    refreshData(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [moderationMode, minRiskFilter, maxRiskFilter]);
+
+  const refreshData = async (showToast = true) => {
     setIsLoading(true);
     try {
       const data = await api.get<{ success: boolean; data: CreditReference[] }>(
-        "/api/v1/records",
+        moderationMode ? "/api/v1/records/moderation/queue" : "/api/v1/records",
+        moderationMode
+          ? {
+              params: {
+                minRisk: minRiskFilter || "55",
+                maxRisk: maxRiskFilter,
+              },
+            }
+          : undefined,
       );
       setRecords(data.data);
       setSelectedRecords([]);
-      toast.success("Datos actualizados correctamente.");
+      if (showToast) {
+        toast.success("Datos actualizados correctamente.");
+      }
     } catch (error) {
       console.error(error);
       toast.error("No se pudieron cargar los datos.");
@@ -202,6 +263,48 @@ export function RecordsManagement({ initialRecords }: RecordsManagementProps) {
     }
   };
 
+  const handleModerationAction = async (
+    id: string,
+    action: "APPROVE" | "REJECT",
+    notes?: string,
+  ) => {
+    setIsLoading(true);
+    try {
+      await api.patch(`/api/v1/records/${id}/moderation`, {
+        action,
+        notes: notes?.trim() || undefined,
+      });
+      toast.success(
+        action === "APPROVE"
+          ? "Registro aprobado y publicado."
+          : "Registro rechazado en moderación.",
+      );
+      await refreshData(false);
+    } catch (error) {
+      console.error(error);
+      toast.error("No se pudo aplicar la acción de moderación.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const openRejectDialog = (id: string) => {
+    setRejectReason("");
+    setRejectDialog({ open: true, id });
+  };
+
+  const confirmReject = async () => {
+    if (!rejectDialog.id) return;
+    if (!rejectReason.trim()) {
+      toast.error("Debes ingresar un motivo para rechazar.");
+      return;
+    }
+
+    await handleModerationAction(rejectDialog.id, "REJECT", rejectReason);
+    setRejectDialog({ open: false, id: null });
+    setRejectReason("");
+  };
+
   const handleExport = async (format: "csv" | "excel") => {
     try {
       const token = localStorage.getItem("accessToken");
@@ -256,9 +359,26 @@ export function RecordsManagement({ initialRecords }: RecordsManagementProps) {
               </CardDescription>
             </div>
             <div className="flex gap-2">
+              {!hideModeToggle && (
+                <Button
+                  variant={moderationMode ? "default" : "outline"}
+                  onClick={() => {
+                    setModerationMode((prev) => !prev);
+                    setStatusFilter("ALL");
+                    setSearchTerm("");
+                    setSelectedRecords([]);
+                  }}
+                  disabled={isLoading}
+                >
+                  <AlertCircle className="h-4 w-4 mr-2" />
+                  {moderationMode ? "Vista normal" : "Cola moderación"}
+                </Button>
+              )}
               <Button
                 variant="outline"
-                onClick={refreshData}
+                onClick={() => {
+                  void refreshData();
+                }}
                 disabled={isLoading}
               >
                 <RefreshCw
@@ -289,6 +409,48 @@ export function RecordsManagement({ initialRecords }: RecordsManagementProps) {
           </div>
         </CardHeader>
         <CardContent>
+          {moderationMode && (
+            <div className="mb-4 flex flex-col sm:flex-row gap-3">
+              <div className="flex items-center gap-2">
+                <Label htmlFor="min-risk">Riesgo mín.</Label>
+                <Input
+                  id="min-risk"
+                  type="number"
+                  min={0}
+                  max={100}
+                  value={minRiskFilter}
+                  onChange={(e) => setMinRiskFilter(e.target.value)}
+                  className="w-24"
+                />
+              </div>
+              <div className="flex items-center gap-2">
+                <Label htmlFor="max-risk">Riesgo máx.</Label>
+                <Input
+                  id="max-risk"
+                  type="number"
+                  min={0}
+                  max={100}
+                  value={maxRiskFilter}
+                  onChange={(e) => setMaxRiskFilter(e.target.value)}
+                  className="w-24"
+                  placeholder="100"
+                />
+              </div>
+              <div className="flex items-center gap-2">
+                <Label htmlFor="risk-sort">Orden</Label>
+                <Select value={riskSort} onValueChange={(v) => setRiskSort(v as "DESC" | "ASC" | "CREATED")}>
+                  <SelectTrigger id="risk-sort" className="w-[220px]">
+                    <SelectValue placeholder="Ordenar" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="DESC">Riesgo: mayor a menor</SelectItem>
+                    <SelectItem value="ASC">Riesgo: menor a mayor</SelectItem>
+                    <SelectItem value="CREATED">Más recientes primero</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          )}
           <Tabs defaultValue="all" className="w-full">
             <TabsList className="grid w-full grid-cols-6">
               <TabsTrigger value="all" onClick={() => setStatusFilter("ALL")}>
@@ -342,6 +504,9 @@ export function RecordsManagement({ initialRecords }: RecordsManagementProps) {
                 onSelectAll={handleSelectAll}
                 onDelete={handleDelete}
                 onRefresh={refreshData}
+                onApprove={(id) => handleModerationAction(id, "APPROVE")}
+                onReject={openRejectDialog}
+                moderationMode={moderationMode}
                 isLoading={isLoading}
               />
             </TabsContent>
@@ -378,6 +543,9 @@ export function RecordsManagement({ initialRecords }: RecordsManagementProps) {
                   onSelectAll={handleSelectAll}
                   onDelete={handleDelete}
                   onRefresh={refreshData}
+                  onApprove={(id) => handleModerationAction(id, "APPROVE")}
+                  onReject={openRejectDialog}
+                  moderationMode={moderationMode}
                   isLoading={isLoading}
                 />
               </TabsContent>
@@ -430,6 +598,49 @@ export function RecordsManagement({ initialRecords }: RecordsManagementProps) {
             </Button>
             <Button onClick={handleBulkStatusChange} disabled={isLoading}>
               {isLoading ? "Actualizando..." : "Confirmar Actualización"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog
+        open={rejectDialog.open}
+        onOpenChange={(open) => setRejectDialog((prev) => ({ ...prev, open }))}
+      >
+        <DialogContent className="sm:max-w-[425px] dark:bg-gray-800 dark:border-gray-700">
+          <DialogHeader>
+            <DialogTitle className="dark:text-gray-100">
+              Rechazar registro
+            </DialogTitle>
+            <DialogDescription className="dark:text-gray-400">
+              Debes ingresar un motivo para rechazar este registro en moderación.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-2 py-2">
+            <Label htmlFor="reject-reason">Motivo de rechazo</Label>
+            <Textarea
+              id="reject-reason"
+              placeholder="Describe por qué se rechaza el registro..."
+              value={rejectReason}
+              onChange={(e) => setRejectReason(e.target.value)}
+              rows={4}
+            />
+          </div>
+
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setRejectDialog({ open: false, id: null });
+                setRejectReason("");
+              }}
+              disabled={isLoading}
+            >
+              Cancelar
+            </Button>
+            <Button variant="destructive" onClick={confirmReject} disabled={isLoading}>
+              Confirmar rechazo
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -532,6 +743,9 @@ interface RecordsTableProps {
   onSelectAll: (checked: boolean) => void;
   onDelete: (id: string) => void;
   onRefresh: () => void;
+  onApprove: (id: string) => void;
+  onReject: (id: string) => void;
+  moderationMode: boolean;
   isLoading: boolean;
 }
 
@@ -542,6 +756,9 @@ function RecordsTable({
   onSelectAll,
   onDelete,
   onRefresh,
+  onApprove,
+  onReject,
+  moderationMode,
   isLoading,
 }: RecordsTableProps) {
   return (
@@ -562,6 +779,7 @@ function RecordsTable({
             <TableHead>No. Identificación</TableHead>
             <TableHead>Monto Deuda</TableHead>
             <TableHead>Estado</TableHead>
+            <TableHead>Moderación</TableHead>
             <TableHead>Fecha Creación</TableHead>
             <TableHead className="text-right">Acciones</TableHead>
           </TableRow>
@@ -596,6 +814,51 @@ function RecordsTable({
                   onStatusChange={onRefresh}
                   disabled={isLoading}
                 />
+              </TableCell>
+              <TableCell>
+                <div className="flex flex-col gap-1">
+                  <Badge variant={record.publishState === "PUBLISHED" ? "default" : "secondary"}>
+                    {record.publishState || "PENDING_AUTOMATION"}
+                  </Badge>
+                  {typeof record.riskScore === "number" && (
+                    <Badge
+                      className={
+                        record.riskScore >= 70
+                          ? "bg-red-100 text-red-800"
+                          : record.riskScore >= 40
+                            ? "bg-amber-100 text-amber-800"
+                            : "bg-emerald-100 text-emerald-800"
+                      }
+                    >
+                      Riesgo {record.riskScore}
+                    </Badge>
+                  )}
+                  <span className="text-xs text-slate-500">
+                    {record.reviewStatus || "PENDING"}
+                  </span>
+                  {moderationMode &&
+                  (record.publishState === "PENDING_REVIEW" ||
+                    record.reviewStatus === "NEEDS_REVIEW") ? (
+                    <div className="flex gap-2 mt-1">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        disabled={isLoading}
+                        onClick={() => onApprove(record.id)}
+                      >
+                        Aprobar
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="destructive"
+                        disabled={isLoading}
+                        onClick={() => onReject(record.id)}
+                      >
+                        Rechazar
+                      </Button>
+                    </div>
+                  ) : null}
+                </div>
               </TableCell>
               <TableCell>
                 {new Date(record.createdAt).toLocaleDateString()}

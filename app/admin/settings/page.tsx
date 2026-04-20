@@ -45,6 +45,12 @@ export default function AdminSettingsPage() {
   const [settingsData, setSettingsData] = useState<SettingsData>({
     company_name: "",
     max_search_results: "50",
+    score_active_single_penalty: "20",
+    score_active_multiple_penalty: "35",
+    score_debt_moderate_penalty: "10",
+    score_debt_high_penalty: "20",
+    score_debt_very_high_penalty: "30",
+    score_recent_penalty: "15",
   });
 
   const profileForm = useForm<ProfileFormData>({
@@ -64,7 +70,7 @@ export default function AdminSettingsPage() {
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
     if (!token) {
-      window.location.href = "/";
+      window.location.href = "/login";
       return;
     }
 
@@ -91,9 +97,22 @@ export default function AdminSettingsPage() {
         }
 
         if (settingsJson.success) {
+          let parsedWeights: Record<string, number> = {};
+          try {
+            parsedWeights = JSON.parse(settingsJson.data.credit_score_weights || "{}");
+          } catch {
+            parsedWeights = {};
+          }
+
           setSettingsData({
             company_name: settingsJson.data.company_name || "CrediCheck",
             max_search_results: settingsJson.data.max_search_results || "50",
+            score_active_single_penalty: String(parsedWeights.activeSinglePenalty ?? 20),
+            score_active_multiple_penalty: String(parsedWeights.activeMultiplePenalty ?? 35),
+            score_debt_moderate_penalty: String(parsedWeights.debtModeratePenalty ?? 10),
+            score_debt_high_penalty: String(parsedWeights.debtHighPenalty ?? 20),
+            score_debt_very_high_penalty: String(parsedWeights.debtVeryHighPenalty ?? 30),
+            score_recent_penalty: String(parsedWeights.recentPenalty ?? 15),
           });
         }
       } catch (error) {
@@ -110,7 +129,7 @@ export default function AdminSettingsPage() {
   const getToken = () => {
     const token = localStorage.getItem("accessToken");
     if (!token) {
-      window.location.href = "/";
+      window.location.href = "/login";
       return null;
     }
     return token;
@@ -183,6 +202,60 @@ export default function AdminSettingsPage() {
     }
   };
 
+  const applyScorePreset = (preset: "CONSERVADOR" | "BALANCEADO" | "AGRESIVO") => {
+    if (preset === "CONSERVADOR") {
+      setSettingsData((prev) => ({
+        ...prev,
+        score_active_single_penalty: "25",
+        score_active_multiple_penalty: "40",
+        score_debt_moderate_penalty: "12",
+        score_debt_high_penalty: "24",
+        score_debt_very_high_penalty: "35",
+        score_recent_penalty: "18",
+      }));
+      toast.success("Preset conservador aplicado");
+      return;
+    }
+
+    if (preset === "AGRESIVO") {
+      setSettingsData((prev) => ({
+        ...prev,
+        score_active_single_penalty: "15",
+        score_active_multiple_penalty: "28",
+        score_debt_moderate_penalty: "8",
+        score_debt_high_penalty: "15",
+        score_debt_very_high_penalty: "22",
+        score_recent_penalty: "10",
+      }));
+      toast.success("Preset agresivo aplicado");
+      return;
+    }
+
+    setSettingsData((prev) => ({
+      ...prev,
+      score_active_single_penalty: "20",
+      score_active_multiple_penalty: "35",
+      score_debt_moderate_penalty: "10",
+      score_debt_high_penalty: "20",
+      score_debt_very_high_penalty: "30",
+      score_recent_penalty: "15",
+    }));
+    toast.success("Preset balanceado aplicado");
+  };
+
+  const resetScoreWeightsToDefault = () => {
+    setSettingsData((prev) => ({
+      ...prev,
+      score_active_single_penalty: "20",
+      score_active_multiple_penalty: "35",
+      score_debt_moderate_penalty: "10",
+      score_debt_high_penalty: "20",
+      score_debt_very_high_penalty: "30",
+      score_recent_penalty: "15",
+    }));
+    toast.success("Pesos restaurados a valores por defecto");
+  };
+
   const handleSaveSettings = async () => {
     const token = getToken();
     if (!token) return;
@@ -203,6 +276,17 @@ export default function AdminSettingsPage() {
               {
                 key: "max_search_results",
                 value: settingsData.max_search_results,
+              },
+              {
+                key: "credit_score_weights",
+                value: JSON.stringify({
+                  activeSinglePenalty: Number(settingsData.score_active_single_penalty || 20),
+                  activeMultiplePenalty: Number(settingsData.score_active_multiple_penalty || 35),
+                  debtModeratePenalty: Number(settingsData.score_debt_moderate_penalty || 10),
+                  debtHighPenalty: Number(settingsData.score_debt_high_penalty || 20),
+                  debtVeryHighPenalty: Number(settingsData.score_debt_very_high_penalty || 30),
+                  recentPenalty: Number(settingsData.score_recent_penalty || 15),
+                }),
               },
             ],
           }),
@@ -449,6 +533,94 @@ export default function AdminSettingsPage() {
                   Número máximo de resultados que se muestran en las búsquedas
                 </p>
               </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label htmlFor="scoreActiveSingle">Penalización: 1 deuda activa</label>
+                  <Input
+                    id="scoreActiveSingle"
+                    type="number"
+                    value={settingsData.score_active_single_penalty}
+                    onChange={(e) =>
+                      setSettingsData({ ...settingsData, score_active_single_penalty: e.target.value })
+                    }
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label htmlFor="scoreActiveMultiple">Penalización: múltiples deudas activas</label>
+                  <Input
+                    id="scoreActiveMultiple"
+                    type="number"
+                    value={settingsData.score_active_multiple_penalty}
+                    onChange={(e) =>
+                      setSettingsData({ ...settingsData, score_active_multiple_penalty: e.target.value })
+                    }
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label htmlFor="scoreDebtModerate">Penalización: deuda moderada</label>
+                  <Input
+                    id="scoreDebtModerate"
+                    type="number"
+                    value={settingsData.score_debt_moderate_penalty}
+                    onChange={(e) =>
+                      setSettingsData({ ...settingsData, score_debt_moderate_penalty: e.target.value })
+                    }
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label htmlFor="scoreDebtHigh">Penalización: deuda alta</label>
+                  <Input
+                    id="scoreDebtHigh"
+                    type="number"
+                    value={settingsData.score_debt_high_penalty}
+                    onChange={(e) =>
+                      setSettingsData({ ...settingsData, score_debt_high_penalty: e.target.value })
+                    }
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label htmlFor="scoreDebtVeryHigh">Penalización: deuda muy alta</label>
+                  <Input
+                    id="scoreDebtVeryHigh"
+                    type="number"
+                    value={settingsData.score_debt_very_high_penalty}
+                    onChange={(e) =>
+                      setSettingsData({ ...settingsData, score_debt_very_high_penalty: e.target.value })
+                    }
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label htmlFor="scoreRecent">Penalización: reporte reciente (90d)</label>
+                  <Input
+                    id="scoreRecent"
+                    type="number"
+                    value={settingsData.score_recent_penalty}
+                    onChange={(e) =>
+                      setSettingsData({ ...settingsData, score_recent_penalty: e.target.value })
+                    }
+                  />
+                </div>
+              </div>
+              <p className="text-xs text-slate-500 dark:text-gray-400">
+                Estos pesos afectan el score crediticio mostrado al consultar una persona.
+              </p>
+
+              <div className="flex flex-wrap gap-2">
+                <Button type="button" variant="outline" onClick={() => applyScorePreset("CONSERVADOR")}>
+                  Preset conservador
+                </Button>
+                <Button type="button" variant="outline" onClick={() => applyScorePreset("BALANCEADO")}>
+                  Preset balanceado
+                </Button>
+                <Button type="button" variant="outline" onClick={() => applyScorePreset("AGRESIVO")}>
+                  Preset agresivo
+                </Button>
+                <Button type="button" variant="secondary" onClick={resetScoreWeightsToDefault}>
+                  Restaurar valores por defecto
+                </Button>
+              </div>
+
               <Separator />
               <Button onClick={handleSaveSettings} disabled={saving}>
                 <Save className="w-4 h-4 mr-2" />

@@ -59,9 +59,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const stored = buildUserFromStorage();
-    setUser(stored);
-    setIsLoading(false);
+    const frame = window.requestAnimationFrame(() => {
+      const stored = buildUserFromStorage();
+      setUser(stored);
+      setIsLoading(false);
+    });
+
+    return () => window.cancelAnimationFrame(frame);
   }, []);
 
   const login = useCallback(

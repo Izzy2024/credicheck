@@ -1,20 +1,16 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Eye, EyeOff, Shield, CheckCircle, ArrowLeft } from "lucide-react";
-import Link from "next/link";
 import {
   Form,
   FormControl,
@@ -26,6 +22,7 @@ import {
 import { signupSchema, type SignupFormData } from "@/lib/validations/auth";
 
 export default function SignupPage() {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -49,41 +46,37 @@ export default function SignupPage() {
     setFormError("");
 
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/signup`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            firstName: data.firstName,
-            lastName: data.lastName,
-            email: data.email,
-            password: data.password,
-          }),
-        },
-      );
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/signup`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          firstName: data.firstName,
+          lastName: data.lastName,
+          email: data.email,
+          password: data.password,
+        }),
+      });
 
       const result = await response.json();
 
       if (result.success) {
-        setSuccessMessage(
-          "¡Usuario creado exitosamente! Ahora puedes iniciar sesión.",
-        );
+        setSuccessMessage("¡Usuario creado exitosamente! Ya puedes iniciar sesión.");
         form.reset();
-      } else {
-        if (result.error?.details) {
-          result.error.details.forEach((detail: any) => {
-            if (detail.path && detail.path.length > 0) {
-              form.setError(detail.path[0] as keyof SignupFormData, {
-                message: detail.message,
-              });
-            }
-          });
-        } else {
-          setFormError(result.error?.message || "Error al crear usuario");
-        }
+        return;
       }
-    } catch (error) {
+
+      if (result.error?.details) {
+        result.error.details.forEach((detail: { path?: string[]; message: string }) => {
+          if (detail.path && detail.path.length > 0) {
+            form.setError(detail.path[0] as keyof SignupFormData, {
+              message: detail.message,
+            });
+          }
+        });
+      } else {
+        setFormError(result.error?.message || "Error al crear usuario");
+      }
+    } catch {
       setFormError("Error de conexión con el servidor");
     } finally {
       setIsLoading(false);
@@ -91,42 +84,60 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-gray-900 dark:to-gray-950 flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-slate-800 dark:bg-gray-700 rounded-2xl mb-4">
-            <Shield className="w-8 h-8 text-cyan-400" />
+    <div className="min-h-screen bg-[#F5F7FB] flex items-center justify-center p-4 md:p-8">
+      <div className="w-full max-w-5xl grid lg:grid-cols-2 gap-6 lg:gap-10 items-center">
+        <div className="hidden lg:block space-y-5">
+          <div className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 bg-blue-50 border border-blue-100">
+            <Shield className="w-4 h-4 text-[#1F5EFF]" />
+            <span className="font-bold text-[#1F5EFF] text-xs tracking-[0.14em] uppercase">Crear cuenta</span>
           </div>
-          <h1 className="text-3xl font-bold text-slate-800 dark:text-gray-100 mb-2">
-            CrediCheck
+
+          <h1 className="text-4xl font-black tracking-tight text-slate-900 leading-tight">
+            Registra tu acceso para funciones premium
           </h1>
-          <p className="text-slate-600 dark:text-gray-400">
-            Crear una nueva cuenta
+          <p className="text-slate-500 text-base">
+            Crea tu cuenta y accede a agregar registros, disputar referencias y gestionar historial completo.
           </p>
+
+          <div className="rounded-2xl border border-blue-100 bg-white p-5">
+            <div className="flex items-center gap-2 text-sm text-slate-600">
+              <CheckCircle className="w-4 h-4 text-emerald-500" />
+              Puedes explorar la búsqueda pública sin necesidad de cuenta.
+            </div>
+            <Button
+              type="button"
+              variant="outline"
+              className="mt-4 border-slate-200"
+              onClick={() => router.push("/dashboard")}
+            >
+              <ArrowLeft className="w-4 h-4 mr-2" /> Volver al Dashboard
+            </Button>
+          </div>
         </div>
 
-        <Card className="border-0 dark:border-gray-700 shadow-xl dark:bg-gray-800">
-          <CardHeader className="space-y-1 pb-6">
-            <CardTitle className="text-2xl font-semibold text-center text-slate-800 dark:text-gray-100">
-              Registro de Usuario
-            </CardTitle>
-            <CardDescription className="text-center text-slate-600 dark:text-gray-400">
-              Completa el formulario para crear tu cuenta
+        <Card className="bg-white border border-slate-200 shadow-xl rounded-3xl">
+          <CardHeader className="space-y-2 pb-4">
+            <div className="flex items-center justify-center mb-2">
+              <div className="w-14 h-14 rounded-2xl bg-blue-50 flex items-center justify-center">
+                <Shield className="w-7 h-7 text-[#1F5EFF]" />
+              </div>
+            </div>
+            <CardTitle className="text-3xl font-black text-center text-slate-900">Crear cuenta</CardTitle>
+            <CardDescription className="text-center text-slate-500">
+              Completa el formulario para habilitar acceso premium
             </CardDescription>
           </CardHeader>
+
           <CardContent className="space-y-4">
             <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-4"
-              >
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                 {formError && (
                   <Alert variant="destructive">
                     <AlertDescription>{formError}</AlertDescription>
                   </Alert>
                 )}
                 {successMessage && (
-                  <Alert className="border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300">
+                  <Alert className="border-emerald-200 bg-emerald-50 text-emerald-800">
                     <CheckCircle className="h-4 w-4" />
                     <AlertDescription>{successMessage}</AlertDescription>
                   </Alert>
@@ -138,22 +149,23 @@ export default function SignupPage() {
                     name="firstName"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Nombre</FormLabel>
+                        <FormLabel className="text-slate-700">Nombre</FormLabel>
                         <FormControl>
-                          <Input {...field} />
+                          <Input className="h-12 border-slate-200 bg-slate-50" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
+
                   <FormField
                     control={form.control}
                     name="lastName"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Apellido</FormLabel>
+                        <FormLabel className="text-slate-700">Apellido</FormLabel>
                         <FormControl>
-                          <Input {...field} />
+                          <Input className="h-12 border-slate-200 bg-slate-50" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -166,9 +178,9 @@ export default function SignupPage() {
                   name="email"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Correo Electrónico</FormLabel>
+                      <FormLabel className="text-slate-700">Correo electrónico</FormLabel>
                       <FormControl>
-                        <Input type="email" {...field} />
+                        <Input type="email" className="h-12 border-slate-200 bg-slate-50" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -180,28 +192,23 @@ export default function SignupPage() {
                   name="password"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Contraseña</FormLabel>
-                      <div className="relative">
-                        <FormControl>
+                      <FormLabel className="text-slate-700">Contraseña</FormLabel>
+                      <FormControl>
+                        <div className="relative">
                           <Input
                             type={showPassword ? "text" : "password"}
+                            className="h-12 border-slate-200 bg-slate-50 pr-10"
                             {...field}
                           />
-                        </FormControl>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                          onClick={() => setShowPassword(!showPassword)}
-                        >
-                          {showPassword ? (
-                            <EyeOff className="h-4 w-4" />
-                          ) : (
-                            <Eye className="h-4 w-4" />
-                          )}
-                        </Button>
-                      </div>
+                          <button
+                            type="button"
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500"
+                            onClick={() => setShowPassword(!showPassword)}
+                          >
+                            {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                          </button>
+                        </div>
+                      </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -212,30 +219,23 @@ export default function SignupPage() {
                   name="confirmPassword"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Confirmar Contraseña</FormLabel>
-                      <div className="relative">
-                        <FormControl>
+                      <FormLabel className="text-slate-700">Confirmar contraseña</FormLabel>
+                      <FormControl>
+                        <div className="relative">
                           <Input
                             type={showConfirmPassword ? "text" : "password"}
+                            className="h-12 border-slate-200 bg-slate-50 pr-10"
                             {...field}
                           />
-                        </FormControl>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                          onClick={() =>
-                            setShowConfirmPassword(!showConfirmPassword)
-                          }
-                        >
-                          {showConfirmPassword ? (
-                            <EyeOff className="h-4 w-4" />
-                          ) : (
-                            <Eye className="h-4 w-4" />
-                          )}
-                        </Button>
-                      </div>
+                          <button
+                            type="button"
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500"
+                            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                          >
+                            {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                          </button>
+                        </div>
+                      </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -244,24 +244,21 @@ export default function SignupPage() {
                 <Button
                   type="submit"
                   disabled={isLoading}
-                  className="w-full h-11 bg-slate-800 hover:bg-slate-700 dark:bg-gray-700 dark:hover:bg-gray-600 text-white"
+                  className="w-full h-12 bg-[#1F5EFF] hover:bg-[#2F7BFF] hover:shadow-[0_0_0_3px_rgba(47,123,255,0.22)] text-white font-bold"
                 >
-                  {isLoading ? "Creando cuenta..." : "Crear Cuenta"}
+                  {isLoading ? "Creando cuenta..." : "CREAR CUENTA"}
                 </Button>
               </form>
             </Form>
+
+            <p className="text-center text-sm text-slate-500 mt-2">
+              ¿Ya tienes una cuenta?{" "}
+              <Link href="/login" className="text-[#1F5EFF] hover:text-[#2F7BFF] font-medium">
+                Inicia sesión
+              </Link>
+            </p>
           </CardContent>
         </Card>
-
-        <p className="text-center text-sm text-slate-500 dark:text-gray-400 mt-6">
-          ¿Ya tienes una cuenta?{" "}
-          <Link
-            href="/"
-            className="text-cyan-600 hover:text-cyan-700 dark:text-cyan-400 dark:hover:text-cyan-300 font-medium"
-          >
-            Inicia sesión
-          </Link>
-        </p>
       </div>
     </div>
   );

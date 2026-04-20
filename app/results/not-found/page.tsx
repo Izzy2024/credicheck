@@ -185,8 +185,9 @@ export default function NotFoundResults() {
           <Button
             variant="outline"
             className="dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700"
+            onClick={() => (window.location.href = "/login")}
           >
-            Descargar Reporte
+            Iniciar sesión (premium)
           </Button>
         </div>
       </main>

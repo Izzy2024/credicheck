@@ -12,6 +12,9 @@ type Notification = {
   title: string;
   message: string;
   status: "UNREAD" | "READ" | "ARCHIVED";
+  type?: string;
+  relatedRecordId?: string | null;
+  metadata?: string | null;
 };
 
 export default function NotificationsPage() {
@@ -22,7 +25,7 @@ export default function NotificationsPage() {
     const token = localStorage.getItem("accessToken");
 
     if (!token) {
-      window.location.href = "/";
+      window.location.href = "/login";
       return;
     }
 
@@ -69,7 +72,27 @@ export default function NotificationsPage() {
                 Centro de Funciones
               </Link>
             </Button>
-            <Button variant="outline" className="bg-transparent">
+            <Button
+              variant="outline"
+              className="bg-transparent"
+              onClick={async () => {
+                const token = localStorage.getItem("accessToken");
+                if (!token) {
+                  window.location.href = "/login";
+                  return;
+                }
+
+                await fetch(
+                  `${process.env.NEXT_PUBLIC_API_URL}/api/v1/notifications/mark-all-read`,
+                  {
+                    method: "PUT",
+                    headers: { Authorization: `Bearer ${token}` },
+                  },
+                );
+
+                window.location.reload();
+              }}
+            >
               <CheckCheck className="mr-2 h-4 w-4" />
               Marcar todas como leídas
             </Button>
@@ -109,14 +132,92 @@ export default function NotificationsPage() {
                     </p>
                   </div>
                   <div className="flex gap-2">
-                    <Button variant="outline" size="sm" className="bg-transparent">
-                      <CheckCheck className="mr-2 h-4 w-4" />
-                      Leer
-                    </Button>
-                    <Button variant="outline" size="sm" className="bg-transparent">
-                      <Archive className="mr-2 h-4 w-4" />
-                      Archivar
-                    </Button>
+                    {(() => {
+                      let disputeId: string | null = null;
+                      try {
+                        const meta = notification.metadata
+                          ? JSON.parse(notification.metadata)
+                          : null;
+                        disputeId = meta?.disputeId || null;
+                      } catch {
+                        disputeId = null;
+                      }
+
+                      return (
+                        <>
+                          {notification.type === "DISPUTE_UPDATE" && disputeId ? (
+                            <Button
+                              size="sm"
+                              onClick={async () => {
+                                const token = localStorage.getItem("accessToken");
+                                if (!token) {
+                                  window.location.href = "/login";
+                                  return;
+                                }
+                                await fetch(
+                                  `${process.env.NEXT_PUBLIC_API_URL}/api/v1/notifications/${notification.id}/read`,
+                                  {
+                                    method: "PUT",
+                                    headers: { Authorization: `Bearer ${token}` },
+                                  },
+                                );
+                                window.location.href = `/disputes?disputeId=${encodeURIComponent(disputeId)}`;
+                              }}
+                            >
+                              Ver disputa
+                            </Button>
+                          ) : null}
+
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="bg-transparent"
+                            onClick={async () => {
+                              const token = localStorage.getItem("accessToken");
+                              if (!token) {
+                                window.location.href = "/login";
+                                return;
+                              }
+                              await fetch(
+                                `${process.env.NEXT_PUBLIC_API_URL}/api/v1/notifications/${notification.id}/read`,
+                                {
+                                  method: "PUT",
+                                  headers: { Authorization: `Bearer ${token}` },
+                                },
+                              );
+                              window.location.reload();
+                            }}
+                          >
+                            <CheckCheck className="mr-2 h-4 w-4" />
+                            Leer
+                          </Button>
+
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="bg-transparent"
+                            onClick={async () => {
+                              const token = localStorage.getItem("accessToken");
+                              if (!token) {
+                                window.location.href = "/login";
+                                return;
+                              }
+                              await fetch(
+                                `${process.env.NEXT_PUBLIC_API_URL}/api/v1/notifications/${notification.id}/archive`,
+                                {
+                                  method: "PUT",
+                                  headers: { Authorization: `Bearer ${token}` },
+                                },
+                              );
+                              window.location.reload();
+                            }}
+                          >
+                            <Archive className="mr-2 h-4 w-4" />
+                            Archivar
+                          </Button>
+                        </>
+                      );
+                    })()}
                   </div>
                 </div>
               ))

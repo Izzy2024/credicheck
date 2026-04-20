@@ -72,7 +72,7 @@ export default function AdminDashboardPage() {
       try {
         const token = localStorage.getItem("accessToken");
         if (!token) {
-          window.location.href = "/";
+          window.location.href = "/login";
           return;
         }
 
@@ -82,7 +82,7 @@ export default function AdminDashboardPage() {
         );
 
         if (response.status === 401) {
-          window.location.href = "/";
+          window.location.href = "/login";
           return;
         }
 

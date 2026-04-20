@@ -60,7 +60,7 @@ export default function HistoryPage() {
       try {
         const token = localStorage.getItem("accessToken");
         if (!token) {
-          window.location.href = "/";
+          window.location.href = "/login";
           return;
         }
 
@@ -74,7 +74,7 @@ export default function HistoryPage() {
         );
 
         if (response.status === 401) {
-          window.location.href = "/";
+          window.location.href = "/login";
           return;
         }
 
@@ -173,7 +173,7 @@ export default function HistoryPage() {
     try {
       const token = localStorage.getItem("accessToken");
       if (!token) {
-        window.location.href = "/";
+        window.location.href = "/login";
         return;
       }
 
@@ -187,7 +187,7 @@ export default function HistoryPage() {
       );
 
       if (response.status === 401) {
-        window.location.href = "/";
+        window.location.href = "/login";
         return;
       }
 
@@ -197,9 +197,11 @@ export default function HistoryPage() {
 
       if (results.success && results.data.length > 0) {
         sessionStorage.setItem("searchResults", JSON.stringify(results.data));
+        sessionStorage.setItem("searchMeta", JSON.stringify(results.meta || {}));
         window.location.href = "/results/found";
       } else {
         sessionStorage.removeItem("searchResults");
+        sessionStorage.removeItem("searchMeta");
         window.location.href = "/results/not-found";
       }
     } catch (error) {

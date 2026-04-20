@@ -1,16 +1,21 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
@@ -26,23 +31,89 @@ import {
   CreditCard,
   Building,
   FileDown,
+  LockKeyhole,
+  LogIn,
+  Gavel,
 } from "lucide-react";
 import { FoundResultsSkeleton } from "@/components/loading-skeletons";
 
+type SearchResult = {
+  id: string;
+  fullName?: string;
+  idNumber?: string;
+  idType?: string;
+  phone?: string;
+  email?: string;
+  address?: string;
+  city?: string;
+  department?: string;
+  creditorName?: string;
+  debtAmount?: number | string;
+  debtStatus?: string;
+  debtDate?: string;
+  notes?: string;
+};
+
+type CreditScoreSummary = {
+  creditScore: number;
+  riskBand: "LOW" | "MEDIUM" | "HIGH";
+  alertLevel: "GREEN" | "AMBER" | "RED";
+  recommendation: string;
+  reasons: string[];
+  trend?: Array<{
+    label: "3M" | "6M" | "12M";
+    recordCount: number;
+    activeCount: number;
+    totalDebt: number;
+  }>;
+};
+
+type SearchMeta = {
+  creditScore?: CreditScoreSummary;
+};
+
+const toNumber = (value: number | string | undefined) => {
+  if (typeof value === "number") return value;
+  if (typeof value === "string") return parseFloat(value) || 0;
+  return 0;
+};
+
 export default function FoundResults() {
+  const router = useRouter();
+
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [searchDate, setSearchDate] = useState("");
   const [searchId, setSearchId] = useState("");
+  const [searchMeta, setSearchMeta] = useState<SearchMeta>({});
   const [loading, setLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  const [disputeDialogOpen, setDisputeDialogOpen] = useState(false);
+  const [selectedReference, setSelectedReference] = useState<SearchResult | null>(null);
+  const [disputeReason, setDisputeReason] = useState("");
+  const [disputeDescription, setDisputeDescription] = useState("");
+  const [disputeFiles, setDisputeFiles] = useState<FileList | null>(null);
+  const [disputeSubmitting, setDisputeSubmitting] = useState(false);
+  const [disputeError, setDisputeError] = useState<string | null>(null);
 
   useEffect(() => {
     const query = sessionStorage.getItem("searchQuery");
     const results = sessionStorage.getItem("searchResults");
+    const meta = sessionStorage.getItem("searchMeta");
+
+    setIsAuthenticated(!!localStorage.getItem("accessToken"));
 
     if (query && results) {
       setSearchQuery(query);
       setSearchResults(JSON.parse(results));
+      if (meta) {
+        try {
+          setSearchMeta(JSON.parse(meta));
+        } catch {
+          setSearchMeta({});
+        }
+      }
       setSearchDate(
         new Date().toLocaleDateString("es-ES", {
           year: "numeric",
@@ -52,14 +123,16 @@ export default function FoundResults() {
           minute: "2-digit",
         }),
       );
-      setSearchId(
-        "CRD-" + Math.random().toString(36).substr(2, 9).toUpperCase(),
-      );
-    } else {
-      window.location.href = "/dashboard";
+      setSearchId(`CRD-${Math.random().toString(36).slice(2, 11).toUpperCase()}`);
+      setLoading(false);
+      return;
     }
-    setLoading(false);
-  }, []);
+
+    router.push("/dashboard");
+  }, [router]);
+
+  const personData = searchResults.length > 0 ? searchResults[0] : null;
+  const totalAmount = searchResults.reduce((acc, ref) => acc + toNumber(ref.debtAmount), 0);
 
   const getSeverityColor = (severity: string) => {
     switch (severity) {
@@ -74,13 +147,102 @@ export default function FoundResults() {
     }
   };
 
+  const scoreSummary = searchMeta.creditScore;
+
+  const getAlertMessage = () => {
+    if (!scoreSummary) return null;
+    if (scoreSummary.alertLevel === "RED") {
+      return "ALERTA CRÍTICA: esta persona presenta alto riesgo crediticio por referencias negativas.";
+    }
+    if (scoreSummary.alertLevel === "AMBER") {
+      return "ALERTA PREVENTIVA: se recomienda validar garantías o soportes adicionales.";
+    }
+    return "RIESGO CONTROLADO: no hay señales críticas en la consulta actual.";
+  };
+
+  const scoreBadgeClass =
+    !scoreSummary || scoreSummary.alertLevel === "GREEN"
+      ? "bg-emerald-100 text-emerald-800 border-emerald-200"
+      : scoreSummary.alertLevel === "AMBER"
+        ? "bg-amber-100 text-amber-800 border-amber-200"
+        : "bg-red-100 text-red-800 border-red-200";
+
+  const openDisputeDialog = (reference: SearchResult) => {
+    setSelectedReference(reference);
+    setDisputeReason("");
+    setDisputeDescription("");
+    setDisputeFiles(null);
+    setDisputeError(null);
+    setDisputeDialogOpen(true);
+  };
+
+  const submitDispute = async () => {
+    if (!selectedReference?.id) return;
+
+    try {
+      setDisputeSubmitting(true);
+      setDisputeError(null);
+
+      const token = localStorage.getItem("accessToken");
+      if (!token) {
+        router.push("/login");
+        return;
+      }
+
+      const createResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/disputes`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          recordId: selectedReference.id,
+          reason: disputeReason,
+          description: disputeDescription,
+        }),
+      });
+
+      const createResult = await createResponse.json();
+
+      if (!createResponse.ok || !createResult?.success) {
+        setDisputeError(
+          createResult?.error ??
+            createResult?.message ??
+            "No se pudo crear la disputa. Verifica los datos.",
+        );
+        return;
+      }
+
+      const disputeId = createResult.data?.id;
+
+      if (disputeId && disputeFiles && disputeFiles.length > 0) {
+        const formData = new FormData();
+        Array.from(disputeFiles).forEach((file) => formData.append("files", file));
+
+        await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/disputes/${disputeId}/attachments`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: formData,
+        });
+      }
+
+      setDisputeDialogOpen(false);
+      router.push("/disputes");
+    } catch (error) {
+      setDisputeError(error instanceof Error ? error.message : "Error creando la disputa");
+    } finally {
+      setDisputeSubmitting(false);
+    }
+  };
+
   const generatePDF = () => {
     const doc = new jsPDF();
-    const companyName = "CrediCheck";
 
     doc.setFontSize(20);
     doc.setTextColor(30, 41, 59);
-    doc.text(companyName, 14, 22);
+    doc.text("CrediCheck", 14, 22);
     doc.setFontSize(10);
     doc.setTextColor(100, 116, 139);
     doc.text("Reporte de Referencia Crediticia", 14, 30);
@@ -100,17 +262,12 @@ export default function FoundResults() {
         head: [["Campo", "Valor"]],
         body: [
           ["Nombre Completo", personData.fullName || ""],
-          [
-            "Identificación",
-            `${personData.idNumber || ""} (${personData.idType || ""})`,
-          ],
+          ["Identificación", `${personData.idNumber || ""} (${personData.idType || ""})`],
           ["Teléfono", personData.phone || "N/A"],
           ["Email", personData.email || "N/A"],
           [
             "Dirección",
-            personData.address
-              ? `${personData.address}, ${personData.city || ""}`
-              : "N/A",
+            personData.address ? `${personData.address}, ${personData.city || ""}` : "N/A",
           ],
         ],
         theme: "striped",
@@ -119,23 +276,21 @@ export default function FoundResults() {
       });
     }
 
-    const currentY = (doc as any).lastAutoTable?.finalY || 120;
+    const currentY = (doc as unknown as { lastAutoTable?: { finalY?: number } }).lastAutoTable?.finalY || 120;
     doc.setFontSize(14);
     doc.setTextColor(30, 41, 59);
     doc.text("Referencias Crediticias Negativas", 14, currentY + 10);
 
-    const refBody = searchResults.map((ref: any) => [
-      ref.creditorName || "",
-      `$${new Intl.NumberFormat("es-CO").format(typeof ref.debtAmount === "string" ? parseFloat(ref.debtAmount) : ref.debtAmount)}`,
-      ref.debtStatus || "",
-      new Date(ref.debtDate).toLocaleDateString("es-ES"),
-      ref.notes || "",
-    ]);
-
     autoTable(doc, {
       startY: currentY + 14,
       head: [["Acreedor", "Monto", "Estado", "Fecha", "Notas"]],
-      body: refBody,
+      body: searchResults.map((ref) => [
+        ref.creditorName || "",
+        `$${new Intl.NumberFormat("es-CO").format(toNumber(ref.debtAmount))}`,
+        ref.debtStatus || "",
+        ref.debtDate ? new Date(ref.debtDate).toLocaleDateString("es-ES") : "",
+        ref.notes || "",
+      ]),
       theme: "striped",
       headStyles: { fillColor: [30, 41, 59] },
       margin: { left: 14, right: 14 },
@@ -151,309 +306,371 @@ export default function FoundResults() {
       doc.text("CrediCheck - Reporte confidencial", 100, 287);
     }
 
-    doc.save(
-      `reporte_${searchQuery}_${new Date().toISOString().split("T")[0]}.pdf`,
-    );
+    doc.save(`reporte_${searchQuery}_${new Date().toISOString().split("T")[0]}.pdf`);
   };
 
-  if (loading) {
-    return <FoundResultsSkeleton />;
-  }
-
-  const personData = searchResults.length > 0 ? searchResults[0] : null;
+  if (loading) return <FoundResultsSkeleton />;
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-gray-900">
-      <header className="bg-white dark:bg-gray-800 border-b border-slate-200 dark:border-gray-700 px-6 py-4">
-        <div className="flex items-center justify-between max-w-6xl mx-auto">
+    <div className="min-h-screen bg-background">
+      <Dialog open={disputeDialogOpen} onOpenChange={setDisputeDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Apelación / Disputa</DialogTitle>
+            <DialogDescription>
+              Completa la información para que el administrador revise el caso.
+            </DialogDescription>
+          </DialogHeader>
+
+          {disputeError && (
+            <Alert variant="destructive">
+              <AlertDescription>{disputeError}</AlertDescription>
+            </Alert>
+          )}
+
+          <div className="space-y-4">
+            <div className="rounded-lg border p-3 text-sm">
+              <div className="font-medium">Registro</div>
+              <div className="text-muted-foreground">ID: {selectedReference?.id || "-"}</div>
+              <div className="text-muted-foreground">Acreedor: {selectedReference?.creditorName || "-"}</div>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Motivo (breve)</label>
+              <Input
+                value={disputeReason}
+                onChange={(e) => setDisputeReason(e.target.value)}
+                placeholder="Ej: Deuda pagada, identidad equivocada, monto incorrecto..."
+                minLength={10}
+                maxLength={500}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Descripción (detalle)</label>
+              <Textarea
+                value={disputeDescription}
+                onChange={(e) => setDisputeDescription(e.target.value)}
+                placeholder="Explica qué pasó, fechas, pruebas, y qué solución solicitas."
+                rows={5}
+                minLength={20}
+                maxLength={2000}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Evidencia (opcional)</label>
+              <Input type="file" multiple onChange={(e) => setDisputeFiles(e.target.files)} />
+              <p className="text-xs text-muted-foreground">Puedes adjuntar hasta 5 archivos.</p>
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setDisputeDialogOpen(false)} disabled={disputeSubmitting}>
+              Cancelar
+            </Button>
+            <Button
+              onClick={submitDispute}
+              disabled={disputeSubmitting || disputeReason.trim().length < 10 || disputeDescription.trim().length < 20}
+            >
+              {disputeSubmitting ? "Enviando..." : "Enviar disputa"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <header className="sticky top-0 z-30 border-b border-border bg-card/80 backdrop-blur px-6 py-4">
+        <div className="max-w-7xl mx-auto flex items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <div className="flex items-center justify-center w-10 h-10 bg-slate-800 dark:bg-gray-700 rounded-xl">
-              <Shield className="w-5 h-5 text-cyan-400" />
+            <div className="w-10 h-10 rounded-xl bg-primary/15 flex items-center justify-center">
+              <Shield className="w-5 h-5 text-primary" />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-slate-800 dark:text-gray-100">
-                CrediCheck
-              </h1>
-              <p className="text-sm text-slate-600 dark:text-gray-300">
-                Resultados de Búsqueda
+              <h1 className="font-bold">CrediCheck</h1>
+              <p className="text-sm text-muted-foreground">
+                {isAuthenticated ? "Resultados de búsqueda" : "Resultados (vista previa)"}
               </p>
             </div>
           </div>
 
-          <Button
-            variant="outline"
-            onClick={() => (window.location.href = "/dashboard")}
-            className="flex items-center gap-2 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700"
-          >
+          <Button variant="outline" onClick={() => router.push("/dashboard")} className="gap-2">
             <ArrowLeft className="w-4 h-4" />
             Volver al Dashboard
           </Button>
         </div>
       </header>
 
-      <main className="max-w-6xl mx-auto px-6 py-8">
-        <div className="mb-6">
-          <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-gray-300 mb-2">
-            <Search className="w-4 h-4" />
-            <span>Búsqueda realizada: &quot;{searchQuery}&quot;</span>
-          </div>
-          <div className="flex items-center gap-4 text-sm text-slate-500 dark:text-gray-400">
-            <div className="flex items-center gap-1">
-              <Calendar className="w-4 h-4" />
-              <span>{searchDate}</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <span>ID: {searchId}</span>
-            </div>
-          </div>
-        </div>
-
-        <Alert className="border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950 mb-8">
-          <AlertTriangle className="h-5 w-5 text-red-600 dark:text-red-400" />
-          <AlertDescription className="text-red-800 dark:text-red-300 font-medium">
-            <strong>Referencias negativas encontradas:</strong> Se encontraron{" "}
-            {searchResults.length} referencias crediticias negativas para esta
-            persona.
-          </AlertDescription>
-        </Alert>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {personData && (
-            <div className="lg:col-span-1">
-              <Card className="border-0 shadow-sm dark:bg-gray-800">
-                <CardHeader>
-                  <CardTitle className="text-lg text-slate-800 dark:text-gray-100">
-                    Información Personal
-                  </CardTitle>
-                  <CardDescription className="dark:text-gray-400">
-                    Datos de la persona consultada
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="space-y-3">
-                    <div>
-                      <h4 className="font-medium text-slate-800 dark:text-gray-100 mb-1">
-                        Nombre Completo
-                      </h4>
-                      <p className="text-slate-600 dark:text-gray-300">
-                        {personData.fullName}
-                      </p>
-                    </div>
-                    <div>
-                      <h4 className="font-medium text-slate-800 dark:text-gray-100 mb-1">
-                        Identificación
-                      </h4>
-                      <p className="text-slate-600 dark:text-gray-300">
-                        {personData.idNumber} ({personData.idType})
-                      </p>
-                    </div>
-                    {personData.phone && (
-                      <div>
-                        <h4 className="font-medium text-slate-800 dark:text-gray-100 mb-1 flex items-center gap-2">
-                          <Phone className="w-4 h-4" /> Teléfono
-                        </h4>
-                        <p className="text-slate-600 dark:text-gray-300">
-                          {personData.phone}
-                        </p>
-                      </div>
-                    )}
-                    {personData.email && (
-                      <div>
-                        <h4 className="font-medium text-slate-800 dark:text-gray-100 mb-1 flex items-center gap-2">
-                          <Mail className="w-4 h-4" /> Email
-                        </h4>
-                        <p className="text-slate-600 dark:text-gray-300">
-                          {personData.email}
-                        </p>
-                      </div>
-                    )}
-                    {personData.address && (
-                      <div>
-                        <h4 className="font-medium text-slate-800 dark:text-gray-100 mb-1 flex items-center gap-2">
-                          <MapPin className="w-4 h-4" /> Dirección
-                        </h4>
-                        <p className="text-slate-600 dark:text-gray-300 text-sm">
-                          {personData.address}, {personData.city},{" "}
-                          {personData.department}
-                        </p>
-                      </div>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          )}
-
-          <div className="lg:col-span-2">
-            <div className="space-y-6">
-              <div>
-                <h2 className="text-xl font-bold text-slate-800 dark:text-gray-100 mb-2">
-                  Referencias Crediticias Negativas
-                </h2>
-                <p className="text-slate-600 dark:text-gray-300">
-                  Se encontraron {searchResults.length} referencias en nuestra
-                  base de datos
-                </p>
-              </div>
-
-              {searchResults.map((reference) => (
-                <Card
-                  key={reference.id}
-                  className="border-0 shadow-sm dark:bg-gray-800"
-                >
-                  <CardHeader className="pb-4">
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <CardTitle className="text-lg text-slate-800 dark:text-gray-100 flex items-center gap-2">
-                          <Building className="w-5 h-5" />
-                          {reference.creditorName}
-                        </CardTitle>
-                        <CardDescription className="mt-1 dark:text-gray-400">
-                          Reportado el{" "}
-                          {new Date(reference.debtDate).toLocaleDateString(
-                            "es-ES",
-                            { year: "numeric", month: "long", day: "numeric" },
-                          )}
-                        </CardDescription>
-                      </div>
-                      <Badge className={getSeverityColor("high")}>
-                        {reference.debtStatus}
-                      </Badge>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      <div className="p-3 bg-slate-50 dark:bg-gray-900 rounded-lg">
-                        <h4 className="font-medium text-slate-800 dark:text-gray-100 mb-1 flex items-center gap-2">
-                          <CreditCard className="w-4 h-4" /> Monto
-                        </h4>
-                        <p className="text-lg font-semibold text-slate-700 dark:text-gray-200">
-                          $
-                          {new Intl.NumberFormat("es-CO").format(
-                            typeof reference.debtAmount === "string"
-                              ? parseFloat(reference.debtAmount)
-                              : reference.debtAmount,
-                          )}
-                        </p>
-                      </div>
-                      <div className="p-3 bg-slate-50 dark:bg-gray-900 rounded-lg">
-                        <h4 className="font-medium text-slate-800 dark:text-gray-100 mb-1 flex items-center gap-2">
-                          <Calendar className="w-4 h-4" /> Fecha de Reporte
-                        </h4>
-                        <p className="text-slate-600 dark:text-gray-300">
-                          {new Date(reference.debtDate).toLocaleDateString(
-                            "es-ES",
-                          )}
-                        </p>
-                      </div>
-                      <div className="p-3 bg-slate-50 dark:bg-gray-900 rounded-lg">
-                        <h4 className="font-medium text-slate-800 dark:text-gray-100 mb-1">
-                          Estado Actual
-                        </h4>
-                        <Badge className={getSeverityColor("high")}>
-                          {reference.debtStatus}
-                        </Badge>
-                      </div>
-                    </div>
-                    {reference.notes && (
-                      <div className="p-4 bg-orange-50 dark:bg-orange-950 border border-orange-200 dark:border-orange-800 rounded-lg">
-                        <h4 className="font-medium text-orange-800 dark:text-orange-300 mb-2">
-                          Descripción del Caso
-                        </h4>
-                        <p className="text-orange-700 dark:text-orange-300 text-sm">
-                          {reference.notes}
-                        </p>
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        <Card className="border-0 shadow-sm mt-8 dark:bg-gray-800">
-          <CardHeader>
-            <CardTitle className="text-lg text-slate-800 dark:text-gray-100">
-              Resumen de la Consulta
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-              <div className="p-4 bg-red-50 dark:bg-red-950 rounded-lg text-center">
-                <h4 className="font-semibold text-red-800 dark:text-red-300 mb-1">
-                  Referencias Encontradas
-                </h4>
-                <p className="text-2xl font-bold text-red-600 dark:text-red-400">
-                  {searchResults.length}
-                </p>
-              </div>
-              <div className="p-4 bg-orange-50 dark:bg-orange-950 rounded-lg text-center">
-                <h4 className="font-semibold text-orange-800 dark:text-orange-300 mb-1">
-                  Monto Total
-                </h4>
-                <p className="text-2xl font-bold text-orange-600 dark:text-orange-400">
-                  $
-                  {new Intl.NumberFormat("es-CO").format(
-                    searchResults.reduce(
-                      (acc, ref) =>
-                        acc +
-                        (typeof ref.debtAmount === "string"
-                          ? parseFloat(ref.debtAmount)
-                          : ref.debtAmount),
-                      0,
-                    ),
-                  )}
-                </p>
-              </div>
-              <div className="p-4 bg-blue-50 dark:bg-blue-950 rounded-lg text-center">
-                <h4 className="font-semibold text-blue-800 dark:text-blue-300 mb-1">
-                  Tiempo de Respuesta
-                </h4>
-                <div className="flex items-center justify-center gap-1 text-blue-600 dark:text-blue-400">
-                  <Clock className="w-4 h-4" />
-                  <span className="text-2xl font-bold">1.8s</span>
-                </div>
-              </div>
-              <div className="p-4 bg-emerald-50 dark:bg-emerald-950 rounded-lg text-center">
-                <h4 className="font-semibold text-emerald-800 dark:text-emerald-300 mb-1">
-                  Fuentes Consultadas
-                </h4>
-                <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">
-                  1
-                </p>
-              </div>
-            </div>
-
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button
-                onClick={() => (window.location.href = "/dashboard")}
-                className="bg-slate-800 hover:bg-slate-700 dark:bg-gray-700 dark:hover:bg-gray-600 text-white"
-              >
-                <Search className="w-4 h-4 mr-2" />
-                Realizar Nueva Búsqueda
-              </Button>
-
-              <Button
-                variant="outline"
-                onClick={generatePDF}
-                className="dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700"
-              >
-                <FileDown className="w-4 h-4 mr-2" />
-                Descargar Reporte Completo
-              </Button>
-
-              <Button
-                variant="outline"
-                onClick={generatePDF}
-                className="dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700"
-              >
-                <FileDown className="w-4 h-4 mr-2" />
-                Exportar a PDF
-              </Button>
+      <main className="max-w-7xl mx-auto p-6 space-y-6">
+        <Card>
+          <CardContent className="p-5">
+            <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
+              <span className="inline-flex items-center gap-1.5">
+                <Search className="w-4 h-4" /> Búsqueda: "{searchQuery}"
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <Calendar className="w-4 h-4" /> {searchDate}
+              </span>
+              <Badge variant="secondary">ID: {searchId}</Badge>
             </div>
           </CardContent>
         </Card>
+
+        {!isAuthenticated ? (
+          <>
+            <Alert className="border-red-200 bg-red-50 dark:bg-red-950 dark:border-red-900">
+              <AlertTriangle className="h-5 w-5 text-red-600" />
+              <AlertDescription className="text-red-800 dark:text-red-300 font-medium">
+                Coincidencias encontradas: {searchResults.length} registros relacionados.
+              </AlertDescription>
+            </Alert>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <LockKeyhole className="w-5 h-5" /> Reporte protegido
+                </CardTitle>
+                <CardDescription>
+                  Inicia sesión para ver detalle completo, exportar PDF y disputar referencias.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-5">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="rounded-lg border bg-muted/30 p-4">
+                    <p className="text-sm text-muted-foreground">Nombre</p>
+                    <p className="text-lg font-semibold">{personData?.fullName || "***"}</p>
+                  </div>
+                  <div className="rounded-lg border bg-muted/30 p-4">
+                    <p className="text-sm text-muted-foreground">Identificación</p>
+                    <p className="text-lg font-semibold">
+                      {(personData?.idType || "") + " " + (personData?.idNumber || "")}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="rounded-lg border p-4 text-sm text-muted-foreground">
+                  <ul className="list-disc pl-5 space-y-1">
+                    <li>Ver acreedor, montos y fechas completas</li>
+                    <li>Exportar reporte en PDF</li>
+                    <li>Apelar/disputar una referencia encontrada</li>
+                    <li>Revisar historial y notificaciones</li>
+                  </ul>
+                </div>
+
+                <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                  <Button onClick={() => router.push("/login")}>
+                    <LogIn className="w-4 h-4 mr-2" /> Iniciar sesión
+                  </Button>
+                  <Button variant="outline" onClick={() => router.push("/signup")}>Crear cuenta</Button>
+                </div>
+              </CardContent>
+            </Card>
+          </>
+        ) : (
+          <>
+            {scoreSummary && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Shield className="w-5 h-5" /> Score crediticio de consulta
+                  </CardTitle>
+                  <CardDescription>
+                    Evaluación automática basada en referencias, montos y recurrencia.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div className="flex flex-wrap items-center gap-3">
+                    <Badge className={scoreBadgeClass}>Score {scoreSummary.creditScore}/100</Badge>
+                    <Badge variant="outline">Riesgo {scoreSummary.riskBand}</Badge>
+                    <Badge variant="outline">Alerta {scoreSummary.alertLevel}</Badge>
+                  </div>
+                  <Alert className={scoreSummary.alertLevel === "RED" ? "border-red-200 bg-red-50" : scoreSummary.alertLevel === "AMBER" ? "border-amber-200 bg-amber-50" : "border-emerald-200 bg-emerald-50"}>
+                    <AlertTriangle className="h-5 w-5" />
+                    <AlertDescription className="font-medium">{getAlertMessage()}</AlertDescription>
+                  </Alert>
+
+                  <div className="rounded-lg border p-3 bg-muted/20">
+                    <p className="text-xs uppercase tracking-wide text-muted-foreground">Recomendación automática</p>
+                    <p className="text-sm font-medium mt-1">{scoreSummary.recommendation}</p>
+                  </div>
+
+                  {scoreSummary.trend && scoreSummary.trend.length > 0 && (
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+                      {scoreSummary.trend.map((window) => (
+                        <div key={window.label} className="rounded-lg border p-3">
+                          <p className="text-xs text-muted-foreground">Tendencia {window.label}</p>
+                          <p className="text-sm font-semibold">{window.recordCount} registros</p>
+                          <p className="text-xs text-muted-foreground">Activas: {window.activeCount}</p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {scoreSummary.reasons.length > 0 && (
+                    <ul className="list-disc pl-5 text-sm text-muted-foreground space-y-1">
+                      {scoreSummary.reasons.slice(0, 4).map((reason, idx) => (
+                        <li key={`${reason}-${idx}`}>{reason}</li>
+                      ))}
+                    </ul>
+                  )}
+                </CardContent>
+              </Card>
+            )}
+
+            <Alert className="border-red-200 bg-red-50 dark:bg-red-950 dark:border-red-900">
+              <AlertTriangle className="h-5 w-5 text-red-600" />
+              <AlertDescription className="text-red-800 dark:text-red-300 font-medium">
+                Referencias negativas encontradas: {searchResults.length}
+              </AlertDescription>
+            </Alert>
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-1 space-y-6">
+                {personData && (
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Información personal</CardTitle>
+                      <CardDescription>Datos de la persona consultada</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4 text-sm">
+                      <div>
+                        <p className="text-muted-foreground">Nombre completo</p>
+                        <p className="font-medium">{personData.fullName}</p>
+                      </div>
+                      <div>
+                        <p className="text-muted-foreground">Identificación</p>
+                        <p className="font-medium">{personData.idNumber} ({personData.idType})</p>
+                      </div>
+                      {personData.phone && (
+                        <div className="flex items-center gap-2">
+                          <Phone className="w-4 h-4 text-muted-foreground" />
+                          <span>{personData.phone}</span>
+                        </div>
+                      )}
+                      {personData.email && (
+                        <div className="flex items-center gap-2">
+                          <Mail className="w-4 h-4 text-muted-foreground" />
+                          <span>{personData.email}</span>
+                        </div>
+                      )}
+                      {personData.address && (
+                        <div className="flex items-start gap-2">
+                          <MapPin className="w-4 h-4 text-muted-foreground mt-0.5" />
+                          <span>
+                            {personData.address}, {personData.city}, {personData.department}
+                          </span>
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                )}
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Resumen</CardTitle>
+                  </CardHeader>
+                  <CardContent className="grid grid-cols-2 gap-3">
+                    <div className="rounded-lg bg-red-50 dark:bg-red-950 p-3 text-center">
+                      <p className="text-xs text-red-700 dark:text-red-300">Referencias</p>
+                      <p className="text-xl font-bold text-red-600">{searchResults.length}</p>
+                    </div>
+                    <div className="rounded-lg bg-orange-50 dark:bg-orange-950 p-3 text-center">
+                      <p className="text-xs text-orange-700 dark:text-orange-300">Monto total</p>
+                      <p className="text-lg font-bold text-orange-600">
+                        ${new Intl.NumberFormat("es-CO").format(totalAmount)}
+                      </p>
+                    </div>
+                    <div className="rounded-lg bg-blue-50 dark:bg-blue-950 p-3 text-center">
+                      <p className="text-xs text-blue-700 dark:text-blue-300">Respuesta</p>
+                      <p className="text-lg font-bold text-blue-600 inline-flex items-center gap-1">
+                        <Clock className="w-4 h-4" /> 1.8s
+                      </p>
+                    </div>
+                    <div className="rounded-lg bg-emerald-50 dark:bg-emerald-950 p-3 text-center">
+                      <p className="text-xs text-emerald-700 dark:text-emerald-300">Fuentes</p>
+                      <p className="text-xl font-bold text-emerald-600">1</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              <div className="lg:col-span-2 space-y-4">
+                <div>
+                  <h2 className="text-xl font-bold">Referencias crediticias negativas</h2>
+                  <p className="text-sm text-muted-foreground">
+                    Se encontraron {searchResults.length} registros en la base de datos.
+                  </p>
+                </div>
+
+                {searchResults.map((reference) => (
+                  <Card key={reference.id}>
+                    <CardHeader>
+                      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+                        <div>
+                          <CardTitle className="text-lg flex items-center gap-2">
+                            <Building className="w-5 h-5" /> {reference.creditorName}
+                          </CardTitle>
+                          <CardDescription>
+                            Reportado el {reference.debtDate ? new Date(reference.debtDate).toLocaleDateString("es-ES") : "-"}
+                          </CardDescription>
+                        </div>
+
+                        <div className="flex flex-col sm:items-end gap-2">
+                          <Badge className={getSeverityColor("high")}>{reference.debtStatus}</Badge>
+                          <Button variant="outline" onClick={() => openDisputeDialog(reference)}>
+                            <Gavel className="w-4 h-4 mr-2" /> Apelar / Disputar
+                          </Button>
+                        </div>
+                      </div>
+                    </CardHeader>
+
+                    <CardContent className="space-y-3">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <div className="rounded-lg border bg-muted/30 p-3">
+                          <p className="text-xs text-muted-foreground flex items-center gap-1">
+                            <CreditCard className="w-3.5 h-3.5" /> Monto
+                          </p>
+                          <p className="font-semibold text-lg">
+                            ${new Intl.NumberFormat("es-CO").format(toNumber(reference.debtAmount))}
+                          </p>
+                        </div>
+                        <div className="rounded-lg border bg-muted/30 p-3">
+                          <p className="text-xs text-muted-foreground flex items-center gap-1">
+                            <Calendar className="w-3.5 h-3.5" /> Fecha de reporte
+                          </p>
+                          <p className="font-medium">
+                            {reference.debtDate ? new Date(reference.debtDate).toLocaleDateString("es-ES") : "-"}
+                          </p>
+                        </div>
+                        <div className="rounded-lg border bg-muted/30 p-3">
+                          <p className="text-xs text-muted-foreground">Estado</p>
+                          <Badge className={getSeverityColor("high")}>{reference.debtStatus}</Badge>
+                        </div>
+                      </div>
+
+                      {reference.notes && (
+                        <div className="rounded-lg border border-orange-200 dark:border-orange-900 bg-orange-50 dark:bg-orange-950 p-3">
+                          <p className="text-sm font-medium text-orange-800 dark:text-orange-300 mb-1">
+                            Descripción del caso
+                          </p>
+                          <p className="text-sm text-orange-700 dark:text-orange-300">{reference.notes}</p>
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                ))}
+
+                <div className="flex flex-col sm:flex-row gap-3 justify-end pt-2">
+                  <Button variant="outline" onClick={() => router.push("/dashboard")}>
+                    <Search className="w-4 h-4 mr-2" /> Nueva búsqueda
+                  </Button>
+                  <Button onClick={generatePDF}>
+                    <FileDown className="w-4 h-4 mr-2" /> Exportar a PDF
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
       </main>
     </div>
   );

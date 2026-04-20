@@ -106,7 +106,7 @@ export default function AddRecord() {
     try {
       const token = localStorage.getItem("accessToken");
       if (!token) {
-        window.location.href = "/";
+        window.location.href = "/login";
         return;
       }
 
@@ -142,7 +142,7 @@ export default function AddRecord() {
       );
 
       if (response.status === 401) {
-        window.location.href = "/";
+        window.location.href = "/login";
         return;
       }
 

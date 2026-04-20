@@ -1,14 +1,13 @@
 import { Shield, Search, User, AlertTriangle, CheckCircle, CreditCard } from "lucide-react"
+import { Button } from "@/components/ui/button"
 import {
-  Button,
   Card,
   CardHeader,
   CardTitle,
   CardDescription,
   CardContent,
-  Alert,
-  AlertDescription,
-} from "ui-components"
+} from "@/components/ui/card"
+import { Alert, AlertDescription } from "@/components/ui/alert"
 
 export default function StyleGuide() {
   return (

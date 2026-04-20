@@ -34,6 +34,7 @@ export default function AdminDisputesPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [notesById, setNotesById] = useState<Record<string, string>>({});
+  const [markPaidById, setMarkPaidById] = useState<Record<string, boolean>>({});
 
   const loadPendingDisputes = async () => {
     try {
@@ -42,7 +43,7 @@ export default function AdminDisputesPage() {
 
       const token = localStorage.getItem("accessToken");
       if (!token) {
-        window.location.href = "/";
+        window.location.href = "/login";
         return;
       }
 
@@ -56,7 +57,7 @@ export default function AdminDisputesPage() {
       );
 
       if (response.status === 401) {
-        window.location.href = "/";
+        window.location.href = "/login";
         return;
       }
 
@@ -88,7 +89,7 @@ export default function AdminDisputesPage() {
       setError(null);
       const token = localStorage.getItem("accessToken");
       if (!token) {
-        window.location.href = "/";
+        window.location.href = "/login";
         return;
       }
 
@@ -103,6 +104,7 @@ export default function AdminDisputesPage() {
           body: JSON.stringify({
             status,
             adminNotes: notesById[id] || undefined,
+            applyPaidStatus: status === "APPROVED" ? !!markPaidById[id] : false,
           }),
         },
       );
@@ -187,6 +189,20 @@ export default function AdminDisputesPage() {
                     }
                   />
                 </div>
+
+                <label className="flex items-center gap-2 text-sm">
+                  <input
+                    type="checkbox"
+                    checked={!!markPaidById[dispute.id]}
+                    onChange={(event) =>
+                      setMarkPaidById((current) => ({
+                        ...current,
+                        [dispute.id]: event.target.checked,
+                      }))
+                    }
+                  />
+                  Al aprobar, marcar el registro como PAGADA automáticamente
+                </label>
 
                 <div className="flex gap-2">
                   <Button onClick={() => resolveDispute(dispute.id, "APPROVED")}>

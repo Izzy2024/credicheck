@@ -1,12 +1,46 @@
 "use client";
 
-import { FormEvent, useEffect, useState } from "react";
-import React from "react";
+import React, { Suspense, useEffect, useMemo, useRef, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import {
+  Calendar,
+  Download,
+  Eye,
+  FileUp,
+  Loader2,
+  MessageSquare,
+  Paperclip,
+  Send,
+  Shield,
+} from "lucide-react";
 
 type DisputeStatus = "PENDING" | "APPROVED" | "REJECTED";
+
+type DisputeMessage = {
+  id: string;
+  message: string;
+  createdAt: string;
+  user: {
+    id: string;
+    firstName: string;
+    lastName: string;
+    role: string;
+  };
+};
+
+type DisputeAttachment = {
+  id: string;
+  fileName: string;
+  mimeType?: string;
+  sizeBytes?: number;
+  createdAt?: string;
+};
 
 type DisputeRecord = {
   id: string;
@@ -16,12 +50,23 @@ type DisputeRecord = {
   adminNotes: string | null;
   createdAt: string;
   recordId: string;
-  attachments?: Array<{ id: string; fileName: string }>;
+  record?: {
+    id: string;
+    fullName: string;
+    idType: string;
+    idNumber: string;
+    debtAmount: unknown;
+    creditorName: string;
+    debtStatus: string;
+  } | null;
+  attachments?: DisputeAttachment[];
+  messages?: DisputeMessage[];
 };
 
 type ApiResponse<T> = {
   success: boolean;
   data: T;
+  error?: string;
 };
 
 function getStatusBadge(status: DisputeStatus) {
@@ -36,25 +81,41 @@ function getStatusBadge(status: DisputeStatus) {
   return <Badge className="bg-amber-100 text-amber-800">Pendiente</Badge>;
 }
 
-export default function DisputesPage() {
+function DisputesPageContent() {
+  const searchParams = useSearchParams();
+  const targetDisputeIdRef = useRef<string | null>(null);
   const [disputes, setDisputes] = useState<DisputeRecord[]>([]);
   const [loading, setLoading] = useState(true);
-  const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const [recordId, setRecordId] = useState("");
-  const [reason, setReason] = useState("");
-  const [description, setDescription] = useState("");
-  const [files, setFiles] = useState<FileList | null>(null);
+  const [openThreads, setOpenThreads] = useState<Record<string, boolean>>({});
+  const [newMessageByDispute, setNewMessageByDispute] = useState<
+    Record<string, string>
+  >({});
+  const [filesByDispute, setFilesByDispute] = useState<
+    Record<string, FileList | null>
+  >({});
+
+  const [sendingMessageId, setSendingMessageId] = useState<string | null>(null);
+  const [uploadingEvidenceId, setUploadingEvidenceId] = useState<string | null>(
+    null,
+  );
+  const [attachmentActionId, setAttachmentActionId] = useState<string | null>(null);
+  const [loadingMessagesId, setLoadingMessagesId] = useState<string | null>(null);
+
+  const token = useMemo(() => {
+    if (typeof window === "undefined") return null;
+    return localStorage.getItem("accessToken");
+  }, []);
 
   const loadDisputes = async () => {
     try {
       setLoading(true);
       setError(null);
 
-      const token = localStorage.getItem("accessToken");
-      if (!token) {
-        window.location.href = "/";
+      const accessToken = localStorage.getItem("accessToken");
+      if (!accessToken) {
+        window.location.href = "/login";
         return;
       }
 
@@ -62,19 +123,21 @@ export default function DisputesPage() {
         `${process.env.NEXT_PUBLIC_API_URL}/api/v1/disputes/me`,
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${accessToken}`,
           },
         },
       );
 
       if (response.status === 401) {
-        window.location.href = "/";
+        window.location.href = "/login";
         return;
       }
 
       const result: ApiResponse<DisputeRecord[]> = await response.json();
       if (result.success) {
         setDisputes(result.data || []);
+      } else {
+        setError(result.error || "No se pudieron cargar las disputas");
       }
     } catch (fetchError) {
       setError(
@@ -88,193 +151,624 @@ export default function DisputesPage() {
   };
 
   useEffect(() => {
+    if (!token) {
+      window.location.href = "/login";
+      return;
+    }
+
+    const targetId = searchParams.get("disputeId");
+    targetDisputeIdRef.current = targetId;
+
     loadDisputes();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleCreateDispute = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  useEffect(() => {
+    const targetId = targetDisputeIdRef.current;
+    if (!targetId) return;
 
+    const exists = disputes.some((d) => d.id === targetId);
+    if (!exists) return;
+
+    // Abrir hilo y cargar mensajes una sola vez
+    targetDisputeIdRef.current = null;
+    setOpenThreads((prev) => ({ ...prev, [targetId]: true }));
+    void loadMessages(targetId);
+
+    // scroll al card
+    const el = document.getElementById(`dispute-${targetId}`);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [disputes]);
+
+  const loadMessages = async (disputeId: string) => {
     try {
-      setSubmitting(true);
+      setLoadingMessagesId(disputeId);
       setError(null);
 
-      const token = localStorage.getItem("accessToken");
-      if (!token) {
-        window.location.href = "/";
+      const accessToken = localStorage.getItem("accessToken");
+      if (!accessToken) {
+        window.location.href = "/login";
         return;
       }
 
-      const createResponse = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/disputes`,
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/disputes/${disputeId}/messages`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        },
+      );
+
+      const result: ApiResponse<DisputeMessage[]> = await response.json();
+      if (!response.ok || !result.success) {
+        setError(result.error || "No se pudieron cargar los mensajes");
+        return;
+      }
+
+      setDisputes((prev) =>
+        prev.map((d) => (d.id === disputeId ? { ...d, messages: result.data } : d)),
+      );
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "No se pudieron cargar los mensajes");
+    } finally {
+      setLoadingMessagesId(null);
+    }
+  };
+
+  const handleSendMessage = async (disputeId: string) => {
+    const message = (newMessageByDispute[disputeId] || "").trim();
+    if (!message) return;
+
+    try {
+      setSendingMessageId(disputeId);
+      setError(null);
+
+      const accessToken = localStorage.getItem("accessToken");
+      if (!accessToken) {
+        window.location.href = "/login";
+        return;
+      }
+
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/disputes/${disputeId}/messages`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${accessToken}`,
           },
-          body: JSON.stringify({
-            recordId,
-            reason,
-            description,
-          }),
+          body: JSON.stringify({ message }),
         },
       );
 
-      const createResult: ApiResponse<{ id: string }> & { error?: string } =
-        await createResponse.json();
-
-      if (!createResponse.ok || !createResult.success) {
-        setError(createResult.error || "No se pudo crear la disputa");
+      const result: ApiResponse<DisputeMessage> = await response.json();
+      if (!response.ok || !result.success) {
+        setError(result.error || "No se pudo enviar el mensaje");
         return;
       }
 
-      if (files && files.length > 0) {
-        const formData = new FormData();
-        Array.from(files).forEach((file) => {
-          formData.append("files", file);
-        });
+      setDisputes((prev) =>
+        prev.map((d) =>
+          d.id === disputeId
+            ? { ...d, messages: [...(d.messages || []), result.data] }
+            : d,
+        ),
+      );
 
-        await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/v1/disputes/${createResult.data.id}/attachments`,
-          {
-            method: "POST",
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-            body: formData,
-          },
-        );
+      setNewMessageByDispute((prev) => ({ ...prev, [disputeId]: "" }));
+      setOpenThreads((prev) => ({ ...prev, [disputeId]: true }));
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "No se pudo enviar el mensaje");
+    } finally {
+      setSendingMessageId(null);
+    }
+  };
+
+  const sendTemplateMessage = async (disputeId: string, message: string) => {
+    try {
+      setSendingMessageId(disputeId);
+      setError(null);
+
+      const accessToken = localStorage.getItem("accessToken");
+      if (!accessToken) {
+        window.location.href = "/login";
+        return;
       }
 
-      setRecordId("");
-      setReason("");
-      setDescription("");
-      setFiles(null);
-      await loadDisputes();
-    } catch (submitError) {
-      setError(
-        submitError instanceof Error
-          ? submitError.message
-          : "No se pudo abrir la disputa",
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/disputes/${disputeId}/messages`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+          body: JSON.stringify({ message }),
+        },
       );
+
+      const result: ApiResponse<DisputeMessage> = await response.json();
+      if (!response.ok || !result.success) {
+        setError(result.error || "No se pudo enviar la solicitud");
+        return;
+      }
+
+      setDisputes((prev) =>
+        prev.map((d) =>
+          d.id === disputeId
+            ? { ...d, messages: [...(d.messages || []), result.data] }
+            : d,
+        ),
+      );
+      setOpenThreads((prev) => ({ ...prev, [disputeId]: true }));
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "No se pudo enviar la solicitud");
     } finally {
-      setSubmitting(false);
+      setSendingMessageId(null);
+    }
+  };
+
+  const handleOpenAttachment = async (
+    disputeId: string,
+    attachment: DisputeAttachment,
+    asDownload = false,
+  ) => {
+    try {
+      const accessToken = localStorage.getItem("accessToken");
+      if (!accessToken) {
+        window.location.href = "/login";
+        return;
+      }
+
+      setAttachmentActionId(attachment.id);
+      const endpoint = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/disputes/${disputeId}/attachments/${attachment.id}/download${asDownload ? "?download=1" : ""}`;
+
+      const response = await fetch(endpoint, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      if (!response.ok) {
+        const txt = await response.text();
+        setError(txt || "No se pudo abrir el archivo");
+        return;
+      }
+
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+
+      if (asDownload) {
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = attachment.fileName;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      } else {
+        window.open(url, "_blank", "noopener,noreferrer");
+      }
+
+      setTimeout(() => URL.revokeObjectURL(url), 60_000);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "No se pudo abrir el archivo");
+    } finally {
+      setAttachmentActionId(null);
+    }
+  };
+
+  const handleUploadEvidence = async (disputeId: string) => {
+    const files = filesByDispute[disputeId];
+    if (!files || files.length === 0) return;
+
+    try {
+      setUploadingEvidenceId(disputeId);
+      setError(null);
+
+      const accessToken = localStorage.getItem("accessToken");
+      if (!accessToken) {
+        window.location.href = "/login";
+        return;
+      }
+
+      const formData = new FormData();
+      Array.from(files).forEach((file) => formData.append("files", file));
+
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/disputes/${disputeId}/attachments`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+          body: formData,
+        },
+      );
+
+      if (!response.ok) {
+        const txt = await response.text();
+        setError(txt || "No se pudieron subir los adjuntos");
+        return;
+      }
+
+      setFilesByDispute((prev) => ({ ...prev, [disputeId]: null }));
+      await loadDisputes();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "No se pudo subir evidencia");
+    } finally {
+      setUploadingEvidenceId(null);
     }
   };
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-gray-900 p-6">
-      <div className="mx-auto max-w-4xl space-y-6">
-        <header className="space-y-2">
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
-            Abrir disputa
-          </h1>
-          <p className="text-sm text-slate-600 dark:text-slate-300">
-            Crea una disputa para un registro y consulta su estado.
-          </p>
+      <div className="mx-auto max-w-5xl space-y-6">
+        <header className="flex items-start justify-between gap-4">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <div className="flex items-center justify-center w-10 h-10 bg-slate-800 dark:bg-gray-700 rounded-xl">
+                <Shield className="w-5 h-5 text-cyan-400" />
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
+                  Mis disputas
+                </h1>
+                <p className="text-sm text-slate-600 dark:text-slate-300">
+                  Revisa el estado, agrega comentarios y sube evidencia.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <Button variant="outline" onClick={() => (window.location.href = "/dashboard")}>
+            Volver al Dashboard
+          </Button>
         </header>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Nueva disputa</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <form className="space-y-4" onSubmit={handleCreateDispute}>
-              <div className="space-y-1">
-                <label className="text-sm font-medium">ID de registro</label>
-                <input
-                  className="w-full rounded-md border px-3 py-2 text-sm"
-                  value={recordId}
-                  onChange={(event) => setRecordId(event.target.value)}
-                  required
-                />
+        {error && (
+          <Alert variant="destructive">
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
+
+        {loading && <p className="text-sm">Cargando disputas...</p>}
+
+        {!loading && disputes.length === 0 && (
+          <Card>
+            <CardHeader>
+              <CardTitle>No tienes disputas aún</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-slate-600 dark:text-slate-300">
+                Para abrir una disputa, busca tu referencia y presiona el botón
+                “Apelar / Disputar” en el resultado.
+              </p>
+              <div className="mt-4">
+                <Button onClick={() => (window.location.href = "/dashboard")}>
+                  Ir a buscar
+                </Button>
               </div>
+            </CardContent>
+          </Card>
+        )}
 
-              <div className="space-y-1">
-                <label className="text-sm font-medium">Motivo</label>
-                <input
-                  className="w-full rounded-md border px-3 py-2 text-sm"
-                  value={reason}
-                  onChange={(event) => setReason(event.target.value)}
-                  minLength={10}
-                  maxLength={500}
-                  required
-                />
-              </div>
+        {!loading && disputes.length > 0 && (
+          <div className="space-y-4">
+            {disputes.map((dispute) => {
+              const threadOpen = !!openThreads[dispute.id];
+              const messages = dispute.messages || [];
+              const attachments = dispute.attachments || [];
 
-              <div className="space-y-1">
-                <label className="text-sm font-medium">Descripcion</label>
-                <textarea
-                  className="w-full rounded-md border px-3 py-2 text-sm"
-                  value={description}
-                  onChange={(event) => setDescription(event.target.value)}
-                  minLength={20}
-                  maxLength={2000}
-                  rows={4}
-                  required
-                />
-              </div>
+              return (
+                <Card id={`dispute-${dispute.id}`} key={dispute.id} className="dark:bg-gray-800">
+                  <CardHeader>
+                    <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+                      <div>
+                        <CardTitle className="text-lg">
+                          Disputa #{dispute.id}
+                        </CardTitle>
+                        <div className="mt-2 text-sm text-slate-600 dark:text-slate-300 space-y-1">
+                          <div className="flex items-center gap-2">
+                            <Calendar className="w-4 h-4" />
+                            <span>
+                              {new Date(dispute.createdAt).toLocaleString("es-ES")}
+                            </span>
+                          </div>
+                          <div>
+                            <span className="font-medium">Registro:</span> {dispute.recordId}
+                            {dispute.record?.creditorName ? (
+                              <span>
+                                {" "}
+                                • <span className="font-medium">Acreedor:</span>{" "}
+                                {dispute.record.creditorName}
+                              </span>
+                            ) : null}
+                          </div>
+                          {dispute.record?.fullName ? (
+                            <div>
+                              <span className="font-medium">Persona:</span>{" "}
+                              {dispute.record.fullName} ({dispute.record.idType}{" "}
+                              {dispute.record.idNumber})
+                            </div>
+                          ) : null}
+                        </div>
+                      </div>
 
-              <div className="space-y-1">
-                <label className="text-sm font-medium">Adjuntos (opcional)</label>
-                <input
-                  type="file"
-                  multiple
-                  onChange={(event) => setFiles(event.target.files)}
-                />
-              </div>
+                      <div className="flex items-center gap-2">
+                        {getStatusBadge(dispute.status)}
+                        <Button
+                          variant="outline"
+                          onClick={async () => {
+                            const nextOpen = !threadOpen;
+                            setOpenThreads((prev) => ({
+                              ...prev,
+                              [dispute.id]: nextOpen,
+                            }));
 
-              <Button type="submit" disabled={submitting}>
-                {submitting ? "Enviando..." : "Enviar disputa"}
-              </Button>
-            </form>
-          </CardContent>
-        </Card>
+                            if (nextOpen) {
+                              await loadMessages(dispute.id);
+                            }
+                          }}
+                        >
+                          <MessageSquare className="w-4 h-4 mr-2" />
+                          {threadOpen ? "Ocultar" : "Ver"} mensajes
+                        </Button>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Mis disputas</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {loading && <p className="text-sm">Cargando disputas...</p>}
-            {!loading && disputes.length === 0 && (
-              <p className="text-sm text-slate-500">No hay disputas registradas.</p>
-            )}
-            {!loading && disputes.length > 0 && (
-              <div className="space-y-3">
-                {disputes.map((dispute) => (
-                  <div
-                    key={dispute.id}
-                    className="rounded-lg border bg-white p-4 dark:bg-slate-950"
-                  >
-                    <div className="mb-2 flex items-center justify-between gap-2">
-                      <p className="text-sm font-medium">#{dispute.id}</p>
-                      {getStatusBadge(dispute.status)}
+                        {threadOpen && (
+                          <Button
+                            variant="outline"
+                            onClick={() => loadMessages(dispute.id)}
+                            disabled={loadingMessagesId === dispute.id}
+                          >
+                            {loadingMessagesId === dispute.id ? (
+                              <>
+                                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                Actualizando...
+                              </>
+                            ) : (
+                              "Actualizar"
+                            )}
+                          </Button>
+                        )}
+                      </div>
                     </div>
-                    <p className="text-sm text-slate-700 dark:text-slate-300">
-                      <span className="font-medium">Registro:</span> {dispute.recordId}
-                    </p>
-                    <p className="text-sm text-slate-700 dark:text-slate-300">
-                      <span className="font-medium">Motivo:</span> {dispute.reason}
-                    </p>
-                    <p className="text-sm text-slate-700 dark:text-slate-300">
-                      <span className="font-medium">Descripcion:</span>{" "}
-                      {dispute.description}
-                    </p>
+                  </CardHeader>
+
+                  <CardContent className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <div className="text-sm font-medium mb-1">Motivo</div>
+                        <div className="text-sm text-slate-700 dark:text-slate-200">
+                          {dispute.reason}
+                        </div>
+                      </div>
+                      <div>
+                        <div className="text-sm font-medium mb-1">Descripción</div>
+                        <div className="text-sm text-slate-700 dark:text-slate-200 whitespace-pre-wrap">
+                          {dispute.description}
+                        </div>
+                      </div>
+                    </div>
+
                     {dispute.adminNotes && (
-                      <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">
-                        <span className="font-medium">Notas admin:</span>{" "}
-                        {dispute.adminNotes}
-                      </p>
+                      <div className="rounded-lg border border-slate-200 dark:border-gray-700 p-4 bg-slate-50 dark:bg-gray-900">
+                        <div className="text-sm font-medium mb-1">Notas del administrador</div>
+                        <div className="text-sm text-slate-700 dark:text-slate-200 whitespace-pre-wrap">
+                          {dispute.adminNotes}
+                        </div>
+                      </div>
                     )}
-                  </div>
-                ))}
-              </div>
-            )}
-            {error && <p className="mt-3 text-sm text-rose-600">{error}</p>}
-          </CardContent>
-        </Card>
+
+                    <div className="rounded-lg border border-slate-200 dark:border-gray-700 p-4">
+                      <div className="flex items-center justify-between gap-4">
+                        <div className="text-sm font-medium flex items-center gap-2">
+                          <Paperclip className="w-4 h-4" /> Evidencia
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Input
+                            type="file"
+                            multiple
+                            onChange={(e) =>
+                              setFilesByDispute((prev) => ({
+                                ...prev,
+                                [dispute.id]: e.target.files,
+                              }))
+                            }
+                          />
+                          <Button
+                            variant="outline"
+                            onClick={() => handleUploadEvidence(dispute.id)}
+                            disabled={uploadingEvidenceId === dispute.id}
+                          >
+                            {uploadingEvidenceId === dispute.id ? (
+                              <>
+                                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                Subiendo...
+                              </>
+                            ) : (
+                              <>
+                                <FileUp className="w-4 h-4 mr-2" />
+                                Subir
+                              </>
+                            )}
+                          </Button>
+                        </div>
+                      </div>
+
+                      <div className="mt-3">
+                        {attachments.length === 0 ? (
+                          <p className="text-sm text-slate-500">
+                            No has adjuntado evidencia aún.
+                          </p>
+                        ) : (
+                          <ul className="text-sm space-y-2">
+                            {attachments.map((a) => (
+                              <li
+                                key={a.id}
+                                className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 rounded-md border p-2"
+                              >
+                                <span className="text-slate-700 dark:text-slate-200">
+                                  {a.fileName}
+                                </span>
+                                <div className="flex items-center gap-2">
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    onClick={() => handleOpenAttachment(dispute.id, a, false)}
+                                    disabled={attachmentActionId === a.id}
+                                  >
+                                    <Eye className="w-4 h-4 mr-1" /> Ver
+                                  </Button>
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    onClick={() => handleOpenAttachment(dispute.id, a, true)}
+                                    disabled={attachmentActionId === a.id}
+                                  >
+                                    <Download className="w-4 h-4 mr-1" /> Descargar
+                                  </Button>
+                                </div>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="rounded-lg border border-slate-200 dark:border-gray-700 p-4 bg-slate-50 dark:bg-gray-900">
+                      <div className="text-sm font-medium mb-2">Solicitudes sugeridas (sin cambiar estado directamente)</div>
+                      <p className="text-xs text-slate-500 mb-3">
+                        Recomendación: el usuario no debe cambiar el estado de deuda de forma directa; debe solicitarlo en la disputa para validación del admin.
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() =>
+                            sendTemplateMessage(
+                              dispute.id,
+                              "Solicito actualización del estado a PAGADA. Adjunto soporte de pago y autorización para revisión.",
+                            )
+                          }
+                          disabled={sendingMessageId === dispute.id}
+                        >
+                          Solicitar marcar como PAGADA
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() =>
+                            sendTemplateMessage(
+                              dispute.id,
+                              "Solicito corrección de estado/valor del registro por inconsistencia detectada. Adjunto evidencia.",
+                            )
+                          }
+                          disabled={sendingMessageId === dispute.id}
+                        >
+                          Solicitar corrección de estado
+                        </Button>
+                      </div>
+                    </div>
+
+                    {threadOpen && (
+                      <div className="rounded-lg border border-slate-200 dark:border-gray-700 p-4 space-y-4">
+                        <div className="flex items-center justify-between gap-3">
+                          <div className="text-sm font-medium">Mensajes</div>
+                          {loadingMessagesId === dispute.id && (
+                            <div className="text-xs text-slate-500 flex items-center gap-2">
+                              <Loader2 className="w-3 h-3 animate-spin" />
+                              Cargando...
+                            </div>
+                          )}
+                        </div>
+
+                        {messages.length === 0 ? (
+                          <p className="text-sm text-slate-500">
+                            Aún no hay mensajes. Puedes enviar un comentario o añadir información.
+                          </p>
+                        ) : (
+                          <div className="space-y-3">
+                            {messages.map((m) => (
+                              <div key={m.id} className="rounded-md bg-slate-50 dark:bg-gray-900 p-3">
+                                <div className="flex items-center justify-between gap-3">
+                                  <div className="text-sm font-medium">
+                                    {m.user.firstName} {m.user.lastName}{" "}
+                                    <span className="text-xs text-slate-500">
+                                      ({m.user.role})
+                                    </span>
+                                  </div>
+                                  <div className="text-xs text-slate-500">
+                                    {new Date(m.createdAt).toLocaleString("es-ES")}
+                                  </div>
+                                </div>
+                                <div className="mt-2 text-sm text-slate-700 dark:text-slate-200 whitespace-pre-wrap">
+                                  {m.message}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+
+                        <div className="pt-2 border-t border-slate-200 dark:border-gray-700">
+                          <label className="text-sm font-medium">Agregar comentario</label>
+                          <div className="mt-2 space-y-2">
+                            <Textarea
+                              value={newMessageByDispute[dispute.id] || ""}
+                              onChange={(e) =>
+                                setNewMessageByDispute((prev) => ({
+                                  ...prev,
+                                  [dispute.id]: e.target.value,
+                                }))
+                              }
+                              placeholder="Escribe tu comentario, fechas, aclaraciones o nueva evidencia (y adjunta archivos arriba si aplica)."
+                              rows={4}
+                            />
+                            <div className="flex justify-end">
+                              <Button
+                                onClick={() => handleSendMessage(dispute.id)}
+                                disabled={sendingMessageId === dispute.id}
+                              >
+                                {sendingMessageId === dispute.id ? (
+                                  <>
+                                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                    Enviando...
+                                  </>
+                                ) : (
+                                  <>
+                                    <Send className="w-4 h-4 mr-2" />
+                                    Enviar
+                                  </>
+                                )}
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        )}
       </div>
     </div>
+  );
+}
+
+export default function DisputesPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="container mx-auto px-4 py-8">
+          <p className="text-sm text-slate-500">Cargando disputas...</p>
+        </div>
+      }
+    >
+      <DisputesPageContent />
+    </Suspense>
   );
 }

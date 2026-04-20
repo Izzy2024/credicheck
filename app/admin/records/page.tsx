@@ -23,6 +23,21 @@ export interface CreditReference {
   debtDate: string;
   creditorName: string;
   debtStatus: RecordStatus;
+  caseType?: "FORMAL" | "P2P" | "SERVICE";
+  publishState?:
+    | "DRAFT"
+    | "PENDING_AUTOMATION"
+    | "PENDING_REVIEW"
+    | "PUBLISHED"
+    | "REJECTED"
+    | "UNDER_DISPUTE";
+  reviewStatus?:
+    | "PENDING"
+    | "AUTO_APPROVED"
+    | "NEEDS_REVIEW"
+    | "APPROVED"
+    | "REJECTED";
+  riskScore?: number;
   createdAt: string;
   deletedAt: string | null;
   notes?: string;
@@ -122,9 +137,14 @@ export default function AdminRecordsPage() {
           Gestiona los estados de los registros crediticios, realiza
           actualizaciones masivas y exporta datos.
         </p>
-        <Button asChild variant="outline" className="mt-4">
-          <Link href="/admin/disputes">Ir a disputas pendientes</Link>
-        </Button>
+        <div className="mt-4 flex gap-2">
+          <Button asChild variant="outline">
+            <Link href="/admin/moderation">Ir a cola de moderación</Link>
+          </Button>
+          <Button asChild variant="outline">
+            <Link href="/admin/disputes">Ir a disputas pendientes</Link>
+          </Button>
+        </div>
       </div>
 
       {records.length > 0 ? (
