@@ -23,4 +23,11 @@ router.get(
   attachmentController.getAttachments
 );
 
+// View/download one attachment (owner/admin)
+router.get(
+  '/:disputeId/attachments/:attachmentId/download',
+  requireDisputeOwnerOrAdmin,
+  attachmentController.downloadAttachment
+);
+
 export default router;

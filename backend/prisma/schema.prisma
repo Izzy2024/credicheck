@@ -21,6 +21,7 @@ enum NotificationType {
   NEW_RECORD_MATCH    // Nueva referencia coincide con watchlist
   SEARCH_MATCH        // Alguien buscó una persona en watchlist
   STATUS_CHANGE       // Cambio de estado en referencia vigilada
+  DISPUTE_UPDATE      // Actualización en una disputa (aprobada/rechazada/comentarios)
 }
 
 // Enum para el estado de notificación
@@ -44,6 +45,25 @@ enum DisputeStatus {
   REJECTED     // Disputa rechazada (referencia permanece)
 }
 
+// Anti-abuso: estado de publicación del registro
+enum PublishState {
+  DRAFT
+  PENDING_AUTOMATION
+  PENDING_REVIEW
+  PUBLISHED
+  REJECTED
+  UNDER_DISPUTE
+}
+
+// Anti-abuso: estado del proceso de revisión
+enum ReviewStatus {
+  PENDING
+  AUTO_APPROVED
+  NEEDS_REVIEW
+  APPROVED
+  REJECTED
+}
+
 model User {
   id                String            @id @default(cuid())
   email             String            @unique
@@ -51,6 +71,8 @@ model User {
   firstName         String            @map("first_name")
   lastName          String            @map("last_name")
   role              String            @default("ANALYST") // CORREGIDO: Usar mayúsculas para consistencia
+  tenantId          String            @default("default") @map("tenant_id")
+  trustLevel        Int               @default(0) @map("trust_level")
   isActive          Boolean           @default(true) @map("is_active")
   lastLogin         DateTime?         @map("last_login")
   deletedAt         DateTime?         @map("deleted_at") // AGREGADO: Para soft delete apropiado
@@ -65,8 +87,10 @@ model User {
   notifications     Notification[]
   verifications     RecordVerification[]
   disputes          Dispute[]
+  disputeMessages   DisputeMessage[]
   uploadedAttachments DisputeAttachment[] @relation("UploadedBy")
 
+  @@index([tenantId])
   @@map("users")
 }
 
@@ -75,6 +99,7 @@ model CreditReference {
   fullName     String        @map("full_name")
   idNumber     String        @map("id_number")
   idType       String        @map("id_type")
+  tenantId     String        @default("default") @map("tenant_id")
   birthDate    DateTime?     @map("birth_date")
   phone        String?
   email        String?
@@ -85,6 +110,13 @@ model CreditReference {
   debtDate     DateTime      @map("debt_date")
   creditorName String        @map("creditor_name")
   debtStatus   RecordStatus  @default(ACTIVE) @map("debt_status")
+  caseType     String        @default("FORMAL") @map("case_type")
+  publishState PublishState  @default(PENDING_AUTOMATION) @map("publish_state")
+  reviewStatus ReviewStatus  @default(PENDING) @map("review_status")
+  riskScore    Int           @default(0) @map("risk_score")
+  riskReasons  String?       @map("risk_reasons")
+  reviewedBy   String?       @map("reviewed_by")
+  reviewedAt   DateTime?     @map("reviewed_at")
   notes        String?
   createdBy    String        @map("created_by")
   createdAt    DateTime      @default(now()) @map("created_at")
@@ -97,6 +129,8 @@ model CreditReference {
   @@index([fullName])
   @@index([idNumber])
   @@index([idType])
+  @@index([tenantId])
+  @@index([tenantId, createdAt])
   @@index([debtStatus])
   @@index([createdAt])
   @@map("credit_references")
@@ -105,6 +139,7 @@ model CreditReference {
 model SearchHistory {
   id              String   @id @default(cuid())
   userId          String   @map("user_id")
+  tenantId        String   @default("default") @map("tenant_id")
   searchType      String   @map("search_type")
   searchTerm      String   @map("search_term")
   resultsCount    Int      @default(0) @map("results_count")
@@ -115,6 +150,8 @@ model SearchHistory {
   user            User     @relation(fields: [userId], references: [id])
 
   @@index([userId])
+  @@index([tenantId])
+  @@index([tenantId, userId])
   @@index([searchType])
   @@index([createdAt])
   @@map("search_history")
@@ -239,12 +276,29 @@ model Dispute {
   
   user            User            @relation(fields: [userId], references: [id])
   attachments     DisputeAttachment[]
+  messages        DisputeMessage[]
   
   @@index([recordId])
   @@index([userId])
   @@index([status])
   @@index([createdAt])
   @@map("disputes")
+}
+
+model DisputeMessage {
+  id         String   @id @default(cuid())
+  disputeId  String   @map("dispute_id")
+  userId     String   @map("user_id")
+  message    String
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  dispute    Dispute  @relation(fields: [disputeId], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [userId], references: [id])
+
+  @@index([disputeId])
+  @@index([userId])
+  @@index([createdAt])
+  @@map("dispute_messages")
 }
 
 model DisputeAttachment {

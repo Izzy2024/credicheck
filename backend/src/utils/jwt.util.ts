@@ -1,3 +1,4 @@
+import { randomUUID } from 'crypto';
 import jwt from 'jsonwebtoken';
 import { config } from '../config/env.config';
 
@@ -6,6 +7,7 @@ export interface JWTPayload {
   userId: string;
   email: string;
   role: 'ANALYST' | 'ADMIN';
+  tenantId?: string;
   type: 'access' | 'refresh';
   iat?: number;
   exp?: number;
@@ -23,6 +25,7 @@ export interface DecodedToken {
   userId: string;
   email: string;
   role: 'ANALYST' | 'ADMIN';
+  tenantId?: string;
   type: 'access' | 'refresh';
   iat: number;
   exp: number;
@@ -31,11 +34,17 @@ export interface DecodedToken {
 // Clase para manejo de JWT
 export class JWTUtil {
   // Generar par de tokens (access y refresh)
-  static generateTokens(userId: string, email: string, role: 'ANALYST' | 'ADMIN'): TokenPair {
+  static generateTokens(
+    userId: string,
+    email: string,
+    role: 'ANALYST' | 'ADMIN',
+    tenantId?: string
+  ): TokenPair {
     const accessTokenPayload: Omit<JWTPayload, 'iat' | 'exp'> = {
       userId,
       email,
       role,
+      ...(tenantId ? { tenantId } : {}),
       type: 'access',
     };
 
@@ -43,26 +52,29 @@ export class JWTUtil {
       userId,
       email,
       role,
+      ...(tenantId ? { tenantId } : {}),
       type: 'refresh',
     };
 
     const accessToken = jwt.sign(
       accessTokenPayload,
       config.jwt.accessSecret,
-      { 
+      {
         expiresIn: config.jwt.accessExpiresIn,
         issuer: 'credicheck-api',
         audience: 'credicheck-client',
+        jwtid: randomUUID(),
       } as jwt.SignOptions
     );
 
     const refreshToken = jwt.sign(
       refreshTokenPayload,
       config.jwt.refreshSecret,
-      { 
+      {
         expiresIn: config.jwt.refreshExpiresIn,
         issuer: 'credicheck-api',
         audience: 'credicheck-client',
+        jwtid: randomUUID(),
       } as jwt.SignOptions
     );
 
@@ -170,6 +182,7 @@ export class JWTUtil {
       userId: decoded.userId,
       email: decoded.email,
       role: decoded.role,
+      ...(decoded.tenantId ? { tenantId: decoded.tenantId } : {}),
       type: 'access',
     };
 
@@ -196,13 +209,14 @@ export class JWTUtil {
   }
 
   // Obtener información del usuario desde el token
-  static getUserInfoFromToken(token: string): { userId: string; email: string; role: 'ANALYST' | 'ADMIN' } | null {
+  static getUserInfoFromToken(token: string): { userId: string; email: string; role: 'ANALYST' | 'ADMIN'; tenantId?: string } | null {
     try {
       const decoded = this.verifyAccessToken(token);
       return {
         userId: decoded.userId,
         email: decoded.email,
         role: decoded.role,
+        ...(decoded.tenantId ? { tenantId: decoded.tenantId } : {}),
       };
     } catch {
       return null;
@@ -225,8 +239,13 @@ export class JWTUtil {
   // Generar un nuevo access token usando un refresh token válido
   static refreshAccessTokenFull(refreshToken: string): TokenPair {
     const decoded = this.verifyRefreshToken(refreshToken);
-    
-    return this.generateTokens(decoded.userId, decoded.email, decoded.role);
+
+    return this.generateTokens(
+      decoded.userId,
+      decoded.email,
+      decoded.role,
+      decoded.tenantId
+    );
   }
 
   // Decodificar un token sin verificar la firma (para debugging)

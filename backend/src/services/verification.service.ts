@@ -33,12 +33,13 @@ export interface VerificationSummary {
 }
 
 export async function upsertVerification(
+  tenantId: string,
   recordId: string,
   userId: string,
   input: UpsertVerificationInput
 ) {
   const existingRecord = await prisma.creditReference.findFirst({
-    where: { id: recordId, deletedAt: null },
+    where: { id: recordId, deletedAt: null, tenantId },
     select: { id: true },
   });
 
@@ -76,9 +77,15 @@ export async function upsertVerification(
 }
 
 export async function deleteVerification(
+  tenantId: string,
   recordId: string,
   userId: string
 ): Promise<number> {
+  await prisma.creditReference.findFirstOrThrow({
+    where: { id: recordId, deletedAt: null, tenantId },
+    select: { id: true },
+  });
+
   const result = await prisma.recordVerification.deleteMany({
     where: {
       recordId,
@@ -97,10 +104,11 @@ export async function deleteVerification(
 }
 
 export async function getVerificationSummary(
+  tenantId: string,
   recordId: string
 ): Promise<VerificationSummary> {
   const existingRecord = await prisma.creditReference.findFirst({
-    where: { id: recordId, deletedAt: null },
+    where: { id: recordId, deletedAt: null, tenantId },
     select: { id: true },
   });
 

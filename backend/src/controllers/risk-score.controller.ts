@@ -28,7 +28,9 @@ export async function calculateRiskScore(
       return;
     }
 
+    const tenantId = (req as any).user?.tenantId || 'default';
     const result = await riskScoreService.calculateRiskScore(
+      tenantId,
       searchType as 'idNumber' | 'name',
       searchValue as string
     );
@@ -54,11 +56,12 @@ export async function calculateRiskScore(
  * Obtiene estadísticas de riesgo crediticio
  */
 export async function getRiskStatistics(
-  _req: Request,
+  req: Request,
   res: Response
 ): Promise<void> {
   try {
-    const stats = await riskScoreService.getRiskStatistics();
+    const tenantId = (req as any).user?.tenantId || 'default';
+    const stats = await riskScoreService.getRiskStatistics(tenantId);
     res.json(stats);
   } catch (error) {
     logger.error('Error getting risk statistics', {

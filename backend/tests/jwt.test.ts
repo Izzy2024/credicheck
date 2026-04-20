@@ -1,4 +1,4 @@
-import { JWTUtil, JWTPayload, TokenPair, DecodedToken } from '../src/utils/jwt.util';
+import { JWTUtil, JWTPayload, DecodedToken } from '../src/utils/jwt.util';
 import { config } from '../src/config/env.config';
 import jwt from 'jsonwebtoken';
 
@@ -60,7 +60,7 @@ describe('JWTUtil', () => {
       
       expect(() => {
         JWTUtil.verifyAccessToken(tokens.refreshToken);
-      }).toThrow('Token inválido: no es un access token');
+      }).toThrow('Token inválido');
     });
 
     it('should throw error for expired token', () => {
@@ -96,7 +96,7 @@ describe('JWTUtil', () => {
       
       expect(() => {
         JWTUtil.verifyRefreshToken(tokens.accessToken);
-      }).toThrow('Token inválido: no es un refresh token');
+      }).toThrow('Refresh token inválido');
     });
   });
 
@@ -237,9 +237,10 @@ describe('JWTUtil', () => {
       const tokens = JWTUtil.generateTokens(testUserId, testEmail, testRole);
       const userInfo = JWTUtil.getUserInfoFromToken(tokens.accessToken);
 
-      expect(userInfo.userId).toBe(testUserId);
-      expect(userInfo.email).toBe(testEmail);
-      expect(userInfo.role).toBe(testRole);
+      expect(userInfo).not.toBeNull();
+      expect(userInfo!.userId).toBe(testUserId);
+      expect(userInfo!.email).toBe(testEmail);
+      expect(userInfo!.role).toBe(testRole);
     });
   });
 

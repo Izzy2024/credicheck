@@ -286,6 +286,24 @@ export const validateStatusTransition = (
 };
 
 /**
+ * Middleware para validar transiciones de estado (opcional).
+ * Si no viene status en el body, no valida y deja pasar.
+ */
+export const validateOptionalStatusTransition = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): void => {
+  const { status } = req.body;
+  if (status === undefined || status === null || status === '') {
+    next();
+    return;
+  }
+
+  validateStatusTransition(req, res, next);
+};
+
+/**
  * Middleware para validar formato de IDs
  */
 export const validateRecordIds = (

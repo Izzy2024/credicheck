@@ -8,11 +8,30 @@ describe('Authentication Endpoints', () => {
   let accessToken: string;
   let refreshToken: string;
 
-  beforeAll(async () => {
-    // Crear usuario de prueba
-    const hashedPassword = await PasswordUtil.hashPassword('password123');
-    testUser = await prisma.user.create({
+  const resetPrimaryTestUser = async () => {
+    testUser = await prisma.user.update({
+      where: { id: testUser.id },
       data: {
+        email: 'test@example.com',
+        firstName: 'Test',
+        lastName: 'User',
+        isActive: true,
+      },
+    });
+  };
+
+  beforeAll(async () => {
+    const hashedPassword = await PasswordUtil.hashPassword('password123');
+    testUser = await prisma.user.upsert({
+      where: { email: 'test@example.com' },
+      update: {
+        passwordHash: hashedPassword,
+        firstName: 'Test',
+        lastName: 'User',
+        role: 'ANALYST',
+        isActive: true,
+      },
+      create: {
         email: 'test@example.com',
         passwordHash: hashedPassword,
         firstName: 'Test',
@@ -23,15 +42,36 @@ describe('Authentication Endpoints', () => {
     });
   });
 
+  beforeEach(async () => {
+    await resetPrimaryTestUser();
+  });
+
   afterAll(async () => {
-    // Limpiar datos de prueba
-    await prisma.user.deleteMany({
+    const users = await prisma.user.findMany({
       where: {
         email: {
-          in: ['test@example.com', 'updated@example.com'],
+          in: ['test@example.com', 'updated@example.com', 'other@example.com'],
         },
       },
+      select: { id: true },
     });
+
+    const userIds = users.map(user => user.id);
+
+    if (userIds.length > 0) {
+      await prisma.disputeAttachment.deleteMany({ where: { uploadedById: { in: userIds } } });
+      await prisma.disputeMessage.deleteMany({ where: { userId: { in: userIds } } });
+      await prisma.dispute.deleteMany({ where: { userId: { in: userIds } } });
+      await prisma.recordVerification.deleteMany({ where: { userId: { in: userIds } } });
+      await prisma.notification.deleteMany({ where: { userId: { in: userIds } } });
+      await prisma.watchlistItem.deleteMany({ where: { userId: { in: userIds } } });
+      await prisma.tokenBlacklist.deleteMany({ where: { userId: { in: userIds } } });
+      await prisma.auditLog.deleteMany({ where: { userId: { in: userIds } } });
+      await prisma.searchHistory.deleteMany({ where: { userId: { in: userIds } } });
+      await prisma.creditReference.deleteMany({ where: { createdBy: { in: userIds } } });
+      await prisma.user.deleteMany({ where: { id: { in: userIds } } });
+    }
+
     await prisma.$disconnect();
   });
 

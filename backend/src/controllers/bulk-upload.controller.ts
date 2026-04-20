@@ -8,6 +8,7 @@ import logger from '../utils/logger.util';
 export async function uploadCSV(req: Request, res: Response): Promise<void> {
   try {
     const userId = req.user?.id;
+    const tenantId = req.user?.tenantId || 'default';
     if (!userId) {
       res.status(401).json({ error: 'Usuario no autenticado' });
       return;
@@ -26,7 +27,8 @@ export async function uploadCSV(req: Request, res: Response): Promise<void> {
     // Procesar el CSV
     const result = await bulkUploadService.bulkUploadFromCSV(
       csvContent,
-      userId
+      userId,
+      tenantId
     );
 
     res.json(result);

@@ -4,6 +4,7 @@ import logger from '../utils/logger.util';
 import * as fs from 'fs';
 import * as path from 'path';
 import multer from 'multer';
+import { createReadStream } from 'fs';
 
 const UPLOAD_DIR = path.join(__dirname, '../../uploads/disputes');
 const MAX_FILE_SIZE = 3 * 1024 * 1024; // 3MB
@@ -146,5 +147,53 @@ export async function getAttachments(
     });
 
     res.status(500).json({ error: 'Error al obtener los archivos' });
+  }
+}
+
+export async function downloadAttachment(
+  req: Request,
+  res: Response
+): Promise<void> {
+  try {
+    const disputeId = req.params['disputeId'];
+    const attachmentId = req.params['attachmentId'];
+
+    if (!disputeId || !attachmentId) {
+      res.status(400).json({ error: 'ID de disputa/adjunto requerido' });
+      return;
+    }
+
+    const attachment = await prisma.disputeAttachment.findFirst({
+      where: {
+        id: attachmentId,
+        disputeId,
+      },
+    });
+
+    if (!attachment) {
+      res.status(404).json({ error: 'Adjunto no encontrado' });
+      return;
+    }
+
+    if (!fs.existsSync(attachment.storagePath)) {
+      res.status(404).json({ error: 'Archivo no disponible en almacenamiento' });
+      return;
+    }
+
+    const wantsDownload = String(req.query['download'] || '') === '1';
+    const disposition = wantsDownload ? 'attachment' : 'inline';
+
+    res.setHeader('Content-Type', attachment.mimeType || 'application/octet-stream');
+    res.setHeader('Content-Disposition', `${disposition}; filename="${encodeURIComponent(attachment.fileName)}"`);
+
+    const stream = createReadStream(attachment.storagePath);
+    stream.pipe(res);
+  } catch (error) {
+    logger.error('Error downloading attachment', {
+      context: 'dispute_attachment_controller',
+      error: error instanceof Error ? error.message : 'Unknown error',
+    });
+
+    res.status(500).json({ error: 'Error al descargar el archivo' });
   }
 }

@@ -10,9 +10,9 @@ function escapeCSV(val: string | null | undefined): string {
 }
 
 export class ExportService {
-  static async exportRecordsCSV(): Promise<string> {
+  static async exportRecordsCSV(tenantId: string): Promise<string> {
     const records = await prisma.creditReference.findMany({
-      where: { deletedAt: null },
+      where: { deletedAt: null, tenantId },
       orderBy: { createdAt: 'desc' },
       include: { creator: { select: { firstName: true, lastName: true } } },
     });
@@ -51,9 +51,9 @@ export class ExportService {
     ].join('\n');
   }
 
-  static async exportRecordsExcel(): Promise<Buffer> {
+  static async exportRecordsExcel(tenantId: string): Promise<Buffer> {
     const records = await prisma.creditReference.findMany({
-      where: { deletedAt: null },
+      where: { deletedAt: null, tenantId },
       orderBy: { createdAt: 'desc' },
       include: { creator: { select: { firstName: true, lastName: true } } },
     });
@@ -96,8 +96,8 @@ export class ExportService {
     return Buffer.from(buffer);
   }
 
-  static async exportHistoryCSV(userId?: string): Promise<string> {
-    const where: any = {};
+  static async exportHistoryCSV(tenantId: string, userId?: string): Promise<string> {
+    const where: any = { tenantId };
     if (userId) where.userId = userId;
 
     const history = await prisma.searchHistory.findMany({

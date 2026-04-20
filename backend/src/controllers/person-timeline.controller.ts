@@ -28,7 +28,9 @@ export async function getPersonTimeline(
       return;
     }
 
+    const tenantId = (req as any).user?.tenantId || 'default';
     const result = await personTimelineService.getPersonTimeline(
+      tenantId,
       searchType as 'idNumber' | 'name',
       searchValue as string
     );
@@ -56,11 +58,12 @@ export async function getPersonTimeline(
  * Obtiene estadísticas de timelines
  */
 export async function getTimelineStatistics(
-  _req: Request,
+  req: Request,
   res: Response
 ): Promise<void> {
   try {
-    const stats = await personTimelineService.getTimelineStatistics();
+    const tenantId = (req as any).user?.tenantId || 'default';
+    const stats = await personTimelineService.getTimelineStatistics(tenantId);
     res.json(stats);
   } catch (error) {
     logger.error('Error getting timeline statistics', {

@@ -119,7 +119,7 @@ export class PasswordUtil {
     // No contiene patrones comunes
     const commonPatterns = [
       /123456/,
-      /password/i,
+      /\bpassword\b/i,
       /qwerty/i,
       /admin/i,
       /letmein/i,

@@ -14,6 +14,12 @@ const baseUserSchema = z.object({
   role: z.enum(['ADMIN', 'ANALYST'], {
     errorMap: () => ({ message: 'Rol debe ser ADMIN o ANALYST' }),
   }),
+  tenantId: z
+    .string()
+    .min(1, 'tenantId es requerido')
+    .max(80, 'tenantId muy largo')
+    .regex(/^[a-zA-Z0-9._:-]+$/, 'tenantId contiene caracteres inválidos')
+    .optional(),
   isActive: z.boolean().optional(),
 });
 
@@ -62,6 +68,12 @@ export const signupSchema = z.object({
     .string()
     .min(1, 'El apellido es requerido')
     .max(50, 'Apellido muy largo'),
+  tenantId: z
+    .string()
+    .min(1, 'tenantId es requerido')
+    .max(80, 'tenantId muy largo')
+    .regex(/^[a-zA-Z0-9._:-]+$/, 'tenantId contiene caracteres inválidos')
+    .optional(),
   password: z
     .string()
     .min(8, 'La contraseña debe tener al menos 8 caracteres')

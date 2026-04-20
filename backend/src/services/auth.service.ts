@@ -48,7 +48,8 @@ export class AuthService {
       const tokens = JWTUtil.generateTokens(
         user.id,
         user.email,
-        user.role as 'ANALYST' | 'ADMIN'
+        user.role as 'ANALYST' | 'ADMIN',
+        user.tenantId
       );
 
       // Actualizar último login
@@ -79,7 +80,7 @@ export class AuthService {
    * Crea un nuevo usuario
    */
   static async signup(
-    userData: Omit<CreateUserRequest, 'role'> & { role?: string }
+    userData: Omit<CreateUserRequest, 'role'> & { role?: string; tenantId?: string }
   ): Promise<UserResponse> {
     try {
       // Verificar si el email ya existe
@@ -98,6 +99,7 @@ export class AuthService {
       const userDataWithRole = {
         ...userData,
         role: userData.role || ('ANALYST' as const),
+        tenantId: userData.tenantId || 'default',
       };
       const newUser = await prisma.user.create({
         data: {
@@ -106,6 +108,7 @@ export class AuthService {
           firstName: userData.firstName,
           lastName: userData.lastName,
           role: userDataWithRole.role,
+          tenantId: userDataWithRole.tenantId,
         },
       });
 
@@ -144,7 +147,8 @@ export class AuthService {
       const tokens = JWTUtil.generateTokens(
         user.id,
         user.email,
-        user.role as 'ANALYST' | 'ADMIN'
+        user.role as 'ANALYST' | 'ADMIN',
+        user.tenantId
       );
 
       // Convertir a respuesta de usuario

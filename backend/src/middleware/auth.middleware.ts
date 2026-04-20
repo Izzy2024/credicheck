@@ -1,17 +1,23 @@
 import { Request, Response, NextFunction } from 'express';
-import { JWTUtil, JWTPayload } from '../utils/jwt.util';
+import { prisma } from '../config/database.config';
+import { JWTUtil, JWTPayload, DecodedToken } from '../utils/jwt.util';
 import { TokenBlacklistUtil } from '../utils/token-blacklist.util';
 import logger, { logContext } from '../utils/logger.util';
+
+type AuthenticatedRequestUser = {
+  id: string;
+  email: string;
+  role: 'ANALYST' | 'ADMIN';
+  tenantId?: string;
+  isActive?: boolean;
+};
 
 // Extender la interfaz Request para incluir información del usuario
 declare global {
   namespace Express {
     interface Request {
-      user?: {
-        id: string;
-        email: string;
-        role: 'ANALYST' | 'ADMIN';
-      };
+      user?: AuthenticatedRequestUser | undefined;
+      token?: DecodedToken | undefined;
     }
   }
 }
@@ -91,11 +97,14 @@ export const authenticateToken = async (
       return;
     }
 
+    req.token = decoded as DecodedToken;
+
     // Agregar información del usuario al request
     req.user = {
       id: decoded.userId,
       email: decoded.email,
       role: decoded.role,
+      ...(decoded.tenantId ? { tenantId: decoded.tenantId } : {}),
     };
 
     next();
@@ -193,11 +202,43 @@ export const requireActiveUser = async (
   }
 
   try {
-    // Aquí se haría la consulta a la base de datos para verificar si el usuario está activo
-    // Por ahora, asumimos que el usuario está activo si tiene un token válido
-    // En la implementación real, se consultaría la base de datos:
-    // const user = await userRepository.findById(req.user.id);
-    // if (!user || !user.isActive) { ... }
+    const user = await prisma.user.findUnique({
+      where: { id: req.user.id },
+      select: { isActive: true },
+    });
+
+    if (!user) {
+      const errorResponse: AuthError = {
+        success: false,
+        error: {
+          code: 'AUTH_USER_NOT_FOUND',
+          message: 'Usuario no encontrado',
+          timestamp: new Date().toISOString(),
+          requestId,
+        },
+      };
+      res.status(401).json(errorResponse);
+      return;
+    }
+
+    if (!user.isActive) {
+      const errorResponse: AuthError = {
+        success: false,
+        error: {
+          code: 'AUTH_ACCOUNT_DISABLED',
+          message: 'Cuenta deshabilitada. Contacte al administrador',
+          timestamp: new Date().toISOString(),
+          requestId,
+        },
+      };
+      res.status(403).json(errorResponse);
+      return;
+    }
+
+    req.user = {
+      ...req.user,
+      isActive: user.isActive,
+    };
 
     next();
   } catch (error) {
@@ -231,6 +272,7 @@ export const optionalAuth = (
           id: decoded.userId,
           email: decoded.email,
           role: decoded.role,
+          ...(decoded.tenantId ? { tenantId: decoded.tenantId } : {}),
         };
       } catch {
         // Ignorar errores de token en autenticación opcional
@@ -292,6 +334,7 @@ export const authenticateRefreshToken = (
       id: decoded.userId,
       email: decoded.email,
       role: decoded.role,
+      ...(decoded.tenantId ? { tenantId: decoded.tenantId } : {}),
     };
 
     next();
@@ -479,8 +522,7 @@ export const checkTokenExpiry = (
   res: Response,
   next: NextFunction
 ): void => {
-  // Verificar si hay token en el request (extendiendo la interfaz Request)
-  const token = (req as any).token;
+  const token = req.token;
   if (!token) {
     next();
     return;

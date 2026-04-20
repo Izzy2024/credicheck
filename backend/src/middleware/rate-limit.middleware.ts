@@ -2,10 +2,18 @@ import rateLimit, { RateLimitRequestHandler } from 'express-rate-limit';
 import { Request, Response, NextFunction } from 'express';
 import { config } from '../config/env.config';
 
+const shouldSkipRateLimit = (req: Request): boolean => {
+  if (config.server.isTest) {
+    return true;
+  }
+
+  return req.path === '/health' || req.path.startsWith('/api/v1/info');
+};
+
 // Configuración de rate limiting para endpoints públicos
 export const publicRateLimit: RateLimitRequestHandler = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutos
-  max: 100, // Límite de 100 requests por ventana
+  windowMs: config.rateLimit.windowMs,
+  max: config.rateLimit.maxRequests,
   standardHeaders: true, // Devolver información de límite en headers
   legacyHeaders: false, // Deshabilitar headers X-RateLimit-*
   message: {
@@ -19,19 +27,13 @@ export const publicRateLimit: RateLimitRequestHandler = rateLimit({
     // Usar IP como clave, o un identificador de sesión si existe
     return req.ip || req.headers['x-forwarded-for'] as string || 'unknown';
   },
-  skip: (req: Request) => {
-    // Saltar rate limiting para health checks
-    if (req.path === '/health' || req.path.startsWith('/api/v1/info')) {
-      return true;
-    }
-    return false;
-  },
+  skip: shouldSkipRateLimit,
 });
 
 // Rate limiting estricto para autenticación (prevenir brute force)
 export const authRateLimit: RateLimitRequestHandler = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutos
-  max: 5, // Solo 5 intentos de login por ventana
+  windowMs: config.rateLimit.windowMs,
+  max: config.rateLimit.authMaxRequests,
   standardHeaders: true,
   legacyHeaders: false,
   message: {
@@ -48,6 +50,7 @@ export const authRateLimit: RateLimitRequestHandler = rateLimit({
     return `${email}_${ip}`;
   },
   skipSuccessfulRequests: false, // Contar también requests exitosos
+  skip: shouldSkipRateLimit,
 });
 
 // Rate limiting para password reset (muy restrictivo)
@@ -68,12 +71,13 @@ export const passwordResetRateLimit: RateLimitRequestHandler = rateLimit({
     const ip = req.ip || req.headers['x-forwarded-for'] as string || 'unknown';
     return `${email}_${ip}`;
   },
+  skip: shouldSkipRateLimit,
 });
 
 // Rate limiting para búsqueda de referencias (prevenir scraping)
 export const searchRateLimit: RateLimitRequestHandler = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutos
-  max: 30, // 30 búsquedas por ventana
+  windowMs: config.rateLimit.windowMs,
+  max: config.rateLimit.searchMaxRequests,
   standardHeaders: true,
   legacyHeaders: false,
   message: {
@@ -87,11 +91,12 @@ export const searchRateLimit: RateLimitRequestHandler = rateLimit({
     // Usar ID de usuario autenticado o IP
     return req.user?.id || req.ip || req.headers['x-forwarded-for'] as string || 'unknown';
   },
+  skip: shouldSkipRateLimit,
 });
 
 // Rate limiting para exportación de datos (costoso en recursos)
 export const exportRateLimit: RateLimitRequestHandler = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutos
+  windowMs: config.rateLimit.windowMs,
   max: 5, // Solo 5 exportaciones por ventana
   standardHeaders: true,
   legacyHeaders: false,
@@ -105,11 +110,12 @@ export const exportRateLimit: RateLimitRequestHandler = rateLimit({
   keyGenerator: (req: Request) => {
     return req.user?.id || req.ip || req.headers['x-forwarded-for'] as string || 'unknown';
   },
+  skip: shouldSkipRateLimit,
 });
 
 // Rate limiting para usuarios autenticados (más permisivo)
 export const authenticatedRateLimit: RateLimitRequestHandler = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutos
+  windowMs: config.rateLimit.windowMs,
   max: 200, // 200 requests por ventana para usuarios autenticados
   standardHeaders: true,
   legacyHeaders: false,
@@ -123,11 +129,12 @@ export const authenticatedRateLimit: RateLimitRequestHandler = rateLimit({
   keyGenerator: (req: Request) => {
     return req.user?.id || req.ip || req.headers['x-forwarded-for'] as string || 'unknown';
   },
+  skip: shouldSkipRateLimit,
 });
 
 // Rate limiting para creación de registros
 export const createRecordRateLimit: RateLimitRequestHandler = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutos
+  windowMs: config.rateLimit.windowMs,
   max: 20, // 20 creaciones por ventana
   standardHeaders: true,
   legacyHeaders: false,
@@ -141,6 +148,7 @@ export const createRecordRateLimit: RateLimitRequestHandler = rateLimit({
   keyGenerator: (req: Request) => {
     return req.user?.id || req.ip || req.headers['x-forwarded-for'] as string || 'unknown';
   },
+  skip: shouldSkipRateLimit,
 });
 
 // Store en memoria para rate limiting (para usar en middleware personalizado)

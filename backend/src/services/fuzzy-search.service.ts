@@ -89,6 +89,7 @@ export interface FuzzySearchResult {
  * Realiza una búsqueda fuzzy por nombre
  */
 export async function fuzzySearchByName(
+  tenantId: string,
   searchTerm: string,
   threshold: number = 0.7 // Mínimo de similitud (0-1)
 ): Promise<FuzzySearchResult[]> {
@@ -99,6 +100,7 @@ export async function fuzzySearchByName(
     const allReferences = await prisma.creditReference.findMany({
       where: {
         deletedAt: null,
+        tenantId,
       },
       select: {
         id: true,
@@ -191,6 +193,7 @@ export async function fuzzySearchByName(
  * Realiza una búsqueda fuzzy por número de documento
  */
 export async function fuzzySearchById(
+  tenantId: string,
   searchTerm: string,
   threshold: number = 0.8 // Más estricto para IDs
 ): Promise<FuzzySearchResult[]> {
@@ -201,6 +204,7 @@ export async function fuzzySearchById(
     const allReferences = await prisma.creditReference.findMany({
       where: {
         deletedAt: null,
+        tenantId,
       },
       select: {
         id: true,
@@ -276,6 +280,7 @@ export async function fuzzySearchById(
  * Búsqueda fuzzy combinada (nombre y ID)
  */
 export async function fuzzySearch(
+  tenantId: string,
   searchTerm: string,
   searchType: 'name' | 'id' | 'both' = 'both',
   threshold?: number
@@ -284,12 +289,12 @@ export async function fuzzySearch(
     let results: FuzzySearchResult[] = [];
 
     if (searchType === 'name' || searchType === 'both') {
-      const nameResults = await fuzzySearchByName(searchTerm, threshold);
+      const nameResults = await fuzzySearchByName(tenantId, searchTerm, threshold);
       results = results.concat(nameResults);
     }
 
     if (searchType === 'id' || searchType === 'both') {
-      const idResults = await fuzzySearchById(searchTerm, threshold);
+      const idResults = await fuzzySearchById(tenantId, searchTerm, threshold);
       results = results.concat(idResults);
     }
 

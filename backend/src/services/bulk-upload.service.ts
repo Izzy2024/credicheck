@@ -138,7 +138,8 @@ function validateCsvRecord(
  */
 export async function bulkUploadFromCSV(
   csvContent: string,
-  userId: string
+  userId: string,
+  tenantId: string
 ): Promise<BulkUploadResult> {
   const result: BulkUploadResult = {
     success: false,
@@ -204,6 +205,7 @@ export async function bulkUploadFromCSV(
             debtStatus:
               (record.debtStatus?.toUpperCase() as RecordStatus) || 'ACTIVE',
             notes: record.notes || null,
+            tenantId,
             createdBy: userId,
           },
         });

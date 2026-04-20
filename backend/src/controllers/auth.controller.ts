@@ -85,7 +85,14 @@ export class AuthController {
     try {
       // Validar datos de entrada
       const validatedData = signupSchema.parse(req.body);
-      const signupData = { ...validatedData, role: 'ANALYST' as const };
+      const signupData = {
+        email: validatedData.email,
+        firstName: validatedData.firstName,
+        lastName: validatedData.lastName,
+        password: validatedData.password,
+        role: 'ANALYST' as const,
+        ...(validatedData.tenantId ? { tenantId: validatedData.tenantId } : {}),
+      };
 
       // Crear usuario
       const newUser = await AuthService.signup(signupData);

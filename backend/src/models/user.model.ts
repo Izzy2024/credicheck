@@ -7,6 +7,7 @@ export interface User {
   firstName: string;
   lastName: string;
   role: 'ANALYST' | 'ADMIN';
+  tenantId?: string;
   isActive: boolean;
   lastLogin?: Date;
   createdAt: Date;
@@ -38,6 +39,7 @@ export interface UserResponse {
   firstName: string;
   lastName: string;
   role: 'ANALYST' | 'ADMIN';
+  tenantId?: string;
   isActive: boolean;
   lastLogin?: Date;
   createdAt: Date;
@@ -77,6 +79,7 @@ export const toUserResponse = (user: PrismaUser): UserResponse => {
     firstName: user.firstName,
     lastName: user.lastName,
     role: user.role as 'ANALYST' | 'ADMIN',
+    tenantId: (user as PrismaUser & { tenantId?: string }).tenantId,
     isActive: user.isActive,
     createdAt: user.createdAt,
     updatedAt: user.updatedAt,

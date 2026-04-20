@@ -4,7 +4,8 @@ import logger from '../utils/logger.util';
 export type NotificationType =
   | 'NEW_RECORD_MATCH'
   | 'SEARCH_MATCH'
-  | 'STATUS_CHANGE';
+  | 'STATUS_CHANGE'
+  | 'DISPUTE_UPDATE';
 export type NotificationStatus = 'UNREAD' | 'READ' | 'ARCHIVED';
 
 interface CreateNotificationInput {

@@ -2,8 +2,9 @@ import { Request, Response } from 'express';
 import { prisma } from '../config/database.config';
 
 export class DashboardController {
-  static async getDashboardStats(_req: Request, res: Response): Promise<void> {
+  static async getDashboardStats(req: Request, res: Response): Promise<void> {
     try {
+      const tenantId = (req as any).user?.tenantId || 'default';
       const now = new Date();
       const today = new Date(
         Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate())
@@ -14,6 +15,7 @@ export class DashboardController {
 
       const queriesToday = await prisma.searchHistory.count({
         where: {
+          tenantId,
           createdAt: {
             gte: today,
             lt: tomorrow,
@@ -22,16 +24,18 @@ export class DashboardController {
       });
 
       const activeReferences = await prisma.creditReference.count({
-        where: { debtStatus: 'ACTIVE', deletedAt: null },
+        where: { debtStatus: 'ACTIVE', deletedAt: null, tenantId },
       });
 
       const activeUsers = await prisma.user.count({
-        where: { isActive: true },
+        where: { isActive: true, tenantId },
       });
 
-      const totalSearches = await prisma.searchHistory.count();
+      const totalSearches = await prisma.searchHistory.count({
+        where: { tenantId },
+      });
       const searchesWithResults = await prisma.searchHistory.count({
-        where: { resultsCount: { gt: 0 } },
+        where: { tenantId, resultsCount: { gt: 0 } },
       });
 
       const matchRate =
@@ -44,7 +48,7 @@ export class DashboardController {
         1
       );
       const allReferences = await prisma.creditReference.findMany({
-        where: { createdAt: { gte: twelveMonthsAgo }, deletedAt: null },
+        where: { createdAt: { gte: twelveMonthsAgo }, deletedAt: null, tenantId },
         select: { createdAt: true },
       });
       const monthMap = new Map<string, number>();
@@ -68,7 +72,7 @@ export class DashboardController {
       const statusCounts = await prisma.creditReference.groupBy({
         by: ['debtStatus'],
         _count: true,
-        where: { deletedAt: null },
+        where: { deletedAt: null, tenantId },
       });
       const referencesByStatus = statusCounts.map(r => ({
         status: r.debtStatus,
@@ -82,7 +86,7 @@ export class DashboardController {
         now.getDate() - 30
       );
       const allSearches = await prisma.searchHistory.findMany({
-        where: { createdAt: { gte: thirtyDaysAgo } },
+        where: { createdAt: { gte: thirtyDaysAgo }, tenantId },
         select: { createdAt: true },
       });
       const dayMap = new Map<string, number>();
@@ -110,6 +114,7 @@ export class DashboardController {
       const topSearchedRaw = await prisma.searchHistory.groupBy({
         by: ['searchTerm'],
         _count: true,
+        where: { tenantId },
         orderBy: { _count: { searchTerm: 'desc' } },
         take: 10,
       });
@@ -158,7 +163,7 @@ export class DashboardController {
         },
         meta: {
           timestamp: new Date().toISOString(),
-          requestId: _req.headers['x-request-id'] as string,
+          requestId: req.headers['x-request-id'] as string,
         },
       });
     } catch (error) {

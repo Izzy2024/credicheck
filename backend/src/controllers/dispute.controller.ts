@@ -14,7 +14,8 @@ type RecordSummary = {
 };
 
 async function attachRecordsToDisputes<T extends { recordId: string }>(
-  disputes: T[]
+  disputes: T[],
+  tenantId: string
 ): Promise<Array<T & { record: RecordSummary | null }>> {
   const recordIds = [...new Set(disputes.map((dispute) => dispute.recordId))];
 
@@ -23,7 +24,7 @@ async function attachRecordsToDisputes<T extends { recordId: string }>(
   }
 
   const records = await prisma.creditReference.findMany({
-    where: { id: { in: recordIds } },
+    where: { id: { in: recordIds }, tenantId },
     select: {
       id: true,
       fullName: true,
@@ -52,6 +53,11 @@ const createDisputeSchema = z.object({
 const resolveDisputeSchema = z.object({
   status: z.enum(['APPROVED', 'REJECTED']),
   adminNotes: z.string().max(1000).optional(),
+  applyPaidStatus: z.boolean().optional(),
+});
+
+const createDisputeMessageSchema = z.object({
+  message: z.string().min(1).max(2000),
 });
 
 /**
@@ -78,10 +84,11 @@ export async function createDispute(
     }
 
     const { recordId, reason, description } = parsed.data;
+    const tenantId = req.user?.tenantId || 'default';
 
     // Check if record exists
-    const record = await prisma.creditReference.findUnique({
-      where: { id: recordId },
+    const record = await prisma.creditReference.findFirst({
+      where: { id: recordId, tenantId },
     });
 
     if (!record) {
@@ -152,11 +159,25 @@ export async function getMyDisputes(
       where: { userId },
       include: {
         attachments: true,
+        messages: {
+          orderBy: { createdAt: 'asc' },
+          include: {
+            user: {
+              select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                role: true,
+              },
+            },
+          },
+        },
       },
       orderBy: { createdAt: 'desc' },
     });
 
-    const disputesWithRecords = await attachRecordsToDisputes(disputes);
+    const tenantId = req.user?.tenantId || 'default';
+    const disputesWithRecords = await attachRecordsToDisputes(disputes, tenantId);
 
     res.status(200).json({ success: true, data: disputesWithRecords });
   } catch (error) {
@@ -198,7 +219,7 @@ export async function resolveDispute(
       return;
     }
 
-    const { status, adminNotes } = parsed.data;
+    const { status, adminNotes, applyPaidStatus } = parsed.data;
 
     // Check if dispute exists
     const dispute = await prisma.dispute.findUnique({
@@ -215,14 +236,95 @@ export async function resolveDispute(
       return;
     }
 
-    const updatedDispute = await prisma.dispute.update({
-      where: { id: disputeId },
-      data: {
-        status,
-        adminNotes: adminNotes || null,
-        resolvedBy: userId,
-        resolvedAt: new Date(),
-      },
+    const shouldApplyPaidStatus = status === 'APPROVED' && applyPaidStatus === true;
+
+    const resolutionMessageLines: string[] = [];
+    resolutionMessageLines.push(
+      `Actualización de la disputa: ${status === 'APPROVED' ? 'APROBADA' : 'RECHAZADA'}.`
+    );
+    if (shouldApplyPaidStatus) {
+      resolutionMessageLines.push('');
+      resolutionMessageLines.push('Se actualizó automáticamente el registro a estado PAGADA.');
+    }
+    if (adminNotes && adminNotes.trim().length > 0) {
+      resolutionMessageLines.push('');
+      resolutionMessageLines.push('Notas del administrador:');
+      resolutionMessageLines.push(adminNotes.trim());
+    }
+
+    const updatedDispute = await prisma.$transaction(async (tx) => {
+      const updated = await tx.dispute.update({
+        where: { id: disputeId },
+        data: {
+          status,
+          adminNotes: adminNotes || null,
+          resolvedBy: userId,
+          resolvedAt: new Date(),
+        },
+      });
+
+      if (shouldApplyPaidStatus) {
+        const previousRecord = await tx.creditReference.findUnique({
+          where: { id: dispute.recordId },
+          select: { debtStatus: true },
+        });
+
+        await tx.creditReference.update({
+          where: { id: dispute.recordId },
+          data: { debtStatus: 'PAID' },
+        });
+
+        await tx.auditLog.create({
+          data: {
+            userId,
+            action: 'UPDATE_RECORD_STATUS_FROM_DISPUTE',
+            resource: 'credit_reference',
+            resourceId: dispute.recordId,
+            details: JSON.stringify({
+              disputeId,
+              previousDebtStatus: previousRecord?.debtStatus ?? null,
+              newDebtStatus: 'PAID',
+              reason: 'Disputa aprobada con aplicación de estado pagado',
+            }),
+            ipAddress: req.ip || null,
+            userAgent: req.get('User-Agent') || null,
+          },
+        });
+      }
+
+      await tx.disputeMessage.create({
+        data: {
+          disputeId,
+          userId,
+          message: resolutionMessageLines.join('\n'),
+        },
+      });
+
+      // Notificación al usuario afectado
+      await tx.notification.create({
+        data: {
+          userId: dispute.userId,
+          type: 'DISPUTE_UPDATE',
+          status: 'UNREAD',
+          title:
+            status === 'APPROVED'
+              ? 'Tu disputa fue aprobada'
+              : 'Tu disputa fue rechazada',
+          message:
+            status === 'APPROVED'
+              ? `El administrador aprobó tu disputa para el registro ${dispute.recordId}.`
+              : `El administrador rechazó tu disputa para el registro ${dispute.recordId}.`,
+          relatedRecordId: dispute.recordId,
+          relatedSearchId: null,
+          metadata: JSON.stringify({
+            disputeId,
+            status,
+            applyPaidStatus: shouldApplyPaidStatus,
+          }),
+        },
+      });
+
+      return updated;
     });
 
     res.status(200).json({ success: true, data: updatedDispute });
@@ -260,7 +362,8 @@ export async function getPendingDisputes(
       orderBy: { createdAt: 'desc' },
     });
 
-    const disputesWithRecords = await attachRecordsToDisputes(disputes);
+    const tenantId = _req.user?.tenantId || 'default';
+    const disputesWithRecords = await attachRecordsToDisputes(disputes, tenantId);
 
     res.status(200).json({ success: true, data: disputesWithRecords });
   } catch (error) {
@@ -270,5 +373,109 @@ export async function getPendingDisputes(
     });
 
     res.status(500).json({ error: 'Error al obtener disputas pendientes' });
+  }
+}
+
+/**
+ * Get messages for a dispute (owner or admin)
+ */
+export async function getDisputeMessages(
+  req: Request,
+  res: Response
+): Promise<void> {
+  try {
+    const userId = req.user?.id;
+    if (!userId) {
+      res.status(401).json({ error: 'Usuario no autenticado' });
+      return;
+    }
+
+    const disputeId = req.params['disputeId'];
+    if (!disputeId) {
+      res.status(400).json({ error: 'ID de disputa requerido' });
+      return;
+    }
+
+    const messages = await prisma.disputeMessage.findMany({
+      where: { disputeId },
+      orderBy: { createdAt: 'asc' },
+      include: {
+        user: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            role: true,
+          },
+        },
+      },
+    });
+
+    res.status(200).json({ success: true, data: messages });
+  } catch (error) {
+    logger.error('Error fetching dispute messages', {
+      context: 'dispute_controller',
+      error: error instanceof Error ? error.message : 'Unknown error',
+    });
+
+    res.status(500).json({ error: 'Error al obtener mensajes' });
+  }
+}
+
+/**
+ * Create a message in a dispute (owner or admin)
+ */
+export async function createDisputeMessage(
+  req: Request,
+  res: Response
+): Promise<void> {
+  try {
+    const userId = req.user?.id;
+    if (!userId) {
+      res.status(401).json({ error: 'Usuario no autenticado' });
+      return;
+    }
+
+    const disputeId = req.params['disputeId'];
+    if (!disputeId) {
+      res.status(400).json({ error: 'ID de disputa requerido' });
+      return;
+    }
+
+    const parsed = createDisputeMessageSchema.safeParse(req.body);
+    if (!parsed.success) {
+      res.status(400).json({
+        error: 'Datos inválidos',
+        details: parsed.error.errors,
+      });
+      return;
+    }
+
+    const created = await prisma.disputeMessage.create({
+      data: {
+        disputeId,
+        userId,
+        message: parsed.data.message,
+      },
+      include: {
+        user: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            role: true,
+          },
+        },
+      },
+    });
+
+    res.status(201).json({ success: true, data: created });
+  } catch (error) {
+    logger.error('Error creating dispute message', {
+      context: 'dispute_controller',
+      error: error instanceof Error ? error.message : 'Unknown error',
+    });
+
+    res.status(500).json({ error: 'Error al crear el mensaje' });
   }
 }

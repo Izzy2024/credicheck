@@ -48,12 +48,13 @@ export interface AggregatedReports {
 /**
  * Obtiene el top de deudores
  */
-export async function getTopDebtors(limit: number = 10): Promise<TopDebtor[]> {
+export async function getTopDebtors(tenantId: string, limit: number = 10): Promise<TopDebtor[]> {
   try {
     const debtorsByPerson = await prisma.creditReference.groupBy({
       by: ['idNumber', 'fullName'],
       where: {
         deletedAt: null,
+        tenantId,
       },
       _count: {
         id: true,
@@ -71,6 +72,7 @@ export async function getTopDebtors(limit: number = 10): Promise<TopDebtor[]> {
         where: {
           idNumber: debtor.idNumber,
           deletedAt: null,
+          tenantId,
         },
         select: {
           debtStatus: true,
@@ -109,12 +111,13 @@ export async function getTopDebtors(limit: number = 10): Promise<TopDebtor[]> {
 /**
  * Obtiene deudas agrupadas por ciudad
  */
-export async function getDebtsByCity(): Promise<DebtsByCity[]> {
+export async function getDebtsByCity(tenantId: string): Promise<DebtsByCity[]> {
   try {
     const debtsByCity = await prisma.creditReference.groupBy({
       by: ['city'],
       where: {
         deletedAt: null,
+        tenantId,
         city: {
           not: null,
         },
@@ -137,6 +140,7 @@ export async function getDebtsByCity(): Promise<DebtsByCity[]> {
         where: {
           city: cityData.city,
           deletedAt: null,
+          tenantId,
         },
         select: {
           idNumber: true,
@@ -168,12 +172,13 @@ export async function getDebtsByCity(): Promise<DebtsByCity[]> {
 /**
  * Obtiene deudas agrupadas por acreedor
  */
-export async function getDebtsByCreditor(): Promise<DebtsByCreditor[]> {
+export async function getDebtsByCreditor(tenantId: string): Promise<DebtsByCreditor[]> {
   try {
     const debtsByCreditor = await prisma.creditReference.groupBy({
       by: ['creditorName'],
       where: {
         deletedAt: null,
+        tenantId,
       },
       _count: {
         id: true,
@@ -191,6 +196,7 @@ export async function getDebtsByCreditor(): Promise<DebtsByCreditor[]> {
         where: {
           creditorName: creditorData.creditorName,
           deletedAt: null,
+          tenantId,
         },
         select: {
           idNumber: true,
@@ -226,12 +232,13 @@ export async function getDebtsByCreditor(): Promise<DebtsByCreditor[]> {
 /**
  * Obtiene deudas agrupadas por estado
  */
-export async function getDebtsByStatus(): Promise<DebtsByStatus[]> {
+export async function getDebtsByStatus(tenantId: string): Promise<DebtsByStatus[]> {
   try {
     const debtsByStatus = await prisma.creditReference.groupBy({
       by: ['debtStatus'],
       where: {
         deletedAt: null,
+        tenantId,
       },
       _count: {
         id: true,
@@ -267,30 +274,30 @@ export async function getDebtsByStatus(): Promise<DebtsByStatus[]> {
 /**
  * Obtiene todos los reportes agregados
  */
-export async function getAggregatedReports(): Promise<AggregatedReports> {
+export async function getAggregatedReports(tenantId: string): Promise<AggregatedReports> {
   try {
     const [topDebtors, debtsByCity, debtsByCreditor, debtsByStatus] =
       await Promise.all([
-        getTopDebtors(10),
-        getDebtsByCity(),
-        getDebtsByCreditor(),
-        getDebtsByStatus(),
+        getTopDebtors(tenantId, 10),
+        getDebtsByCity(tenantId),
+        getDebtsByCreditor(tenantId),
+        getDebtsByStatus(tenantId),
       ]);
 
     // Calcular resumen
     const totalRecords = await prisma.creditReference.count({
-      where: { deletedAt: null },
+      where: { deletedAt: null, tenantId },
     });
 
     const totalAmountResult = await prisma.creditReference.aggregate({
-      where: { deletedAt: null },
+      where: { deletedAt: null, tenantId },
       _sum: {
         debtAmount: true,
       },
     });
 
     const uniqueDebtors = await prisma.creditReference.findMany({
-      where: { deletedAt: null },
+      where: { deletedAt: null, tenantId },
       select: { idNumber: true },
       distinct: ['idNumber'],
     });

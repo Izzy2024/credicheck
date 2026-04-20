@@ -83,6 +83,11 @@ export const createCreditReferenceSchema = z.object({
     .enum(['ACTIVE', 'PAID', 'INACTIVE', 'PAYMENT_PLAN', 'DISPUTED'])
     .optional()
     .default('ACTIVE'),
+
+  caseType: z
+    .enum(['FORMAL', 'P2P', 'SERVICE'])
+    .optional()
+    .default('FORMAL'),
   
   notes: z
     .string()

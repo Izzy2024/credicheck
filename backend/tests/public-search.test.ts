@@ -28,6 +28,7 @@ describe('Public search endpoint', () => {
         debtDate: new Date('2024-01-01'),
         creditorName: 'Banco Demo',
         debtStatus: 'ACTIVE',
+        publishState: 'PUBLISHED',
         createdBy: user.id,
       },
     });

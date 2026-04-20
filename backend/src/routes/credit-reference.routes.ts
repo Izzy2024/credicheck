@@ -1,14 +1,16 @@
 import { Router } from 'express';
 import { CreditReferenceController } from '../controllers/credit-reference.controller';
 import { ExportController } from '../controllers/export.controller';
-import { authenticateToken } from '../middleware/auth.middleware';
+import { authenticateToken, optionalAuth } from '../middleware/auth.middleware';
 import {
   requireAdmin,
   logAdminAction,
   validateBulkOperation,
   validateStatusTransition,
+  validateOptionalStatusTransition,
   validateRecordIds,
 } from '../middleware/admin.middleware';
+import { requireRecordOwnerOrAdmin } from '../middleware/record-owner.middleware';
 
 const router = Router();
 
@@ -35,12 +37,23 @@ router.post('/', authenticateToken, CreditReferenceController.createReference);
 router.get('/', authenticateToken, CreditReferenceController.getAllReferences);
 
 /**
+ * GET /api/v1/records/mine
+ * Obtener registros creados por el usuario autenticado
+ */
+router.get(
+  '/mine',
+  authenticateToken,
+  CreditReferenceController.getMyCreatedReferences
+);
+
+/**
  * GET /api/v1/records/search
  * Buscar referencias crediticias
  * Query params: query, type
  */
 router.get(
   '/search',
+  optionalAuth,
   CreditReferenceController.searchReferences
 );
 
@@ -92,7 +105,20 @@ router.get(
 router.patch(
   '/:id',
   authenticateToken,
+  requireRecordOwnerOrAdmin,
+  validateOptionalStatusTransition,
   CreditReferenceController.updateReference
+);
+
+/**
+ * GET /api/v1/records/:id/audit-logs
+ * Obtener historial de cambios del registro (dueño o admin)
+ */
+router.get(
+  '/:id/audit-logs',
+  authenticateToken,
+  requireRecordOwnerOrAdmin,
+  CreditReferenceController.getRecordAuditLogs
 );
 
 /**
@@ -132,6 +158,34 @@ router.get(
   authenticateToken,
   CreditReferenceController.getRecordsByStatus
 );
+
+/**
+ * GET /api/v1/records/moderation/queue
+ * Cola de moderación priorizada por riesgo
+ */
+router.get(
+  '/moderation/queue',
+  authenticateToken,
+  requireAdmin,
+  CreditReferenceController.getModerationQueue
+);
+
+/**
+ * PATCH /api/v1/records/:id/moderation
+ * Aprobar o rechazar publicación por moderación
+ */
+router.patch(
+  '/:id/moderation',
+  authenticateToken,
+  requireAdmin,
+  CreditReferenceController.moderateReference
+);
+
+/**
+ * GET /api/v1/records/:id
+ * Obtener detalle de un registro
+ */
+router.get('/:id', authenticateToken, CreditReferenceController.getReferenceById);
 
 /**
  * DELETE /api/v1/records/:id

@@ -37,7 +37,9 @@ export async function fuzzySearch(req: Request, res: Response): Promise<void> {
       return;
     }
 
+    const tenantId = (req as any).user?.tenantId || 'default';
     const results = await fuzzySearchService.fuzzySearch(
+      tenantId,
       q as string,
       searchType as 'name' | 'id' | 'both',
       searchThreshold
@@ -76,10 +78,12 @@ export async function fuzzySearchByName(
       return;
     }
 
+    const tenantId = (req as any).user?.tenantId || 'default';
     const searchThreshold = threshold
       ? parseFloat(threshold as string)
       : undefined;
     const results = await fuzzySearchService.fuzzySearchByName(
+      tenantId,
       q as string,
       searchThreshold
     );
@@ -118,10 +122,12 @@ export async function fuzzySearchById(
       return;
     }
 
+    const tenantId = (req as any).user?.tenantId || 'default';
     const searchThreshold = threshold
       ? parseFloat(threshold as string)
       : undefined;
     const results = await fuzzySearchService.fuzzySearchById(
+      tenantId,
       q as string,
       searchThreshold
     );

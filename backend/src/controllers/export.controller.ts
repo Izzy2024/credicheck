@@ -5,9 +5,10 @@ export class ExportController {
   static async exportRecords(req: Request, res: Response): Promise<void> {
     try {
       const format = (req.query['format'] as string) || 'csv';
+      const tenantId = req.user?.tenantId || 'default';
 
       if (format === 'excel') {
-        const buffer = await ExportService.exportRecordsExcel();
+        const buffer = await ExportService.exportRecordsExcel(tenantId);
         res.setHeader(
           'Content-Type',
           'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
@@ -20,7 +21,7 @@ export class ExportController {
         return;
       }
 
-      const csv = await ExportService.exportRecordsCSV();
+      const csv = await ExportService.exportRecordsCSV(tenantId);
       res.setHeader('Content-Type', 'text/csv; charset=utf-8');
       res.setHeader(
         'Content-Disposition',
@@ -43,8 +44,9 @@ export class ExportController {
 
   static async exportHistory(req: Request, res: Response): Promise<void> {
     try {
+      const tenantId = req.user?.tenantId || 'default';
       const userId = req.user?.role === 'ADMIN' ? undefined : req.user?.id;
-      const csv = await ExportService.exportHistoryCSV(userId);
+      const csv = await ExportService.exportHistoryCSV(tenantId, userId);
       res.setHeader('Content-Type', 'text/csv; charset=utf-8');
       res.setHeader(
         'Content-Disposition',

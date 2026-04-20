@@ -24,12 +24,13 @@ export interface RiskScoreResult {
  * - Estado de las deudas (activas, pagadas, etc.)
  */
 export async function calculateRiskScore(
+  tenantId: string,
   searchType: 'idNumber' | 'name',
   searchValue: string
 ): Promise<RiskScoreResult | null> {
   try {
     // Buscar todas las referencias de esta persona
-    const whereClause: any = { deletedAt: null };
+    const whereClause: any = { deletedAt: null, tenantId };
 
     if (searchType === 'idNumber') {
       whereClause.idNumber = searchValue;
@@ -193,13 +194,14 @@ function generateRiskDetails(
 /**
  * Obtiene estadísticas de riesgo crediticio para el dashboard
  */
-export async function getRiskStatistics() {
+export async function getRiskStatistics(tenantId: string) {
   try {
     // Obtener todas las personas únicas con deudas
     const uniqueDebtors = await prisma.creditReference.groupBy({
       by: ['idNumber'],
       where: {
         deletedAt: null,
+        tenantId,
       },
       _count: true,
     });
@@ -208,7 +210,7 @@ export async function getRiskStatistics() {
     const scores: { idNumber: string; score: number; level: string }[] = [];
 
     for (const debtor of uniqueDebtors.slice(0, 100)) {
-      const riskScore = await calculateRiskScore('idNumber', debtor.idNumber);
+      const riskScore = await calculateRiskScore(tenantId, 'idNumber', debtor.idNumber);
       if (riskScore) {
         scores.push({
           idNumber: debtor.idNumber,

@@ -38,12 +38,13 @@ export interface PersonTimeline {
  * Obtiene el historial completo (timeline) de una persona
  */
 export async function getPersonTimeline(
+  tenantId: string,
   searchType: 'idNumber' | 'name',
   searchValue: string
 ): Promise<PersonTimeline | null> {
   try {
     // Buscar todas las referencias de esta persona
-    const whereClause: any = { deletedAt: null };
+    const whereClause: any = { deletedAt: null, tenantId };
 
     if (searchType === 'idNumber') {
       whereClause.idNumber = searchValue;
@@ -208,13 +209,14 @@ export async function getPersonTimeline(
 /**
  * Obtiene estadísticas de timeline para múltiples personas
  */
-export async function getTimelineStatistics() {
+export async function getTimelineStatistics(tenantId: string) {
   try {
     // Obtener todas las personas únicas
     const uniquePeople = await prisma.creditReference.groupBy({
       by: ['idNumber', 'fullName'],
       where: {
         deletedAt: null,
+        tenantId,
       },
       _count: {
         id: true,

@@ -35,7 +35,9 @@ export async function upsertVerification(
       return;
     }
 
+    const tenantId = (req as any).user?.tenantId || 'default';
     const verification = await verificationService.upsertVerification(
+      tenantId,
       recordId,
       userId,
       {
@@ -74,7 +76,8 @@ export async function getVerificationSummary(
       return;
     }
 
-    const summary = await verificationService.getVerificationSummary(recordId);
+    const tenantId = (req as any).user?.tenantId || 'default';
+    const summary = await verificationService.getVerificationSummary(tenantId, recordId);
     res.status(200).json({ success: true, data: summary });
   } catch (error) {
     if (error instanceof Error && error.message === 'RECORD_NOT_FOUND') {
@@ -110,7 +113,9 @@ export async function deleteMyVerification(
       return;
     }
 
+    const tenantId = (req as any).user?.tenantId || 'default';
     const deletedCount = await verificationService.deleteVerification(
+      tenantId,
       recordId,
       userId
     );

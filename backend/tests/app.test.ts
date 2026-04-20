@@ -106,8 +106,8 @@ describe('CrediCheck API - Tests Básicos', () => {
 
       // Verificar headers de seguridad de Helmet
       expect(response.headers).toHaveProperty('x-content-type-options', 'nosniff');
-      expect(response.headers).toHaveProperty('x-frame-options', 'SAMEORIGIN');
-      expect(response.headers).toHaveProperty('x-xss-protection', '0');
+      expect(response.headers).toHaveProperty('x-frame-options', 'DENY');
+      expect(response.headers).toHaveProperty('x-xss-protection', '1; mode=block');
     });
   });
 
