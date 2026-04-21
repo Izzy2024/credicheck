@@ -17,8 +17,8 @@ const envSchema = z.object({
   DATABASE_URL: z.string().min(1, 'DATABASE_URL es requerida'),
   DATABASE_SSL: z.string().transform(val => val === 'true').default('false'),
 
-  // Redis
-  REDIS_URL: z.string().min(1, 'REDIS_URL es requerida'),
+  // Redis (opcional - no utilizado actualmente)
+  REDIS_URL: z.string().optional().default('redis://localhost:6379'),
   REDIS_PASSWORD: z.string().optional(),
 
   // JWT
