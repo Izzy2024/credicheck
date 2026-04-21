@@ -21,6 +21,7 @@
     "db:migrate:deploy:prod": "prisma migrate deploy --schema prisma-postgres/schema.prisma",
     "db:migrate:reset": "prisma migrate reset",
     "db:seed": "ts-node prisma/seed.ts",
+    "db:seed:prod": "npm run db:generate:prod && ts-node prisma/seed.ts",
     "db:studio": "prisma studio",
     "db:push": "prisma db push",
     "db:push:prod": "prisma db push --schema prisma-postgres/schema.prisma",

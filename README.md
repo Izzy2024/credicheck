@@ -222,6 +222,9 @@ Opción recomendada: crear el servicio apuntando al directorio `backend`.
 - Start Command: `npm start`
 - Pre-Deploy Command: `npm run db:migrate:deploy:prod`
 
+Si quieres cargar usuarios/registros demo en Neon una sola vez después del deploy, ejecuta en Render Shell:
+- `npm run db:seed:prod`
+
 Si el servicio de Render está apuntando al root del repo en lugar de `backend`, usa:
 
 - Build Command: `npm install && npm run render:backend:build`
