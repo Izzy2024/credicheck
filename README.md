@@ -213,6 +213,27 @@ NODE_ENV=development
 2. Configurar variables de entorno
 3. Desplegar automáticamente
 
+### Frontend (Render)
+
+El frontend y el backend viven en el mismo repo, pero NO deben correr como un solo Web Service de Render.
+Render expone un solo puerto por servicio, y tu repo tiene dos servidores distintos:
+- Next.js para frontend
+- Express para backend
+
+Por eso en Render deben existir 2 servicios separados usando el mismo repositorio.
+
+Servicio recomendado para frontend:
+- Service Name: `credicheck-frontend`
+- Root Directory: `.`
+- Build Command: `npm install && npm run render:frontend:build`
+- Start Command: `npm run render:frontend:start`
+- Variable obligatoria: `NEXT_PUBLIC_API_URL=https://<tu-backend>.onrender.com`
+
+Además, en el backend debes configurar:
+- `CORS_ORIGIN=https://<tu-frontend>.onrender.com`
+
+El frontend build quedó verificado localmente con `npm run build:frontend`.
+
 ### Backend (Render)
 
 Opción recomendada: crear el servicio apuntando al directorio `backend`.

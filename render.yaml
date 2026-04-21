@@ -54,3 +54,17 @@ services:
         value: logs/app.log
       - key: HEALTH_CHECK_INTERVAL
         value: "30000"
+
+  - type: web
+    name: credicheck-frontend
+    runtime: node
+    rootDir: .
+    plan: free
+    buildCommand: npm install && npm run render:frontend:build
+    startCommand: npm run render:frontend:start
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NEXT_PUBLIC_API_URL
+        sync: false
