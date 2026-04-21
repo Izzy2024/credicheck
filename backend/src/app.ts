@@ -128,6 +128,21 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 });
 
 // Health check endpoint
+app.get('/', (_req: Request, res: Response) => {
+  res.status(200).json({
+    success: true,
+    data: {
+      name: 'CrediCheck API',
+      message: 'Servicio activo',
+      health: '/health',
+      info: `/api/${config.server.apiVersion}/info`,
+      version: config.server.apiVersion,
+      environment: config.server.nodeEnv,
+      timestamp: new Date().toISOString(),
+    },
+  });
+});
+
 app.get('/health', async (req: Request, res: Response) => {
   const dbStatus = await checkDatabaseConnection();
 

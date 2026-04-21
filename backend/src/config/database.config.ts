@@ -61,8 +61,17 @@ export const checkDatabaseConnection = async (): Promise<boolean> => {
     await prisma.$queryRaw`SELECT 1`;
     return true;
   } catch (error) {
-    console.error('❌ Error en verificación de conexión a base de datos:', error);
-    return false;
+    console.warn('⚠️ Verificación DB falló; reintentando reconexión Prisma...', error);
+
+    try {
+      await prisma.$connect();
+      await prisma.$queryRaw`SELECT 1`;
+      console.log('✅ Prisma reconectado correctamente tras fallo transitorio');
+      return true;
+    } catch (retryError) {
+      console.error('❌ Error en verificación de conexión a base de datos:', retryError);
+      return false;
+    }
   }
 };
 
