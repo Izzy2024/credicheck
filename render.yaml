@@ -1,0 +1,56 @@
+services:
+  - type: web
+    name: credicheck-backend
+    runtime: node
+    rootDir: backend
+    plan: free
+    buildCommand: npm install && npm run build:prod
+    preDeployCommand: npm run db:migrate:deploy:prod
+    startCommand: npm start
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: API_VERSION
+        value: v1
+      - key: DATABASE_URL
+        sync: false
+      - key: DIRECT_URL
+        sync: false
+      - key: REDIS_URL
+        sync: false
+      - key: REDIS_PASSWORD
+        sync: false
+      - key: JWT_ACCESS_SECRET
+        sync: false
+      - key: JWT_REFRESH_SECRET
+        sync: false
+      - key: ENCRYPTION_KEY
+        sync: false
+      - key: CORS_ORIGIN
+        sync: false
+      - key: CORS_CREDENTIALS
+        value: "true"
+      - key: DATABASE_SSL
+        value: "true"
+      - key: JWT_ACCESS_EXPIRES_IN
+        value: 15m
+      - key: JWT_REFRESH_EXPIRES_IN
+        value: 7d
+      - key: RATE_LIMIT_WINDOW_MS
+        value: "900000"
+      - key: RATE_LIMIT_MAX_REQUESTS
+        value: "1000"
+      - key: AUTH_RATE_LIMIT_MAX
+        value: "5"
+      - key: SEARCH_RATE_LIMIT_MAX
+        value: "100"
+      - key: LOG_LEVEL
+        value: info
+      - key: LOGS_DIR
+        value: logs
+      - key: LOG_FILE
+        value: logs/app.log
+      - key: HEALTH_CHECK_INTERVAL
+        value: "30000"

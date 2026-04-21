@@ -213,12 +213,30 @@ NODE_ENV=development
 2. Configurar variables de entorno
 3. Desplegar automáticamente
 
-### Backend (Heroku/Render)
+### Backend (Render)
 
-1. Configurar base de datos en producción
-2. Establecer variables de entorno
-3. Ejecutar `npm run setup:prod`
-4. Desplegar aplicación
+Opción recomendada: crear el servicio apuntando al directorio `backend`.
+
+- Root Directory: `backend`
+- Build Command: `npm install && npm run build:prod`
+- Start Command: `npm start`
+- Pre-Deploy Command: `npm run db:migrate:deploy:prod`
+
+Si el servicio de Render está apuntando al root del repo en lugar de `backend`, usa:
+
+- Build Command: `npm install && npm run render:backend:build`
+- Start Command: `npm run render:backend:start`
+- Pre-Deploy Command: `cd backend && npm run db:migrate:deploy:prod`
+
+Además debes configurar en Render:
+- `DATABASE_URL` = Neon pooler URL para runtime
+- `DIRECT_URL` = Neon direct/unpooled URL para migraciones Prisma
+- `REDIS_URL`
+- `REDIS_PASSWORD` (opcional, solo si tu proveedor Redis te da password separada)
+- `JWT_ACCESS_SECRET`
+- `JWT_REFRESH_SECRET`
+- `ENCRYPTION_KEY`
+- `CORS_ORIGIN`
 
 ## Contribución
 
