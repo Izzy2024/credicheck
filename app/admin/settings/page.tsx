@@ -1,5 +1,7 @@
 "use client";
 
+import { API_BASE_URL } from '@/lib/api-base';
+
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -38,7 +40,6 @@ import {
 import { toast } from "sonner";
 import { type SettingsData } from "@/types";
 import { SettingsSkeleton } from "@/components/loading-skeletons";
-import { API_BASE_URL } from '@/lib/api-base';
 
 export default function AdminSettingsPage() {
   const [loading, setLoading] = useState(true);

@@ -1,5 +1,7 @@
 "use client";
 
+import { API_BASE_URL } from '@/lib/api-base';
+
 import { useState, useEffect } from "react";
 import {
   Card,
@@ -46,7 +48,6 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { type DashboardData } from "@/types";
-import { API_BASE_URL } from '@/lib/api-base';
 
 const STATUS_COLORS: Record<string, string> = {
   ACTIVE: "#ef4444",

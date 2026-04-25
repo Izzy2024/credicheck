@@ -1,5 +1,7 @@
 "use client";
 
+import { API_BASE_URL } from '@/lib/api-base';
+
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -28,7 +30,6 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import {
-import { API_BASE_URL } from '@/lib/api-base';
   forgotPasswordEmailSchema,
   resetPasswordSchema,
   type ForgotPasswordEmailFormData,

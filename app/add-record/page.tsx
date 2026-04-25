@@ -1,5 +1,7 @@
 "use client";
 
+import { API_BASE_URL } from '@/lib/api-base';
+
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -39,7 +41,6 @@ import {
   CreditCard,
 } from "lucide-react";
 import {
-import { API_BASE_URL } from '@/lib/api-base';
   createRecordSchema,
   type CreateRecordFormData,
 } from "@/lib/validations/credit-reference";

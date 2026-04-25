@@ -1,5 +1,7 @@
 "use client";
 
+import { API_BASE_URL } from '@/lib/api-base';
+
 import React, { useState, useEffect } from "react";
 import {
   Card,
@@ -68,7 +70,6 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { api } from "@/lib/api";
-import { API_BASE_URL } from '@/lib/api-base';
 
 export interface CreditReference {
   id: string;

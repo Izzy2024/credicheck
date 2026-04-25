@@ -1,5 +1,7 @@
 "use client";
 
+import { API_BASE_URL } from '@/lib/api-base';
+
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -31,7 +33,6 @@ import {
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import {
-import { API_BASE_URL } from '@/lib/api-base';
   createUserSchema,
   type CreateUserFormData,
 } from "@/lib/validations/user";

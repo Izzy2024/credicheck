@@ -1,5 +1,7 @@
 "use client";
 
+import { API_BASE_URL } from '@/lib/api-base';
+
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import {
@@ -61,7 +63,6 @@ import { TableSkeleton } from "@/components/loading-skeletons";
 import { Separator } from "@/components/ui/separator";
 import { CreateUserDialog } from "./_components/create-user-dialog";
 import { EditUserDialog } from "./_components/edit-user-dialog";
-import { API_BASE_URL } from '@/lib/api-base';
 
 interface User {
   id: string;

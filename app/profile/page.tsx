@@ -1,5 +1,7 @@
 "use client";
 
+import { API_BASE_URL } from '@/lib/api-base';
+
 import type React from "react";
 
 import { useState, useEffect } from "react";
@@ -47,7 +49,6 @@ import { Progress } from "@/components/ui/progress";
 import { type User as UserProfile } from "@/types";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { ProfileSkeleton } from "@/components/loading-skeletons";
-import { API_BASE_URL } from '@/lib/api-base';
 
 interface PasswordStrength {
   isValid: boolean;

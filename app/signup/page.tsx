@@ -1,5 +1,7 @@
 "use client";
 
+import { API_BASE_URL } from '@/lib/api-base';
+
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -20,7 +22,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { signupSchema, type SignupFormData } from "@/lib/validations/auth";
-import { API_BASE_URL } from '@/lib/api-base';
 
 export default function SignupPage() {
   const router = useRouter();

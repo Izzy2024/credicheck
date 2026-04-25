@@ -1,5 +1,7 @@
 "use client";
 
+import { API_BASE_URL } from '@/lib/api-base';
+
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -32,7 +34,6 @@ import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { type User } from "@/types";
 import { editUserSchema, type EditUserFormData } from "@/lib/validations/user";
-import { API_BASE_URL } from '@/lib/api-base';
 
 interface EditUserDialogProps {
   user: User | null;

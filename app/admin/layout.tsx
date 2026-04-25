@@ -1,5 +1,7 @@
 "use client";
 
+import { API_BASE_URL } from '@/lib/api-base';
+
 import { useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -20,7 +22,6 @@ import {
   AlertTriangle,
 } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { API_BASE_URL } from '@/lib/api-base';
 
 interface AdminLayoutProps {
   children: React.ReactNode;

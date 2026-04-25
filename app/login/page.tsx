@@ -2,6 +2,8 @@
 
 "use client";
 
+import { API_BASE_URL } from '@/lib/api-base';
+
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -22,7 +24,6 @@ import {
 } from "@/components/ui/form";
 import { loginSchema, type LoginFormData } from "@/lib/validations/auth";
 import { Eye, EyeOff, Shield, CheckCircle, ArrowLeft } from "lucide-react";
-import { API_BASE_URL } from '@/lib/api-base';
 
 export default function LoginPage() {
   const router = useRouter();

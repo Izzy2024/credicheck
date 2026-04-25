@@ -1,5 +1,7 @@
 "use client";
 
+import { API_BASE_URL } from '@/lib/api-base';
+
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import jsPDF from "jspdf";
@@ -36,7 +38,6 @@ import {
   Gavel,
 } from "lucide-react";
 import { FoundResultsSkeleton } from "@/components/loading-skeletons";
-import { API_BASE_URL } from '@/lib/api-base';
 
 type SearchResult = {
   id: string;
