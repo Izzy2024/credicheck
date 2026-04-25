@@ -1,9 +1,6 @@
 /**
- * Base URL for the API. Falls back to the current origin when
- * NEXT_PUBLIC_API_URL is not set (e.g. missing Render env var).
+ * Base URL for the API.
+ * Falls back to production backend URL when NEXT_PUBLIC_API_URL is not set.
  */
 export const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL ||
-  (typeof window !== "undefined"
-    ? window.location.origin
-    : "https://credicheck.onrender.com");
+  process.env.NEXT_PUBLIC_API_URL || "https://credicheck.onrender.com";

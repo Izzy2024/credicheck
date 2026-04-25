@@ -15,10 +15,7 @@ export const getPublicApiBaseUrl = (): string => {
 
   if (baseUrl) return baseUrl;
 
-  // Fallback: try current origin (browser) then production URL
-  if (typeof window !== "undefined") {
-    return window.location.origin;
-  }
+  // Fallback: use production backend URL (no trailing slash)
   return "https://credicheck.onrender.com";
 };
 
