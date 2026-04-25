@@ -1,15 +1,11 @@
+import { buildPublicApiUrl } from "@/lib/api-url";
+
 type RequestOptions = {
   headers?: Record<string, string>;
   params?: Record<string, string>;
 };
 
 class ApiClient {
-  private baseUrl: string;
-
-  constructor() {
-    this.baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3002";
-  }
-
   private getToken(): string | null {
     if (typeof window === "undefined") return null;
     return localStorage.getItem("accessToken");
@@ -32,7 +28,7 @@ class ApiClient {
   }
 
   private buildUrl(path: string, params?: Record<string, string>): string {
-    const url = new URL(`${this.baseUrl}${path}`);
+    const url = new URL(buildPublicApiUrl(path));
     if (params) {
       Object.entries(params).forEach(([key, value]) => {
         if (value !== undefined && value !== null && value !== "") {

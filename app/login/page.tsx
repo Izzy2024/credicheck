@@ -1,3 +1,5 @@
+
+
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -55,9 +57,9 @@ export default function LoginPage() {
         localStorage.setItem("accessToken", result.data.accessToken);
         localStorage.setItem("refreshToken", result.data.refreshToken);
         localStorage.setItem("userRole", result.data.user.role);
-        localStorage.setItem("userFirstName", result.data.userFirstName);
-        localStorage.setItem("userLastName", result.data.userLastName);
-        localStorage.setItem("userEmail", result.data.userEmail);
+        localStorage.setItem("userFirstName", result.data.user.firstName);
+        localStorage.setItem("userLastName", result.data.user.lastName);
+        localStorage.setItem("userEmail", result.data.user.email);
         router.push("/feature-center");
       } else {
         setFormError(result.error?.message || "Credenciales inválidas");

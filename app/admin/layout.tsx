@@ -33,27 +33,54 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   const [userName, setUserName] = useState<string>("");
 
   useEffect(() => {
-    // Verificar autenticación y permisos
-    const token = localStorage.getItem("accessToken");
-    const role = localStorage.getItem("userRole");
-    const firstName = localStorage.getItem("userFirstName");
-    const lastName = localStorage.getItem("userLastName");
+    // Verificar autenticación y permisos contra el servidor
+    const verifyAdmin = async () => {
+      const token = localStorage.getItem("accessToken");
+      if (!token) {
+        router.push("/dashboard");
+        return;
+      }
 
-    if (!token) {
-      router.push("/dashboard");
-      return;
-    }
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/profile`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
 
-    if (role !== "ADMIN") {
-      toast.error("Acceso denegado", {
-        description: "No tienes permisos de administrador.",
-      });
-      router.push("/dashboard");
-      return;
-    }
+        if (!response.ok) {
+          // Token inválido o expirado
+          localStorage.removeItem("accessToken");
+          localStorage.removeItem("refreshToken");
+          localStorage.removeItem("userRole");
+          localStorage.removeItem("userFirstName");
+          localStorage.removeItem("userLastName");
+          localStorage.removeItem("userEmail");
+          router.push("/dashboard");
+          return;
+        }
 
-    setUserRole(role);
-    setUserName(`${firstName} ${lastName}`);
+        const result = await response.json();
+        if (!result.success || result.data.user.role !== "ADMIN") {
+          toast.error("Acceso denegado", {
+            description: "No tienes permisos de administrador.",
+          });
+          router.push("/dashboard");
+          return;
+        }
+
+        // Rol confirmado por el servidor — sincronizar localStorage
+        setUserRole(result.data.user.role);
+        setUserName(`${result.data.user.firstName} ${result.data.user.lastName}`);
+        localStorage.setItem("userRole", result.data.user.role);
+        localStorage.setItem("userFirstName", result.data.user.firstName);
+        localStorage.setItem("userLastName", result.data.user.lastName);
+        localStorage.setItem("userEmail", result.data.user.email);
+      } catch {
+        // Error de conexión — no conceder acceso
+        router.push("/dashboard");
+      }
+    };
+
+    verifyAdmin();
   }, [router]);
 
   const handleLogout = async () => {
