@@ -163,15 +163,18 @@ function cx(...classes: Array<string | boolean | undefined | null>) {
 
 function SidebarContent({
   collapsed,
+  isAdmin,
   onNavigate,
 }: {
   collapsed?: boolean;
+  isAdmin?: boolean;
   onNavigate?: () => void;
 }) {
   const pathname = usePathname();
 
   const general = NAV_ITEMS.filter((x) => x.section === "general");
   const admin = NAV_ITEMS.filter((x) => x.section === "admin");
+  const visibleAdmin = isAdmin ? admin : [];
 
   const Item = ({ item }: { item: NavItem }) => {
     const active = pathname === item.href;
@@ -266,19 +269,17 @@ function SidebarContent({
           ))}
         </div>
 
-        {!collapsed ? (
+        {(!collapsed && isAdmin) ? (
           <div className="mt-6 text-xs font-semibold text-slate-500 dark:text-slate-400 px-2 mb-2">
             Administración
           </div>
-        ) : (
-          <div className="mt-3" />
-        )}
+        ) : null}
+        {collapsed && isAdmin && <div className="mt-3" />}
         <div className="space-y-1">
-          {admin.map((item) => (
+          {visibleAdmin.map((item) => (
             <Item key={item.href} item={item} />
           ))}
         </div>
-      </div>
 
       <div className="px-4 pb-6">
         <Button
@@ -305,12 +306,34 @@ function SidebarContent({
 export default function FeatureCenterPage() {
   const [query, setQuery] = useState("");
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
     if (!token) {
       window.location.href = "/login";
+      return;
     }
+
+    // Verificar rol contra el servidor
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/profile`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((r) => r.json())
+      .then((result) => {
+        if (result.success) {
+          setIsAdmin(result.data.user.role === "ADMIN");
+          // Sincronizar localStorage con datos reales del servidor
+          localStorage.setItem("userRole", result.data.user.role);
+          localStorage.setItem("userFirstName", result.data.user.firstName);
+          localStorage.setItem("userLastName", result.data.user.lastName);
+          localStorage.setItem("userEmail", result.data.user.email);
+        }
+      })
+      .catch(() => {
+        // Si falla, confiar en localStorage como fallback
+        setIsAdmin(localStorage.getItem("userRole") === "ADMIN");
+      });
 
     const stored = localStorage.getItem("featureCenterSidebarCollapsed");
     if (stored === "1") {
@@ -328,12 +351,13 @@ export default function FeatureCenterPage() {
 
   const filteredCards = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (!q) return NAV_ITEMS;
-    return NAV_ITEMS.filter((x) => {
+    const visibleItems = isAdmin ? NAV_ITEMS : NAV_ITEMS.filter((x) => x.section !== "admin");
+    if (!q) return visibleItems;
+    return visibleItems.filter((x) => {
       const hay = `${x.title} ${x.description || ""} ${x.href}`.toLowerCase();
       return hay.includes(q);
     });
-  }, [query]);
+  }, [query, isAdmin]);
 
   return (
     <div className="min-h-screen bg-[#f7f9fb] text-[#191c1e] dark:bg-[#041221] dark:text-white">
@@ -362,7 +386,7 @@ export default function FeatureCenterPage() {
             </Button>
           </div>
 
-          <SidebarContent collapsed={sidebarCollapsed} />
+          <SidebarContent collapsed={sidebarCollapsed} isAdmin={isAdmin} />
         </div>
       </aside>
 
@@ -386,7 +410,7 @@ export default function FeatureCenterPage() {
               <SheetTitle className="text-[#041221] dark:text-white">Navegación</SheetTitle>
             </SheetHeader>
             <div className="h-[calc(100vh-72px)]">
-              <SidebarContent />
+              <SidebarContent isAdmin={isAdmin} />
             </div>
           </SheetContent>
         </Sheet>

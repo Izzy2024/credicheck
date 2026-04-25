@@ -35,6 +35,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
+import { buildPublicApiUrl } from "@/lib/api-url";
 
 type LatestResult = {
   date: string;
@@ -234,7 +235,7 @@ export default function Dashboard() {
       }
 
       try {
-        const profileResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/profile`, {
+        const profileResponse = await fetch(buildPublicApiUrl("/api/v1/auth/profile"), {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -268,7 +269,7 @@ export default function Dashboard() {
           });
         }
 
-        const statsResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/dashboard`, {
+        const statsResponse = await fetch(buildPublicApiUrl("/api/v1/dashboard"), {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -277,7 +278,7 @@ export default function Dashboard() {
           if (statsResult.success) setStats(statsResult.data);
         }
 
-        const unreadResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/notifications/unread-count`, {
+        const unreadResponse = await fetch(buildPublicApiUrl("/api/v1/notifications/unread-count"), {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -286,7 +287,7 @@ export default function Dashboard() {
           setUnreadCount(unreadResult.count ?? 0);
         }
 
-        const historyResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/records/history`, {
+        const historyResponse = await fetch(buildPublicApiUrl("/api/v1/records/history"), {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -336,10 +337,11 @@ export default function Dashboard() {
       const headers: Record<string, string> = {};
       if (token) headers.Authorization = `Bearer ${token}`;
 
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/records/search?query=${encodeURIComponent(searchQuery)}&type=${searchType}`,
-        { headers, signal: controller.signal },
-      );
+      const searchUrl = new URL(buildPublicApiUrl("/api/v1/records/search"));
+      searchUrl.searchParams.set("query", searchQuery);
+      searchUrl.searchParams.set("type", searchType);
+
+      const response = await fetch(searchUrl.toString(), { headers, signal: controller.signal });
 
       if (response.status === 401) {
         clearSession();
@@ -403,7 +405,7 @@ export default function Dashboard() {
     try {
       const token = localStorage.getItem("accessToken");
       if (token) {
-        await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/logout`, {
+        await fetch(buildPublicApiUrl("/api/v1/auth/logout"), {
           method: "POST",
           headers: {
             Authorization: `Bearer ${token}`,

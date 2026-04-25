@@ -45,6 +45,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { HistorySkeleton } from "@/components/loading-skeletons";
+import { buildPublicApiUrl } from "@/lib/api-url";
 
 export default function HistoryPage() {
   const [historyData, setHistoryData] = useState<any[]>([]);
@@ -64,14 +65,11 @@ export default function HistoryPage() {
           return;
         }
 
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/v1/records/history`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+        const response = await fetch(buildPublicApiUrl("/api/v1/records/history"), {
+          headers: {
+            Authorization: `Bearer ${token}`,
           },
-        );
+        });
 
         if (response.status === 401) {
           window.location.href = "/login";
@@ -150,10 +148,9 @@ export default function HistoryPage() {
       const token = localStorage.getItem("accessToken");
       if (!token) return;
 
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/records/history/export`,
-        { headers: { Authorization: `Bearer ${token}` } },
-      );
+      const response = await fetch(buildPublicApiUrl("/api/v1/records/history/export"), {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
       if (!response.ok) throw new Error("Export failed");
 
@@ -177,14 +174,15 @@ export default function HistoryPage() {
         return;
       }
 
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/records/search?query=${encodeURIComponent(item.searchTerm)}&type=${item.searchType.toLowerCase()}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+      const searchUrl = new URL(buildPublicApiUrl("/api/v1/records/search"));
+      searchUrl.searchParams.set("query", item.searchTerm);
+      searchUrl.searchParams.set("type", item.searchType.toLowerCase());
+
+      const response = await fetch(searchUrl.toString(), {
+        headers: {
+          Authorization: `Bearer ${token}`,
         },
-      );
+      });
 
       if (response.status === 401) {
         window.location.href = "/login";
