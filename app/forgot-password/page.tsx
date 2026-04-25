@@ -2,8 +2,8 @@
 
 import { API_BASE_URL } from '@/lib/api-base';
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
@@ -55,6 +55,7 @@ const getPasswordStrength = (password: string) => {
 
 export default function ForgotPasswordPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [step, setStep] = useState<Step>(Step.EMAIL);
   const [loading, setLoading] = useState(false);
   const [resetToken, setResetToken] = useState("");
@@ -69,6 +70,16 @@ export default function ForgotPasswordPage() {
     resolver: zodResolver(resetPasswordSchema),
     defaultValues: { token: "", newPassword: "", confirmPassword: "" },
   });
+
+  // Check for token in URL on mount
+  useEffect(() => {
+    const token = searchParams.get("token");
+    if (token) {
+      setResetToken(token);
+      resetForm.setValue("token", token);
+      setStep(Step.RESET);
+    }
+  }, [searchParams, resetForm]);
 
   const newPasswordValue = resetForm.watch("newPassword");
   const confirmPasswordValue = resetForm.watch("confirmPassword");

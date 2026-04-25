@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { AuthService } from '../services/auth.service';
+import { EmailService } from '../services/email.service';
 import {
   loginSchema,
   refreshTokenSchema,
@@ -417,17 +418,14 @@ export class AuthController {
       // Generar token de reset
       const resetToken = await AuthService.generatePasswordResetToken(email);
 
-      // En una implementación completa, aquí se enviaría el email
-      // Por ahora, devolvemos el token (solo para desarrollo)
-      const response: SuccessResponse<{
-        message: string;
-        resetToken?: string;
-      }> = {
+      // Enviar email con el enlace de reset
+      await EmailService.sendPasswordResetEmail(email, resetToken);
+
+      const response: SuccessResponse<{ message: string }> = {
         success: true,
         data: {
           message:
             'Si el email existe, recibirás instrucciones para restablecer tu contraseña',
-          ...(process.env['NODE_ENV'] === 'development' && { resetToken }),
         },
         meta: {
           timestamp: new Date().toISOString(),

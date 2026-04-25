@@ -45,9 +45,11 @@ const envSchema = z.object({
   LOG_FILE: z.string().default('logs/app.log'),
 
   // Monitoreo
-  HEALTH_CHECK_INTERVAL: z.string().transform(val => parseInt(val, 10)).default('30000'),
+  HEALTH_CHECK_URL: z.string().optional(),
 
   // Email (opcional por ahora)
+  RESEND_API_KEY: z.string().optional(),
+  APP_URL: z.string().optional().default('https://frondend-credicheck.onrender.com'),
   SMTP_HOST: z.string().optional(),
   SMTP_PORT: z.string().transform(val => parseInt(val, 10)).optional(),
   SMTP_USER: z.string().optional(),
@@ -130,11 +132,13 @@ export const config = {
 
   // Monitoreo
   monitoring: {
-    healthCheckInterval: env.HEALTH_CHECK_INTERVAL,
+    healthCheckUrl: env.HEALTH_CHECK_URL,
   },
 
   // Email
   email: {
+    resendApiKey: env.RESEND_API_KEY,
+    appUrl: env.APP_URL,
     host: env.SMTP_HOST,
     port: env.SMTP_PORT,
     user: env.SMTP_USER,
