@@ -513,7 +513,8 @@ export class CreditReferenceController {
       switch (type) {
         case 'name':
           whereClause.fullName = {
-            contains: query as string,
+            contains: (query as string).trim(),
+            mode: 'insensitive',
           };
           searchTypeEnum = 'NAME';
           break;
