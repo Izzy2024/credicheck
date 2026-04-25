@@ -6,6 +6,7 @@ import { Bell, Archive, CheckCheck, LayoutGrid } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { API_BASE_URL } from '@/lib/api-base';
 
 type Notification = {
   id: string;
@@ -31,10 +32,10 @@ export default function NotificationsPage() {
 
     const loadNotifications = async () => {
       const [unreadResponse, notificationsResponse] = await Promise.all([
-        fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/notifications/unread-count`, {
+        fetch(`${API_BASE_URL}/api/v1/notifications/unread-count`, {
           headers: { Authorization: `Bearer ${token}` },
         }),
-        fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/notifications`, {
+        fetch(`${API_BASE_URL}/api/v1/notifications`, {
           headers: { Authorization: `Bearer ${token}` },
         }),
       ]);
@@ -83,7 +84,7 @@ export default function NotificationsPage() {
                 }
 
                 await fetch(
-                  `${process.env.NEXT_PUBLIC_API_URL}/api/v1/notifications/mark-all-read`,
+                  `${API_BASE_URL}/api/v1/notifications/mark-all-read`,
                   {
                     method: "PUT",
                     headers: { Authorization: `Bearer ${token}` },
@@ -155,7 +156,7 @@ export default function NotificationsPage() {
                                   return;
                                 }
                                 await fetch(
-                                  `${process.env.NEXT_PUBLIC_API_URL}/api/v1/notifications/${notification.id}/read`,
+                                  `${API_BASE_URL}/api/v1/notifications/${notification.id}/read`,
                                   {
                                     method: "PUT",
                                     headers: { Authorization: `Bearer ${token}` },
@@ -179,7 +180,7 @@ export default function NotificationsPage() {
                                 return;
                               }
                               await fetch(
-                                `${process.env.NEXT_PUBLIC_API_URL}/api/v1/notifications/${notification.id}/read`,
+                                `${API_BASE_URL}/api/v1/notifications/${notification.id}/read`,
                                 {
                                   method: "PUT",
                                   headers: { Authorization: `Bearer ${token}` },
@@ -203,7 +204,7 @@ export default function NotificationsPage() {
                                 return;
                               }
                               await fetch(
-                                `${process.env.NEXT_PUBLIC_API_URL}/api/v1/notifications/${notification.id}/archive`,
+                                `${API_BASE_URL}/api/v1/notifications/${notification.id}/archive`,
                                 {
                                   method: "PUT",
                                   headers: { Authorization: `Bearer ${token}` },

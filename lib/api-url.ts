@@ -15,7 +15,11 @@ export const getPublicApiBaseUrl = (): string => {
 
   if (baseUrl) return baseUrl;
 
-  return "http://localhost:3002";
+  // Fallback: try current origin (browser) then production URL
+  if (typeof window !== "undefined") {
+    return window.location.origin;
+  }
+  return "https://credicheck.onrender.com";
 };
 
 export const buildPublicApiUrl = (path: string): string => {

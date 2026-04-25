@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { API_BASE_URL } from '@/lib/api-base';
 
 type PendingDispute = {
   id: string;
@@ -48,7 +49,7 @@ export default function AdminDisputesPage() {
       }
 
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/disputes/pending`,
+        `${API_BASE_URL}/api/v1/disputes/pending`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -94,7 +95,7 @@ export default function AdminDisputesPage() {
       }
 
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/disputes/${id}/resolve`,
+        `${API_BASE_URL}/api/v1/disputes/${id}/resolve`,
         {
           method: "PATCH",
           headers: {

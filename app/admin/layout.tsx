@@ -20,6 +20,7 @@ import {
   AlertTriangle,
 } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { API_BASE_URL } from '@/lib/api-base';
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -42,7 +43,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       }
 
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/profile`, {
+        const response = await fetch(`${API_BASE_URL}/api/v1/auth/profile`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -87,7 +88,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     try {
       const token = localStorage.getItem("accessToken");
       if (token) {
-        await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/logout`, {
+        await fetch(`${API_BASE_URL}/api/v1/auth/logout`, {
           method: "POST",
           headers: { Authorization: `Bearer ${token}` },
         });

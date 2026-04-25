@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
+import { API_BASE_URL } from '@/lib/api-base';
   Calendar,
   Download,
   Eye,
@@ -120,7 +121,7 @@ function DisputesPageContent() {
       }
 
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/disputes/me`,
+        `${API_BASE_URL}/api/v1/disputes/me`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -194,7 +195,7 @@ function DisputesPageContent() {
       }
 
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/disputes/${disputeId}/messages`,
+        `${API_BASE_URL}/api/v1/disputes/${disputeId}/messages`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -233,7 +234,7 @@ function DisputesPageContent() {
       }
 
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/disputes/${disputeId}/messages`,
+        `${API_BASE_URL}/api/v1/disputes/${disputeId}/messages`,
         {
           method: "POST",
           headers: {
@@ -279,7 +280,7 @@ function DisputesPageContent() {
       }
 
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/disputes/${disputeId}/messages`,
+        `${API_BASE_URL}/api/v1/disputes/${disputeId}/messages`,
         {
           method: "POST",
           headers: {
@@ -324,7 +325,7 @@ function DisputesPageContent() {
       }
 
       setAttachmentActionId(attachment.id);
-      const endpoint = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/disputes/${disputeId}/attachments/${attachment.id}/download${asDownload ? "?download=1" : ""}`;
+      const endpoint = `${API_BASE_URL}/api/v1/disputes/${disputeId}/attachments/${attachment.id}/download${asDownload ? "?download=1" : ""}`;
 
       const response = await fetch(endpoint, {
         headers: {
@@ -378,7 +379,7 @@ function DisputesPageContent() {
       Array.from(files).forEach((file) => formData.append("files", file));
 
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/disputes/${disputeId}/attachments`,
+        `${API_BASE_URL}/api/v1/disputes/${disputeId}/attachments`,
         {
           method: "POST",
           headers: {

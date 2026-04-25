@@ -36,6 +36,7 @@ import {
   Gavel,
 } from "lucide-react";
 import { FoundResultsSkeleton } from "@/components/loading-skeletons";
+import { API_BASE_URL } from '@/lib/api-base';
 
 type SearchResult = {
   id: string;
@@ -189,7 +190,7 @@ export default function FoundResults() {
         return;
       }
 
-      const createResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/disputes`, {
+      const createResponse = await fetch(`${API_BASE_URL}/api/v1/disputes`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -219,7 +220,7 @@ export default function FoundResults() {
         const formData = new FormData();
         Array.from(disputeFiles).forEach((file) => formData.append("files", file));
 
-        await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/disputes/${disputeId}/attachments`, {
+        await fetch(`${API_BASE_URL}/api/v1/disputes/${disputeId}/attachments`, {
           method: "POST",
           headers: {
             Authorization: `Bearer ${token}`,

@@ -68,6 +68,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { api } from "@/lib/api";
+import { API_BASE_URL } from '@/lib/api-base';
 
 export interface CreditReference {
   id: string;
@@ -311,7 +312,7 @@ export function RecordsManagement({
       if (!token) return;
 
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/records/export?format=${format}`,
+        `${API_BASE_URL}/api/v1/records/export?format=${format}`,
         { headers: { Authorization: `Bearer ${token}` } },
       );
 

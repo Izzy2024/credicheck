@@ -61,6 +61,7 @@ import { TableSkeleton } from "@/components/loading-skeletons";
 import { Separator } from "@/components/ui/separator";
 import { CreateUserDialog } from "./_components/create-user-dialog";
 import { EditUserDialog } from "./_components/edit-user-dialog";
+import { API_BASE_URL } from '@/lib/api-base';
 
 interface User {
   id: string;
@@ -130,7 +131,7 @@ export default function AdminUsersPage() {
       });
 
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/users?${params}`,
+        `${API_BASE_URL}/api/v1/users?${params}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -159,7 +160,7 @@ export default function AdminUsersPage() {
     try {
       const token = localStorage.getItem("accessToken");
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/users/stats`,
+        `${API_BASE_URL}/api/v1/users/stats`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -184,7 +185,7 @@ export default function AdminUsersPage() {
     try {
       const token = localStorage.getItem("accessToken");
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/users/${userId}/toggle-status`,
+        `${API_BASE_URL}/api/v1/users/${userId}/toggle-status`,
         {
           method: "POST",
           headers: {
@@ -215,7 +216,7 @@ export default function AdminUsersPage() {
     try {
       const token = localStorage.getItem("accessToken");
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/users/${userId}`,
+        `${API_BASE_URL}/api/v1/users/${userId}`,
         {
           method: "DELETE",
           headers: {

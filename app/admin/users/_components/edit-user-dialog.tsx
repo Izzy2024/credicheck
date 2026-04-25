@@ -32,6 +32,7 @@ import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { type User } from "@/types";
 import { editUserSchema, type EditUserFormData } from "@/lib/validations/user";
+import { API_BASE_URL } from '@/lib/api-base';
 
 interface EditUserDialogProps {
   user: User | null;
@@ -79,7 +80,7 @@ export function EditUserDialog({
     try {
       const token = localStorage.getItem("accessToken");
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/users/${user.id}`,
+        `${API_BASE_URL}/api/v1/users/${user.id}`,
         {
           method: "PUT",
           headers: {

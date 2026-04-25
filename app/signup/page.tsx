@@ -20,6 +20,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { signupSchema, type SignupFormData } from "@/lib/validations/auth";
+import { API_BASE_URL } from '@/lib/api-base';
 
 export default function SignupPage() {
   const router = useRouter();
@@ -46,7 +47,7 @@ export default function SignupPage() {
     setFormError("");
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/signup`, {
+      const response = await fetch(`${API_BASE_URL}/api/v1/auth/signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

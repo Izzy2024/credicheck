@@ -20,6 +20,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import {
+import { API_BASE_URL } from '@/lib/api-base';
   AlertTriangle,
   Bell,
   History,
@@ -317,7 +318,7 @@ export default function FeatureCenterPage() {
     }
 
     // Verificar rol contra el servidor
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/profile`, {
+    fetch(`${API_BASE_URL}/api/v1/auth/profile`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((r) => r.json())

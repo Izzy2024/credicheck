@@ -31,6 +31,7 @@ import {
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import {
+import { API_BASE_URL } from '@/lib/api-base';
   createUserSchema,
   type CreateUserFormData,
 } from "@/lib/validations/user";
@@ -73,7 +74,7 @@ export function CreateUserDialog({
     try {
       const token = localStorage.getItem("accessToken");
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/users`,
+        `${API_BASE_URL}/api/v1/users`,
         {
           method: "POST",
           headers: {

@@ -46,6 +46,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { type DashboardData } from "@/types";
+import { API_BASE_URL } from '@/lib/api-base';
 
 const STATUS_COLORS: Record<string, string> = {
   ACTIVE: "#ef4444",
@@ -77,7 +78,7 @@ export default function AdminDashboardPage() {
         }
 
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/v1/dashboard`,
+          `${API_BASE_URL}/api/v1/dashboard`,
           { headers: { Authorization: `Bearer ${token}` } },
         );
 

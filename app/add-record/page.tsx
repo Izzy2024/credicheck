@@ -39,6 +39,7 @@ import {
   CreditCard,
 } from "lucide-react";
 import {
+import { API_BASE_URL } from '@/lib/api-base';
   createRecordSchema,
   type CreateRecordFormData,
 } from "@/lib/validations/credit-reference";
@@ -76,7 +77,7 @@ export default function AddRecord() {
     const fetchCount = async () => {
       try {
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/v1/records/count`,
+          `${API_BASE_URL}/api/v1/records/count`,
         );
         const result = await response.json();
         if (result.success) {
@@ -130,7 +131,7 @@ export default function AddRecord() {
       console.log("Enviando datos:", apiData);
 
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/records`,
+        `${API_BASE_URL}/api/v1/records`,
         {
           method: "POST",
           headers: {

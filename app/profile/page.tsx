@@ -47,6 +47,7 @@ import { Progress } from "@/components/ui/progress";
 import { type User as UserProfile } from "@/types";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { ProfileSkeleton } from "@/components/loading-skeletons";
+import { API_BASE_URL } from '@/lib/api-base';
 
 interface PasswordStrength {
   isValid: boolean;
@@ -99,7 +100,7 @@ export default function ProfilePage() {
       }
 
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/profile`,
+        `${API_BASE_URL}/api/v1/auth/profile`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -146,7 +147,7 @@ export default function ProfilePage() {
     try {
       const token = localStorage.getItem("accessToken");
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/password-strength?password=${encodeURIComponent(password)}`,
+        `${API_BASE_URL}/api/v1/auth/password-strength?password=${encodeURIComponent(password)}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -185,7 +186,7 @@ export default function ProfilePage() {
       }
 
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/change-password`,
+        `${API_BASE_URL}/api/v1/auth/change-password`,
         {
           method: "POST",
           headers: {
@@ -235,7 +236,7 @@ export default function ProfilePage() {
       }
 
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/profile`,
+        `${API_BASE_URL}/api/v1/auth/profile`,
         {
           method: "PUT",
           headers: {

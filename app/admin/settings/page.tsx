@@ -38,6 +38,7 @@ import {
 import { toast } from "sonner";
 import { type SettingsData } from "@/types";
 import { SettingsSkeleton } from "@/components/loading-skeletons";
+import { API_BASE_URL } from '@/lib/api-base';
 
 export default function AdminSettingsPage() {
   const [loading, setLoading] = useState(true);
@@ -77,10 +78,10 @@ export default function AdminSettingsPage() {
     const loadData = async () => {
       try {
         const [profileRes, settingsRes] = await Promise.all([
-          fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/profile`, {
+          fetch(`${API_BASE_URL}/api/v1/auth/profile`, {
             headers: { Authorization: `Bearer ${token}` },
           }),
-          fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/settings`, {
+          fetch(`${API_BASE_URL}/api/v1/settings`, {
             headers: { Authorization: `Bearer ${token}` },
           }),
         ]);
@@ -142,7 +143,7 @@ export default function AdminSettingsPage() {
     setSaving(true);
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/profile`,
+        `${API_BASE_URL}/api/v1/auth/profile`,
         {
           method: "PUT",
           headers: {
@@ -175,7 +176,7 @@ export default function AdminSettingsPage() {
     setSaving(true);
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/change-password`,
+        `${API_BASE_URL}/api/v1/auth/change-password`,
         {
           method: "POST",
           headers: {
@@ -263,7 +264,7 @@ export default function AdminSettingsPage() {
     setSaving(true);
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/settings`,
+        `${API_BASE_URL}/api/v1/settings`,
         {
           method: "PUT",
           headers: {
