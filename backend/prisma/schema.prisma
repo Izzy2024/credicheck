@@ -95,40 +95,43 @@ model User {
 }
 
 model CreditReference {
-  id           String        @id @default(cuid())
-  fullName     String        @map("full_name")
-  idNumber     String        @map("id_number")
-  idType       String        @map("id_type")
-  tenantId     String        @default("default") @map("tenant_id")
-  birthDate    DateTime?     @map("birth_date")
-  phone        String?
-  email        String?
-  address      String?
-  city         String?
-  department   String?
-  debtAmount   Decimal       @map("debt_amount")
-  debtDate     DateTime      @map("debt_date")
-  creditorName String        @map("creditor_name")
-  debtStatus   RecordStatus  @default(ACTIVE) @map("debt_status")
-  caseType     String        @default("FORMAL") @map("case_type")
-  publishState PublishState  @default(PENDING_AUTOMATION) @map("publish_state")
-  reviewStatus ReviewStatus  @default(PENDING) @map("review_status")
-  riskScore    Int           @default(0) @map("risk_score")
-  riskReasons  String?       @map("risk_reasons")
-  reviewedBy   String?       @map("reviewed_by")
-  reviewedAt   DateTime?     @map("reviewed_at")
-  notes        String?
-  createdBy    String        @map("created_by")
-  createdAt    DateTime      @default(now()) @map("created_at")
-  updatedAt    DateTime      @updatedAt @map("updated_at")
-  deletedAt    DateTime?     @map("deleted_at") // Para soft delete
+  id             String        @id @default(cuid())
+  fullName       String        @map("full_name")
+  idNumber       String        @map("id_number")
+  idType         String        @map("id_type")
+  country        String        @default("CO") @map("country") // ISO 3166-1 alpha-2
+  phoneCountryCode String?      @map("phone_country_code") // e.g. "+57", "+1"
+  tenantId       String        @default("default") @map("tenant_id")
+  birthDate      DateTime?     @map("birth_date")
+  phone          String?
+  email          String?
+  address        String?
+  city           String?
+  state          String?       @map("state") // Region/State/Department (renamed from department)
+  debtAmount     Decimal       @map("debt_amount")
+  debtDate       DateTime      @map("debt_date")
+  creditorName   String        @map("creditor_name")
+  debtStatus     RecordStatus  @default(ACTIVE) @map("debt_status")
+  caseType       String        @default("FORMAL") @map("case_type")
+  publishState   PublishState  @default(PENDING_AUTOMATION) @map("publish_state")
+  reviewStatus   ReviewStatus  @default(PENDING) @map("review_status")
+  riskScore      Int           @default(0) @map("risk_score")
+  riskReasons    String?       @map("risk_reasons")
+  reviewedBy     String?       @map("reviewed_by")
+  reviewedAt     DateTime?     @map("reviewed_at")
+  notes          String?
+  createdBy      String        @map("created_by")
+  createdAt      DateTime      @default(now()) @map("created_at")
+  updatedAt      DateTime      @updatedAt @map("updated_at")
+  deletedAt      DateTime?     @map("deleted_at") // Para soft delete
 
-  creator User @relation(fields: [createdBy], references: [id])
+  creator       User                @relation(fields: [createdBy], references: [id])
   verifications RecordVerification[]
 
   @@index([fullName])
   @@index([idNumber])
   @@index([idType])
+  @@index([country])
   @@index([tenantId])
   @@index([tenantId, createdAt])
   @@index([debtStatus])

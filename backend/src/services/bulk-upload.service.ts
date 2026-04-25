@@ -6,11 +6,14 @@ export interface CsvRecord {
   fullName: string;
   idNumber: string;
   idType: string;
+  country?: string;
+  phoneCountryCode?: string;
   birthDate?: string;
   phone?: string;
   email?: string;
   address?: string;
   city?: string;
+  state?: string;
   department?: string;
   debtAmount: string;
   debtDate: string;
@@ -198,7 +201,9 @@ export async function bulkUploadFromCSV(
             email: record.email || null,
             address: record.address || null,
             city: record.city || null,
-            department: record.department || null,
+            country: record.country || 'CO',
+            phoneCountryCode: record.phoneCountryCode || null,
+            state: record.state || null,
             debtAmount: parseFloat(record.debtAmount),
             debtDate: new Date(record.debtDate),
             creditorName: record.creditorName,

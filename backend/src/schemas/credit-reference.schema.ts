@@ -1,15 +1,23 @@
 import { z } from 'zod';
-import { 
-  isValidIdNumber, 
-  isValidColombianPhone, 
-  isValidEmail, 
+import {
+  isValidIdNumber,
+  isValidPhone,
+  isValidEmail,
   isValidFullName,
   isValidDebtAmount,
   isValidBirthDate,
   isValidDebtDate,
   cleanIdNumber,
-  normalizeName
+  normalizeName,
+  COUNTRIES,
+  validateIdNumber,
 } from '../utils/validation.util';
+
+export const countryCodes = COUNTRIES.map((c) => c.code);
+export const idTypesByCountry: Record<string, string[]> = {};
+for (const country of COUNTRIES) {
+  idTypesByCountry[country.code] = country.idTypes.map((t) => t.code);
+}
 
 // Schema para crear referencia crediticia
 export const createCreditReferenceSchema = z.object({
@@ -19,66 +27,74 @@ export const createCreditReferenceSchema = z.object({
     .max(255, 'El nombre completo no puede tener más de 255 caracteres')
     .refine(isValidFullName, 'El nombre completo debe tener al menos 2 palabras y solo contener letras')
     .transform(normalizeName),
-  
+
   idNumber: z
     .string()
     .min(1, 'El número de identificación es obligatorio')
     .max(50, 'El número de identificación no puede tener más de 50 caracteres')
     .transform(cleanIdNumber),
-  
+
   idType: z
-    .enum(['CC', 'CE', 'TI', 'PP'], {
-      errorMap: () => ({ message: 'El tipo de identificación debe ser CC, CE, TI o PP' })
-    }),
-  
+    .string()
+    .min(1, 'El tipo de identificación es obligatorio'),
+
+  country: z
+    .string()
+    .default('CO'),
+
+  phoneCountryCode: z
+    .string()
+    .optional()
+    .transform((v) => v || null),
+
   birthDate: z
     .string()
     .optional()
     .transform((val) => val ? new Date(val) : undefined)
     .refine((date) => !date || isValidBirthDate(date), 'La fecha de nacimiento no es válida'),
-  
+
   phone: z
     .string()
     .optional()
-    .refine((phone) => !phone || isValidColombianPhone(phone), 'El teléfono debe ser un número colombiano válido (10 dígitos)'),
-  
+    .refine((phone) => !phone || isValidPhone(phone), 'El teléfono no es válido'),
+
   email: z
     .string()
     .optional()
     .refine((email) => !email || isValidEmail(email), 'El email no es válido'),
-  
+
   address: z
     .string()
     .max(500, 'La dirección no puede tener más de 500 caracteres')
     .optional(),
-  
+
   city: z
     .string()
     .max(100, 'La ciudad no puede tener más de 100 caracteres')
     .optional(),
-  
-  department: z
+
+  state: z
     .string()
-    .max(100, 'El departamento no puede tener más de 100 caracteres')
+    .max(100, 'El estado/región no puede tener más de 100 caracteres')
     .optional(),
-  
+
   debtAmount: z
     .number()
     .positive('El monto de la deuda debe ser mayor a 0')
     .max(999999999999, 'El monto de la deuda es demasiado alto')
     .refine(isValidDebtAmount, 'El monto de la deuda no es válido'),
-  
+
   debtDate: z
     .string()
     .min(1, 'La fecha de la deuda es obligatoria')
     .transform((val) => new Date(val))
     .refine(isValidDebtDate, 'La fecha de la deuda no es válida'),
-  
+
   creditorName: z
     .string()
     .min(1, 'El nombre del acreedor es obligatorio')
     .max(255, 'El nombre del acreedor no puede tener más de 255 caracteres'),
-  
+
   debtStatus: z
     .enum(['ACTIVE', 'PAID', 'INACTIVE', 'PAYMENT_PLAN', 'DISPUTED'])
     .optional()
@@ -88,15 +104,18 @@ export const createCreditReferenceSchema = z.object({
     .enum(['FORMAL', 'P2P', 'SERVICE'])
     .optional()
     .default('FORMAL'),
-  
+
   notes: z
     .string()
     .max(1000, 'Las notas no pueden tener más de 1000 caracteres')
     .optional(),
-}).refine((data) => isValidIdNumber(data.idNumber, data.idType), {
-  message: 'El número de identificación no es válido para el tipo seleccionado',
-  path: ['idNumber'],
-});
+}).refine(
+  (data) => validateIdNumber(data.idNumber, data.idType, data.country),
+  {
+    message: 'El número de identificación no es válido para el tipo seleccionado en este país',
+    path: ['idNumber'],
+  }
+);
 
 // Schema para actualizar referencia crediticia
 export const updateCreditReferenceSchema = z.object({
@@ -125,7 +144,7 @@ export const updateCreditReferenceSchema = z.object({
   
   phone: z
     .string()
-    .refine(isValidColombianPhone, 'El teléfono debe ser un número colombiano válido (10 dígitos)')
+    .refine(isValidPhone, 'El teléfono no es válido')
     .optional(),
   
   email: z

@@ -8,13 +8,15 @@ export interface CreditReference {
   id: string;
   fullName: string;
   idNumber: string;
-  idType: 'CC' | 'CE' | 'TI' | 'PP';
+  idType: string;
+  country?: string;
+  phoneCountryCode?: string;
   birthDate?: Date;
   phone?: string;
   email?: string;
   address?: string;
   city?: string;
-  department?: string;
+  state?: string;
   debtAmount: number;
   debtDate: Date;
   creditorName: string;
@@ -29,13 +31,15 @@ export interface CreditReference {
 export interface CreateCreditReferenceData {
   fullName: string;
   idNumber: string;
-  idType: 'CC' | 'CE' | 'TI' | 'PP';
+  idType: string;
+  country?: string;
+  phoneCountryCode?: string;
   birthDate?: Date;
   phone?: string;
   email?: string;
   address?: string;
   city?: string;
-  department?: string;
+  state?: string;
   debtAmount: number;
   debtDate: Date;
   creditorName: string;
@@ -48,13 +52,15 @@ export interface CreateCreditReferenceData {
 export interface UpdateCreditReferenceData {
   fullName?: string;
   idNumber?: string;
-  idType?: 'CC' | 'CE' | 'TI' | 'PP';
+  idType?: string;
+  country?: string;
+  phoneCountryCode?: string;
   birthDate?: Date;
   phone?: string;
   email?: string;
   address?: string;
   city?: string;
-  department?: string;
+  state?: string;
   debtAmount?: number;
   debtDate?: Date;
   creditorName?: string;
@@ -76,9 +82,10 @@ export interface CreditReferenceResponse extends CreditReference {
 export interface SearchCreditReferenceParams {
   fullName?: string;
   idNumber?: string;
-  idType?: 'CC' | 'CE' | 'TI' | 'PP';
+  idType?: string;
+  country?: string;
   city?: string;
-  department?: string;
+  state?: string;
   debtStatus?: 'ACTIVE' | 'PAID' | 'INACTIVE' | 'PAYMENT_PLAN' | 'DISPUTED';
   creditorName?: string;
   debtAmountMin?: number;
@@ -102,7 +109,7 @@ export interface SearchCreditReferenceResult {
 // Modelo para validación de duplicados
 export interface DuplicateCheckParams {
   idNumber: string;
-  idType: 'CC' | 'CE' | 'TI' | 'PP';
+  idType: string;
   excludeId?: string; // Para excluir un ID específico en actualizaciones
 }
 
@@ -114,14 +121,9 @@ export interface CreditReferenceStats {
     paid: number;
     disputed: number;
   };
-  byIdType: {
-    CC: number;
-    CE: number;
-    TI: number;
-    PP: number;
-  };
-  byDepartment: Array<{
-    department: string;
+  byIdType: Record<string, number>;
+  byCountry: Array<{
+    country: string;
     count: number;
   }>;
   averageDebtAmount: number;
@@ -149,7 +151,7 @@ export const toCreditReference = (ref: PrismaCreditReference): CreditReference =
   if (ref.email) creditRef.email = ref.email;
   if (ref.address) creditRef.address = ref.address;
   if (ref.city) creditRef.city = ref.city;
-  if (ref.department) creditRef.department = ref.department;
+  if (ref.state) creditRef.state = ref.state;
   if (ref.notes) creditRef.notes = ref.notes;
   
   return creditRef;

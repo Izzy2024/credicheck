@@ -193,6 +193,25 @@ export const getValidationErrorMessage = (field: string, rule: string, value?: a
   return messages[rule] || `El campo ${field} no es válido`;
 };
 
+// Validacion de telefono flexible (acepta con o sin codigo de pais)
+export const isValidPhone = (phone: string): boolean => {
+  // Acepta: 3001234567, +573001234567, 573001234567, +1 2345678901, etc.
+  // Remove spaces, dashes
+  const cleaned = phone.replace(/[\s\-()]/g, '');
+  // Should have between 7 and 15 digits
+  const digitsOnly = cleaned.replace(/^\+?/, '');
+  if (!/^\d{7,15}$/.test(digitsOnly)) return false;
+  return true;
+};
+
+export const normalizePhone = (phone: string): string => {
+  // Keep only digits and leading +
+  return phone.replace(/[^\d+]/g, '');
+};
+
+// Re-export country config helpers for use elsewhere
+export { COUNTRIES, getCountry, getIdTypesForCountry, validateIdNumber } from '../config/countries.config';
+
 // Función para validar contraseña segura
 export const isValidPassword = (password: string): boolean => {
   // Al menos 8 caracteres, una mayúscula, una minúscula, un número
