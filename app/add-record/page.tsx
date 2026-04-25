@@ -39,22 +39,26 @@ import {
   CheckCircle,
   User,
   CreditCard,
+  Globe,
 } from "lucide-react";
 import {
   createRecordSchema,
   type CreateRecordFormData,
 } from "@/lib/validations/credit-reference";
+import { COUNTRIES, getCountry } from "@/lib/countries";
 
 const defaultValues: CreateRecordFormData = {
   fullName: "",
   idNumber: "",
   idType: "CC",
   birthDate: "",
+  country: "CO",
+  phoneCountryCode: "+57",
   phone: "",
   email: "",
   address: "",
   city: "",
-  department: "",
+  state: "",
   creditorName: "",
   debtAmount: "",
   debtDate: "",
@@ -73,6 +77,25 @@ export default function AddRecord() {
     resolver: zodResolver(createRecordSchema),
     defaultValues,
   });
+
+  const selectedCountry = form.watch("country");
+  const selectedPhoneCode = form.watch("phoneCountryCode");
+
+  // Get current country config
+  const currentCountry = getCountry(selectedCountry);
+  const idTypesForCountry = currentCountry?.idTypes || [];
+
+  // Update phone country code when country changes
+  useEffect(() => {
+    const country = getCountry(selectedCountry);
+    if (country) {
+      form.setValue("phoneCountryCode", country.phoneCode);
+      // Reset idType to first available for the country
+      if (country.idTypes.length > 0) {
+        form.setValue("idType", country.idTypes[0].code);
+      }
+    }
+  }, [selectedCountry, form]);
 
   useEffect(() => {
     const fetchCount = async () => {
@@ -117,11 +140,13 @@ export default function AddRecord() {
         idNumber: data.idNumber.trim(),
         idType: data.idType,
         birthDate: data.birthDate || undefined,
+        country: data.country,
+        phoneCountryCode: data.phoneCountryCode || undefined,
         phone: data.phone || undefined,
         email: data.email || undefined,
         address: data.address || undefined,
         city: data.city || undefined,
-        department: data.department || undefined,
+        state: data.state || undefined,
         creditorName: data.creditorName.trim(),
         debtAmount: parseFloat(data.debtAmount.replace(/[^ -~]/g, "")),
         debtDate: data.debtDate,
@@ -260,6 +285,75 @@ export default function AddRecord() {
             <Card className="border-0 shadow-sm dark:bg-gray-800">
               <CardHeader>
                 <CardTitle className="text-lg text-slate-800 dark:text-gray-100 flex items-center gap-2">
+                  <Globe className="w-5 h-5" />
+                  Ubicación
+                </CardTitle>
+                <CardDescription className="dark:text-gray-400">
+                  País y ubicación del registro
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="country"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-slate-700 dark:text-gray-300 font-medium">
+                          País *
+                        </FormLabel>
+                        <Select
+                          onValueChange={field.onChange}
+                          value={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger className="dark:bg-gray-900 dark:border-gray-700 dark:text-gray-100">
+                              <SelectValue />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent className="dark:bg-gray-800 dark:border-gray-700">
+                            {COUNTRIES.map((country) => (
+                              <SelectItem
+                                key={country.code}
+                                value={country.code}
+                                className="dark:text-gray-100 dark:focus:bg-gray-700"
+                              >
+                                {country.name} ({country.phoneCode})
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="state"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-slate-700 dark:text-gray-300 font-medium">
+                          Estado / Departamento / Provincia
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            {...field}
+                            placeholder="Cundinamarca, California, etc."
+                            className="dark:bg-gray-900 dark:border-gray-700 dark:text-gray-100"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="border-0 shadow-sm dark:bg-gray-800">
+              <CardHeader>
+                <CardTitle className="text-lg text-slate-800 dark:text-gray-100 flex items-center gap-2">
                   <User className="w-5 h-5" />
                   Información Personal
                 </CardTitle>
@@ -300,7 +394,7 @@ export default function AddRecord() {
                         <FormControl>
                           <Input
                             {...field}
-                            placeholder="12345678"
+                            placeholder={idTypesForCountry.find(t => t.code === form.getValues("idType"))?.example || "12345678"}
                             className={`${error ? "border-red-500" : ""} dark:bg-gray-900 dark:border-gray-700 dark:text-gray-100`}
                           />
                         </FormControl>
@@ -327,30 +421,15 @@ export default function AddRecord() {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent className="dark:bg-gray-800 dark:border-gray-700">
-                            <SelectItem
-                              value="CC"
-                              className="dark:text-gray-100 dark:focus:bg-gray-700"
-                            >
-                              Cédula de Ciudadanía
-                            </SelectItem>
-                            <SelectItem
-                              value="CE"
-                              className="dark:text-gray-100 dark:focus:bg-gray-700"
-                            >
-                              Cédula de Extranjería
-                            </SelectItem>
-                            <SelectItem
-                              value="TI"
-                              className="dark:text-gray-100 dark:focus:bg-gray-700"
-                            >
-                              Tarjeta de Identidad
-                            </SelectItem>
-                            <SelectItem
-                              value="PP"
-                              className="dark:text-gray-100 dark:focus:bg-gray-700"
-                            >
-                              Pasaporte
-                            </SelectItem>
+                            {idTypesForCountry.map((idType) => (
+                              <SelectItem
+                                key={idType.code}
+                                value={idType.code}
+                                className="dark:text-gray-100 dark:focus:bg-gray-700"
+                              >
+                                {idType.name} ({idType.code})
+                              </SelectItem>
+                            ))}
                           </SelectContent>
                         </Select>
                         <FormMessage />
@@ -378,25 +457,47 @@ export default function AddRecord() {
                     )}
                   />
 
-                  <FormField
-                    control={form.control}
-                    name="phone"
-                    render={({ field, fieldState: { error } }) => (
-                      <FormItem>
-                        <FormLabel className="text-slate-700 dark:text-gray-300 font-medium">
-                          Teléfono
-                        </FormLabel>
-                        <FormControl>
-                          <Input
-                            {...field}
-                            placeholder="3001234567"
-                            className={`${error ? "border-red-500" : ""} dark:bg-gray-900 dark:border-gray-700 dark:text-gray-100`}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                  <div className="flex gap-2">
+                    <FormField
+                      control={form.control}
+                      name="phoneCountryCode"
+                      render={({ field }) => (
+                        <FormItem className="w-28">
+                          <FormLabel className="text-slate-700 dark:text-gray-300 font-medium">
+                            Código
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              {...field}
+                              placeholder="+57"
+                              className="dark:bg-gray-900 dark:border-gray-700 dark:text-gray-100"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="phone"
+                      render={({ field, fieldState: { error } }) => (
+                        <FormItem className="flex-1">
+                          <FormLabel className="text-slate-700 dark:text-gray-300 font-medium">
+                            Teléfono
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              {...field}
+                              placeholder="3001234567"
+                              className={`${error ? "border-red-500" : ""} dark:bg-gray-900 dark:border-gray-700 dark:text-gray-100`}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
 
                   <FormField
                     control={form.control}
@@ -453,26 +554,6 @@ export default function AddRecord() {
                           <Input
                             {...field}
                             placeholder="Bogotá"
-                            className="dark:bg-gray-900 dark:border-gray-700 dark:text-gray-100"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="department"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-slate-700 dark:text-gray-300 font-medium">
-                          Departamento
-                        </FormLabel>
-                        <FormControl>
-                          <Input
-                            {...field}
-                            placeholder="Cundinamarca"
                             className="dark:bg-gray-900 dark:border-gray-700 dark:text-gray-100"
                           />
                         </FormControl>

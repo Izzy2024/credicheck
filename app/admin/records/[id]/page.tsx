@@ -18,7 +18,8 @@ type RecordDetail = {
   email?: string | null;
   address?: string | null;
   city?: string | null;
-  department?: string | null;
+  state?: string | null;
+  country?: string | null;
   debtAmount: number;
   debtDate: string;
   creditorName: string;
@@ -117,7 +118,8 @@ export default function AdminRecordDetailPage() {
         <Field label="Teléfono" value={record.phone || "-"} />
         <Field label="Email" value={record.email || "-"} />
         <Field label="Ciudad" value={record.city || "-"} />
-        <Field label="Departamento" value={record.department || "-"} />
+        <Field label="Estado" value={record.state || "-"} />
+        <Field label="País" value={record.country || "-"} />
         <Field label="Dirección" value={record.address || "-"} />
         <Field label="Tipo caso" value={record.caseType || "FORMAL"} />
       </div>

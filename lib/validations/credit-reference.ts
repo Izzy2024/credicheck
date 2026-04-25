@@ -34,7 +34,9 @@ export const createRecordSchema = z.object({
     ),
   address: z.string(),
   city: z.string(),
-  department: z.string(),
+  country: z.string().default("CO"),
+  phoneCountryCode: z.string().optional(),
+  state: z.string(),
   creditorName: z
     .string()
     .refine(

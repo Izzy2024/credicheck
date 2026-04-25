@@ -48,7 +48,8 @@ type SearchResult = {
   email?: string;
   address?: string;
   city?: string;
-  department?: string;
+  state?: string;
+  country?: string;
   creditorName?: string;
   debtAmount?: number | string;
   debtStatus?: string;
@@ -558,7 +559,7 @@ export default function FoundResults() {
                         <div className="flex items-start gap-2">
                           <MapPin className="w-4 h-4 text-muted-foreground mt-0.5" />
                           <span>
-                            {personData.address}, {personData.city}, {personData.department}
+                            {personData.address}, {personData.city}, {personData.state}{personData.country ? `, ${personData.country}` : ''}
                           </span>
                         </div>
                       )}
