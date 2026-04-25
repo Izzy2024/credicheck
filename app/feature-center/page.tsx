@@ -299,6 +299,7 @@ function SidebarContent({
         </Button>
       </div>
     </div>
+    </div>
     </TooltipProvider>
   );
 }
