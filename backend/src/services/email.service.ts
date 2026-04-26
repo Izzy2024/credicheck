@@ -1,6 +1,8 @@
+
+
 import { Resend } from 'resend';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const resend = new Resend(process.env['RESEND_API_KEY']);
 
 const FROM_EMAIL = process.env['EMAIL_FROM'] || 'CrediCheck <noreply@resend.dev>';
 const APP_URL = process.env['APP_URL'] || 'https://frondend-credicheck.onrender.com';
