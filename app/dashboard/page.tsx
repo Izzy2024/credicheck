@@ -553,20 +553,56 @@ export default function Dashboard() {
 
           <div className={`${accessToken ? "max-w-7xl px-8 py-8 space-y-8" : "max-w-6xl px-6 md:px-10 py-10 md:py-14 space-y-8"} mx-auto`}>
             {!accessToken && (
-              <div className="text-center">
-                <div className="inline-flex items-center gap-2 mb-3 rounded-full px-4 py-1.5 bg-blue-50 border border-blue-100">
+              <div className="text-center space-y-6">
+                {/* Hero badge */}
+                <div className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 bg-blue-50 border border-blue-100">
                   <Shield className="w-4 h-4 text-[#1F5EFF]" />
-                  <span className="font-bold text-[#1F5EFF] text-xs tracking-[0.14em] uppercase">CrediCheck Public</span>
+                  <span className="font-bold text-[#1F5EFF] text-xs tracking-[0.14em] uppercase">CrediCheck — Sistema de Referencias Crediticias</span>
                 </div>
-                <h1 className="text-3xl md:text-4xl font-black tracking-tight text-slate-900">Consulta pública de referencias</h1>
-                <p className="text-slate-500 mt-2">Ingresa nombre, cédula o NIT para consultar. Sin navegación, solo búsqueda.</p>
+
+                {/* Main headline */}
+                <h1 className="text-3xl md:text-5xl font-black tracking-tight text-slate-900 leading-tight">
+                  Consulta y verifica referencias<br className="hidden md:block" />
+                  <span className="text-[#1F5EFF]"> crediticias al instante</span>
+                </h1>
+
+                {/* Subtext */}
+                <p className="text-slate-500 text-base md:text-lg max-w-2xl mx-auto leading-relaxed">
+                  Accede a un registro compartirende referencias de deudores en Colombia. Busca por nombre, cédula o NIT y conoce el historial crediticio de personas y empresas.
+                </p>
+
+                {/* Trust indicators */}
+                <div className="flex flex-wrap items-center justify-center gap-4 md:gap-8 pt-2">
+                  <div className="flex items-center gap-2">
+                    <div className="w-6 h-6 rounded-full bg-emerald-100 flex items-center justify-center">
+                      <TrendingUp className="w-3 h-3 text-emerald-600" />
+                    </div>
+                    <span className="text-xs font-semibold text-slate-600">+10,000 consultas realizadas</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center">
+                      <Shield className="w-3 h-3 text-[#1F5EFF]" />
+                    </div>
+                    <span className="text-xs font-semibold text-slate-600">Datos verificados en tiempo real</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-6 h-6 rounded-full bg-amber-100 flex items-center justify-center">
+                      <AlertTriangle className="w-3 h-3 text-amber-600" />
+                    </div>
+                    <span className="text-xs font-semibold text-slate-600">Reporte de deudores morosos</span>
+                  </div>
+                </div>
               </div>
             )}
 
             <Card className={`bg-white border border-slate-200 ${accessToken ? "shadow-sm rounded-2xl" : "shadow-xl rounded-3xl"}`}>
               <CardHeader>
-                <CardTitle className={`${accessToken ? "text-3xl" : "text-4xl"} font-black text-slate-900`}>Consultar Referencias Crediticias</CardTitle>
-                <CardDescription className="text-slate-500 text-base">Realiza búsquedas por nombre, cédula o NIT y obtén resultados al instante.</CardDescription>
+                <CardTitle className={`${accessToken ? "text-3xl" : "text-2xl md:text-3xl"} font-black text-slate-900`}>Consultar Referencias Crediticias</CardTitle>
+                <CardDescription className="text-slate-500 text-sm md:text-base">
+                  {!accessToken
+                    ? "Busca por nombre, número de cédula (CC, CE, TI) o NIT de empresa. Este consulta es publica y no requiere registro."
+                    : "Realiza búsquedas por nombre, cédula o NIT y obtén resultados al instante."}
+                </CardDescription>
               </CardHeader>
               <CardContent className="space-y-5">
                 <div className="relative">
@@ -747,15 +783,125 @@ export default function Dashboard() {
             )}
 
             {!accessToken && (
-              <Card className="bg-white rounded-2xl border border-blue-100">
-                <CardContent className="p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                  <div className="flex items-center gap-3">
-                    <Sparkles className="w-5 h-5 text-[#1F5EFF]" />
-                    <p className="text-sm text-slate-600">Para funciones premium (agregar registros, disputas e historial), inicia sesión.</p>
+              <>
+                {/* Como funciona */}
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2">
+                    <div className="w-1.5 h-6 bg-[#1F5EFF] rounded-full" />
+                    <h2 className="text-sm font-black uppercase tracking-[0.15em] text-slate-800">Como funciona</h2>
                   </div>
-                  <Button onClick={() => router.push("/login")} className="bg-[#1F5EFF] hover:bg-[#2F7BFF] hover:shadow-[0_0_0_3px_rgba(47,123,255,0.22)]">Iniciar sesión</Button>
-                </CardContent>
-              </Card>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <Card className="bg-white rounded-2xl border border-slate-200">
+                      <CardContent className="p-6 text-center space-y-3">
+                        <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center mx-auto">
+                          <Search className="w-6 h-6 text-[#1F5EFF]" />
+                        </div>
+                        <div className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-[#1F5EFF] text-white text-xs font-black">1</div>
+                        <p className="font-bold text-slate-900">Busca una persona o empresa</p>
+                        <p className="text-xs text-slate-500">Ingresa el nombre, número de cédula o NIT en la barra de búsqueda.</p>
+                      </CardContent>
+                    </Card>
+                    <Card className="bg-white rounded-2xl border border-slate-200">
+                      <CardContent className="p-6 text-center space-y-3">
+                        <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center mx-auto">
+                          <BarChart3 className="w-6 h-6 text-[#1F5EFF]" />
+                        </div>
+                        <div className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-[#1F5EFF] text-white text-xs font-black">2</div>
+                        <p className="font-bold text-slate-900">Consulta el historial crediticio</p>
+                        <p className="text-xs text-slate-500">Observa si tiene deudas registradas, monto, estado y acreedor.</p>
+                      </CardContent>
+                    </Card>
+                    <Card className="bg-white rounded-2xl border border-slate-200">
+                      <CardContent className="p-6 text-center space-y-3">
+                        <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center mx-auto">
+                          <AlertTriangle className="w-6 h-6 text-[#1F5EFF]" />
+                        </div>
+                        <div className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-[#1F5EFF] text-white text-xs font-black">3</div>
+                        <p className="font-bold text-slate-900">Toma decisiones informadas</p>
+                        <p className="text-xs text-slate-500">Usa la información para otorgar crédito, hacer negocios o contratar.</p>
+                      </CardContent>
+                    </Card>
+                  </div>
+                </div>
+
+                {/* Funciones premium */}
+                <Card className="bg-gradient-to-r from-[#1F5EFF] to-[#2F7BFF] rounded-2xl border-0 text-white">
+                  <CardContent className="p-6 md:p-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                    <div className="flex items-center gap-4">
+                      <div className="w-14 h-14 rounded-2xl bg-white/20 flex items-center justify-center">
+                        <Sparkles className="w-7 h-7 text-white" />
+                      </div>
+                      <div>
+                        <p className="font-black text-lg">Funciones Premium</p>
+                        <p className="text-blue-100 text-sm">Registra disputas, agrega referencias y accede al historial completo. Inicia sesión para desbloquear estas funciones.</p>
+                      </div>
+                    </div>
+                    <div className="flex flex-col sm:flex-row gap-2 shrink-0">
+                      <Button
+                        onClick={() => router.push("/login")}
+                        className="bg-white text-[#1F5EFF] hover:bg-blue-50 font-bold shadow-lg"
+                      >
+                        Iniciar sesión
+                      </Button>
+                      <Button
+                        onClick={() => router.push("/signup")}
+                        variant="outline"
+                        className="border-white/40 text-white hover:bg-white/10 font-bold"
+                      >
+                        Crear cuenta gratis
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Desripcion de funciones para no autenticados */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <Card className="bg-white rounded-2xl border border-slate-200">
+                    <CardContent className="p-5 flex items-start gap-4">
+                      <div className="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center shrink-0">
+                        <AlertTriangle className="w-5 h-5 text-amber-600" />
+                      </div>
+                      <div>
+                        <p className="font-bold text-slate-900 mb-1">Reporte de morosos</p>
+                        <p className="text-xs text-slate-500">Consulta si una persona o empresa tiene deudas pendientes reportadas por otros usuarios.</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                  <Card className="bg-white rounded-2xl border border-slate-200">
+                    <CardContent className="p-5 flex items-start gap-4">
+                      <div className="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center shrink-0">
+                        <Shield className="w-5 h-5 text-emerald-600" />
+                      </div>
+                      <div>
+                        <p className="font-bold text-slate-900 mb-1">Verificación en tiempo real</p>
+                        <p className="text-xs text-slate-500">Los datos se actualizan constantemente. Cada consulta refleja el estado actual del deudor.</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                  <Card className="bg-white rounded-2xl border border-slate-200">
+                    <CardContent className="p-5 flex items-start gap-4">
+                      <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center shrink-0">
+                        <Users className="w-5 h-5 text-[#1F5EFF]" />
+                      </div>
+                      <div>
+                        <p className="font-bold text-slate-900 mb-1">Comunidad colaborativa</p>
+                        <p className="text-xs text-slate-500">Usuarios registrados pueden reportar y actualizar referencias para mantener la base de datos activa.</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                  <Card className="bg-white rounded-2xl border border-slate-200">
+                    <CardContent className="p-5 flex items-start gap-4">
+                      <div className="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center shrink-0">
+                        <TrendingUp className="w-5 h-5 text-purple-600" />
+                      </div>
+                      <div>
+                        <p className="font-bold text-slate-900 mb-1">Reportes y estadísticas</p>
+                        <p className="text-xs text-slate-500">Accede a métricas de consultas, tasas de morosidad y tendencias del sistema.</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              </>
             )}
           </div>
         </main>
