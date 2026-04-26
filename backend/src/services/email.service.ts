@@ -1,8 +1,11 @@
 
 
+
+
 import { Resend } from 'resend';
 
-const resend = new Resend(process.env['RESEND_API_KEY']);
+const RESEND_API_KEY = process.env['RESEND_API_KEY'];
+const resend = RESEND_API_KEY ? new Resend(RESEND_API_KEY) : null;
 
 const FROM_EMAIL = process.env['EMAIL_FROM'] || 'CrediCheck <noreply@resend.dev>';
 const APP_URL = process.env['APP_URL'] || 'https://frondend-credicheck.onrender.com';
@@ -15,6 +18,11 @@ export class EmailService {
     email: string,
     resetToken: string
   ): Promise<void> {
+    if (!resend) {
+      console.warn('Resend not configured, skipping email send');
+      return;
+    }
+
     const resetLink = `${APP_URL}/forgot-password?token=${resetToken}`;
 
     const { error } = await resend.emails.send({
@@ -84,6 +92,10 @@ export class EmailService {
     name: string,
     temporaryPassword: string
   ): Promise<void> {
+    if (!resend) {
+      console.warn('Resend not configured, skipping welcome email send');
+      return;
+    }
     const { error } = await resend.emails.send({
       from: FROM_EMAIL,
       to: email,
