@@ -836,17 +836,16 @@ export default function Dashboard() {
                         <p className="text-blue-100 text-sm">Registra disputas, agrega referencias y accede al historial completo. Inicia sesión para desbloquear estas funciones.</p>
                       </div>
                     </div>
-                    <div className="flex flex-col sm:flex-row gap-2 shrink-0">
+                    <div className="flex flex-col sm:flex-row gap-3 shrink-0">
                       <Button
                         onClick={() => router.push("/login")}
-                        className="bg-white text-[#1F5EFF] hover:bg-blue-50 font-bold shadow-lg"
+                        className="bg-white text-[#1F5EFF] hover:bg-blue-50 font-bold shadow-lg px-6 py-3"
                       >
                         Iniciar sesión
                       </Button>
                       <Button
                         onClick={() => router.push("/signup")}
-                        variant="outline"
-                        className="border-white/40 text-white hover:bg-white/10 font-bold"
+                        className="bg-white/15 backdrop-blur-sm text-white hover:bg-white/25 font-bold border border-white/30 px-6 py-3"
                       >
                         Crear cuenta gratis
                       </Button>
