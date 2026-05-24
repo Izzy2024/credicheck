@@ -58,6 +58,7 @@ import {
   UserCheck,
   UserX,
   Filter,
+  ArrowLeft,
 } from "lucide-react";
 import { TableSkeleton } from "@/components/loading-skeletons";
 import { Separator } from "@/components/ui/separator";
@@ -287,6 +288,12 @@ export default function AdminUsersPage() {
 
   return (
     <div className="container mx-auto py-8">
+      <div className="flex items-center gap-4 mb-8">
+        <Button variant="outline" size="sm" onClick={() => router.push("/admin")} className="rounded-xl border-slate-200 dark:border-slate-700 dark:text-slate-300">
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          Volver
+        </Button>
+      </div>
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-3xl font-bold dark:text-gray-100">

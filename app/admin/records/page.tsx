@@ -7,6 +7,8 @@ import { api } from "@/lib/api";
 import { TableSkeleton } from "@/components/loading-skeletons";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export type RecordStatus =
   | "ACTIVE"
@@ -44,6 +46,7 @@ export interface CreditReference {
 }
 
 export default function AdminRecordsPage() {
+  const router = useRouter();
   const [records, setRecords] = useState<CreditReference[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -129,8 +132,14 @@ export default function AdminRecordsPage() {
 
   return (
     <div className="space-y-6">
+      <div className="flex items-center gap-4">
+        <Button variant="outline" size="sm" onClick={() => router.push("/admin")} className="rounded-xl border-slate-200 dark:border-slate-700 dark:text-slate-300">
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          Volver
+        </Button>
+      </div>
       <div>
-        <h1 className="text-3xl font-bold text-slate-800">
+        <h1 className="text-3xl font-bold text-slate-800 dark:text-white">
           Administración de Registros Crediticios
         </h1>
         <p className="text-slate-600 mt-2">

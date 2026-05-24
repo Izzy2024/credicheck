@@ -515,8 +515,12 @@ export default function Dashboard() {
 
                 <div className="flex items-center gap-4">
                   <ThemeToggle />
-                  <Button variant="outline" className="rounded-full border-blue-100 bg-blue-50 text-[#1F5EFF] hover:bg-blue-100">
-                    Premium API
+                  <Button variant="outline" className="hidden sm:flex items-center gap-2 rounded-full border-blue-100 bg-blue-50 text-[#1F5EFF] hover:bg-blue-100" onClick={() => router.push("/feature-center")}>
+                    <LayoutGrid className="w-4 h-4" />
+                    Funciones
+                  </Button>
+                  <Button variant="outline" size="icon" className="flex sm:hidden rounded-full border-blue-100 bg-blue-50 text-[#1F5EFF] hover:bg-blue-100" onClick={() => router.push("/feature-center")}>
+                    <LayoutGrid className="w-4 h-4" />
                   </Button>
                   <Button variant="ghost" size="icon" onClick={() => router.push("/notifications")}>
                     <Bell className="w-5 h-5 text-slate-600" />
@@ -555,50 +559,50 @@ export default function Dashboard() {
             {!accessToken && (
               <div className="text-center space-y-6">
                 {/* Hero badge */}
-                <div className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 bg-blue-50 border border-blue-100">
-                  <Shield className="w-4 h-4 text-[#1F5EFF]" />
-                  <span className="font-bold text-[#1F5EFF] text-xs tracking-[0.14em] uppercase">CrediCheck — Sistema de Referencias Crediticias</span>
+                <div className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 bg-blue-50 border border-blue-100 dark:bg-blue-900/30 dark:border-blue-800">
+                  <Shield className="w-4 h-4 text-[#1F5EFF] dark:text-blue-400" />
+                  <span className="font-bold text-[#1F5EFF] text-xs tracking-[0.14em] uppercase dark:text-blue-400">CrediCheck — Sistema de Referencias Crediticias</span>
                 </div>
 
                 {/* Main headline */}
-                <h1 className="text-3xl md:text-5xl font-black tracking-tight text-slate-900 leading-tight">
+                <h1 className="text-3xl md:text-5xl font-black tracking-tight text-slate-900 dark:text-white leading-tight">
                   Consulta y verifica referencias<br className="hidden md:block" />
                   <span className="text-[#1F5EFF]"> crediticias al instante</span>
                 </h1>
 
                 {/* Subtext */}
-                <p className="text-slate-500 text-base md:text-lg max-w-2xl mx-auto leading-relaxed">
+                <p className="text-slate-500 dark:text-slate-400 text-base md:text-lg max-w-2xl mx-auto leading-relaxed">
                   Accede a un registro compartirende referencias de deudores en Colombia. Busca por nombre, cédula o NIT y conoce el historial crediticio de personas y empresas.
                 </p>
 
                 {/* Trust indicators */}
                 <div className="flex flex-wrap items-center justify-center gap-4 md:gap-8 pt-2">
                   <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-full bg-emerald-100 flex items-center justify-center">
-                      <TrendingUp className="w-3 h-3 text-emerald-600" />
+                    <div className="w-6 h-6 rounded-full bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center">
+                      <TrendingUp className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
                     </div>
-                    <span className="text-xs font-semibold text-slate-600">+10,000 consultas realizadas</span>
+                    <span className="text-xs font-semibold text-slate-600 dark:text-slate-400">+10,000 consultas realizadas</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center">
-                      <Shield className="w-3 h-3 text-[#1F5EFF]" />
+                    <div className="w-6 h-6 rounded-full bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center">
+                      <Shield className="w-3 h-3 text-[#1F5EFF] dark:text-blue-400" />
                     </div>
-                    <span className="text-xs font-semibold text-slate-600">Datos verificados en tiempo real</span>
+                    <span className="text-xs font-semibold text-slate-600 dark:text-slate-400">Datos verificados en tiempo real</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-full bg-amber-100 flex items-center justify-center">
-                      <AlertTriangle className="w-3 h-3 text-amber-600" />
+                    <div className="w-6 h-6 rounded-full bg-amber-100 dark:bg-amber-900/50 flex items-center justify-center">
+                      <AlertTriangle className="w-3 h-3 text-amber-600 dark:text-amber-400" />
                     </div>
-                    <span className="text-xs font-semibold text-slate-600">Reporte de deudores morosos</span>
+                    <span className="text-xs font-semibold text-slate-600 dark:text-slate-400">Reporte de deudores morosos</span>
                   </div>
                 </div>
               </div>
             )}
 
-            <Card className={`bg-white border border-slate-200 ${accessToken ? "shadow-sm rounded-2xl" : "shadow-xl rounded-3xl"}`}>
+            <Card className={`bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 ${accessToken ? "shadow-sm rounded-2xl" : "shadow-xl rounded-3xl"}`}>
               <CardHeader>
-                <CardTitle className={`${accessToken ? "text-3xl" : "text-2xl md:text-3xl"} font-black text-slate-900`}>Consultar Referencias Crediticias</CardTitle>
-                <CardDescription className="text-slate-500 text-sm md:text-base">
+                <CardTitle className={`${accessToken ? "text-3xl" : "text-2xl md:text-3xl"} font-black text-slate-900 dark:text-white`}>Consultar Referencias Crediticias</CardTitle>
+                <CardDescription className="text-slate-500 dark:text-slate-400 text-sm md:text-base">
                   {!accessToken
                     ? "Busca por nombre, número de cédula (CC, CE, TI) o NIT de empresa. Este consulta es publica y no requiere registro."
                     : "Realiza búsquedas por nombre, cédula o NIT y obtén resultados al instante."}
@@ -612,7 +616,7 @@ export default function Dashboard() {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-                    className={`${accessToken ? "h-14" : "h-16 text-lg"} pl-12 pr-36 text-base bg-slate-50 border-slate-200`}
+                    className={`${accessToken ? "h-14" : "h-16 text-lg"} pl-12 pr-36 text-base bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white`}
                     disabled={isSearching}
                   />
                   <div className="absolute right-1.5 top-1.5">
@@ -627,10 +631,10 @@ export default function Dashboard() {
                 </div>
 
                 <div className="flex flex-wrap gap-2">
-                  <Badge className="bg-blue-50 text-[#1F5EFF] hover:bg-blue-50 border border-blue-100">Búsqueda rápida</Badge>
-                  <Badge variant="secondary">Consulta por documento</Badge>
-                  <Badge variant="secondary">Consulta por empresa</Badge>
-                  {!accessToken && <Badge variant="secondary">Vista pública</Badge>}
+                  <Badge className="bg-blue-50 dark:bg-blue-900/40 text-[#1F5EFF] dark:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/40 border border-blue-100 dark:border-blue-800">Búsqueda rápida</Badge>
+                  <Badge variant="secondary" className="dark:bg-slate-800 dark:text-slate-300">Consulta por documento</Badge>
+                  <Badge variant="secondary" className="dark:bg-slate-800 dark:text-slate-300">Consulta por empresa</Badge>
+                  {!accessToken && <Badge variant="secondary" className="dark:bg-slate-800 dark:text-slate-300">Vista pública</Badge>}
                 </div>
               </CardContent>
             </Card>

@@ -6,6 +6,9 @@ import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ArrowLeft } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 type PendingDispute = {
   id: string;
@@ -32,6 +35,7 @@ type ApiResponse<T> = {
 };
 
 export default function AdminDisputesPage() {
+  const router = useRouter();
   const [disputes, setDisputes] = useState<PendingDispute[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -129,6 +133,12 @@ export default function AdminDisputesPage() {
 
   return (
     <div className="space-y-6">
+      <div className="flex items-center gap-4">
+        <Button variant="outline" size="sm" onClick={() => router.push("/admin")} className="rounded-xl border-slate-200 dark:border-slate-700 dark:text-slate-300">
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          Volver
+        </Button>
+      </div>
       <div>
         <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
           Disputas pendientes
