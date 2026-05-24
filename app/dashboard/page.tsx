@@ -459,42 +459,42 @@ export default function Dashboard() {
     <div className="min-h-screen bg-[#F5F7FB] dark:bg-background">
       <div className={`min-h-screen ${accessToken ? "flex" : ""}`}>
         {accessToken && (
-          <aside className="hidden lg:flex w-72 border-r border-slate-200 bg-white flex-col py-8 gap-2">
+          <aside className="hidden lg:flex w-72 border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex-col py-8 gap-2">
             <div className="px-8 mb-8">
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center">
                   <Shield className="w-6 h-6 text-[#1F5EFF]" />
                 </div>
                 <div>
-                  <h2 className="text-slate-900 font-bold text-lg leading-tight">
+                  <h2 className="text-slate-900 dark:text-white font-bold text-lg leading-tight">
                     {user ? `${user.firstName} ${user.lastName}` : "Usuario"}
                   </h2>
-                  <p className="text-slate-500 text-xs font-semibold uppercase tracking-wider">Executive Access</p>
+                  <p className="text-slate-500 dark:text-slate-400 text-xs font-semibold uppercase tracking-wider">Executive Access</p>
                 </div>
               </div>
             </div>
 
             <nav className="flex-1 space-y-1 px-4">
-              <Button className="w-full justify-start bg-blue-50 text-[#1F5EFF] hover:bg-blue-100" onClick={() => router.push("/dashboard")}>
+              <Button className="w-full justify-start bg-blue-50 dark:bg-blue-900/30 text-[#1F5EFF] hover:bg-blue-100" onClick={() => router.push("/dashboard")}>
                 <Search className="w-4 h-4 mr-2" /> Dashboard
               </Button>
-              <Button variant="ghost" className="w-full justify-start text-slate-600 hover:text-slate-900" onClick={() => router.push("/history")}>
+              <Button variant="ghost" className="w-full justify-start text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white" onClick={() => router.push("/history")}>
                 <History className="w-4 h-4 mr-2" /> History
               </Button>
-              <Button variant="ghost" className="w-full justify-start text-slate-600 hover:text-slate-900" onClick={() => router.push("/risk-score")}>
+              <Button variant="ghost" className="w-full justify-start text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white" onClick={() => router.push("/risk-score")}>
                 <BarChart3 className="w-4 h-4 mr-2" /> Reports
               </Button>
-              <Button variant="ghost" className="w-full justify-start text-slate-600 hover:text-slate-900" onClick={() => router.push("/feature-center")}>
+              <Button variant="ghost" className="w-full justify-start text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white" onClick={() => router.push("/feature-center")}>
                 <LayoutGrid className="w-4 h-4 mr-2" /> Settings
               </Button>
             </nav>
 
             <div className="mt-auto px-6">
-              <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200">
-                <p className="text-[10px] font-bold text-slate-500 mb-3 uppercase tracking-[0.2em]">System status</p>
+              <div className="p-5 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+                <p className="text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-3 uppercase tracking-[0.2em]">System status</p>
                 <div className="flex items-center gap-3">
                   <span className="inline-flex h-2.5 w-2.5 rounded-full bg-emerald-500" />
-                  <span className="text-sm font-semibold text-slate-800">Operational</span>
+                  <span className="text-sm font-semibold text-slate-800 dark:text-slate-200">Operational</span>
                 </div>
               </div>
             </div>
@@ -503,13 +503,13 @@ export default function Dashboard() {
 
         <main className="flex-1 min-w-0">
           {accessToken ? (
-            <header className="sticky top-0 z-30 bg-white border-b border-slate-200 px-4 md:px-8 h-16 md:h-24">
+            <header className="sticky top-0 z-30 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-4 md:px-8 h-16 md:h-24">
               <div className="max-w-7xl mx-auto h-full flex items-center justify-between">
                 <div className="flex items-center gap-10">
                   <span className="text-xl md:text-2xl font-black text-[#1F5EFF] tracking-tight">CrediCheck</span>
                   <div className="hidden lg:flex gap-8">
                     <button className="text-[#1F5EFF] font-extrabold border-b-2 border-[#1F5EFF] py-1 text-xs md:text-sm tracking-widest uppercase">Core Dashboard</button>
-                    <button className="text-slate-500 font-bold hover:text-[#1F5EFF] transition-colors text-xs md:text-sm tracking-widest uppercase">Analytics</button>
+                    <button className="text-slate-500 dark:text-slate-400 font-bold hover:text-[#1F5EFF] transition-colors text-xs md:text-sm tracking-widest uppercase">Analytics</button>
                   </div>
                 </div>
 
@@ -572,7 +572,7 @@ export default function Dashboard() {
 
                 {/* Subtext */}
                 <p className="text-slate-500 dark:text-slate-400 text-base md:text-lg max-w-2xl mx-auto leading-relaxed">
-                  Accede a un registro compartirende referencias de deudores en Colombia. Busca por nombre, cédula o NIT y conoce el historial crediticio de personas y empresas.
+                  Accede a un registro compartirende referencias de deudores a nivel global. Busca por nombre, cédula o NIT y conoce el historial crediticio de personas y empresas.
                 </p>
 
                 {/* Trust indicators */}
@@ -729,54 +729,54 @@ export default function Dashboard() {
                     <div className="flex items-center justify-between px-1">
                       <div className="flex items-center gap-2">
                         <div className="w-1.5 h-6 bg-[#1F5EFF] rounded-full" />
-                        <h2 className="text-sm font-black uppercase tracking-[0.15em] text-slate-800">Últimos resultados</h2>
+                        <h2 className="text-sm font-black uppercase tracking-[0.15em] text-slate-800 dark:text-white">Últimos resultados</h2>
                       </div>
                       <Button variant="ghost" size="sm" className="text-[#1F5EFF]" onClick={() => router.push("/history")}>
                         Ver todo
                       </Button>
                     </div>
 
-                    <Card className="rounded-2xl border-slate-200 shadow-sm overflow-hidden">
+                    <Card className="rounded-2xl border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden">
                       <div className="overflow-x-auto">
                         <table className="w-full text-left">
                           <thead>
-                            <tr className="bg-slate-50 border-b border-slate-200">
-                              <th className="px-6 py-4 text-[10px] uppercase tracking-[0.14em] text-slate-500">Fecha</th>
-                              <th className="px-6 py-4 text-[10px] uppercase tracking-[0.14em] text-slate-500">Referencia</th>
-                              <th className="px-6 py-4 text-[10px] uppercase tracking-[0.14em] text-slate-500">ID / NIT</th>
-                              <th className="px-6 py-4 text-[10px] uppercase tracking-[0.14em] text-slate-500">Estado</th>
-                              <th className="px-6 py-4 text-[10px] uppercase tracking-[0.14em] text-slate-500 text-center">Acción</th>
+                            <tr className="bg-slate-50 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">
+                              <th className="px-6 py-4 text-[10px] uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">Fecha</th>
+                              <th className="px-6 py-4 text-[10px] uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">Referencia</th>
+                              <th className="px-6 py-4 text-[10px] uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">ID / NIT</th>
+                              <th className="px-6 py-4 text-[10px] uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">Estado</th>
+                              <th className="px-6 py-4 text-[10px] uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400 text-center">Acción</th>
                             </tr>
                           </thead>
-                          <tbody className="divide-y divide-slate-100">
+                          <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
                             {latestResults.length === 0 ? (
                               <tr>
-                                <td colSpan={5} className="px-6 py-10 text-center text-sm text-slate-500">
+                                <td colSpan={5} className="px-6 py-10 text-center text-sm text-slate-500 dark:text-slate-400">
                                   Aún no hay resultados recientes.
                                 </td>
                               </tr>
                             ) : (
                               latestResults.map((row, idx) => (
-                                <tr key={`${row.idNumber}-${idx}`} className="hover:bg-blue-50/40 transition-colors">
-                                  <td className="px-6 py-4 text-sm text-slate-500 font-medium">{row.date}</td>
+                                <tr key={`${row.idNumber}-${idx}`} className="hover:bg-blue-50/40 dark:hover:bg-blue-900/10 transition-colors">
+                                  <td className="px-6 py-4 text-sm text-slate-500 dark:text-slate-400 font-medium">{row.date}</td>
                                   <td className="px-6 py-4">
                                     <div className="flex items-center gap-3">
-                                      <div className="w-9 h-9 rounded-full bg-blue-50 text-[#1F5EFF] flex items-center justify-center">
+                                      <div className="w-9 h-9 rounded-full bg-blue-50 dark:bg-blue-900/30 text-[#1F5EFF] flex items-center justify-center">
                                         {row.type === "person" ? <User className="w-4 h-4" /> : <Building className="w-4 h-4" />}
                                       </div>
-                                      <span className="font-semibold text-slate-900">{row.reference}</span>
+                                      <span className="font-semibold text-slate-900 dark:text-white">{row.reference}</span>
                                     </div>
                                   </td>
-                                  <td className="px-6 py-4 text-xs font-mono text-slate-500">{row.idNumber}</td>
+                                  <td className="px-6 py-4 text-xs font-mono text-slate-500 dark:text-slate-400">{row.idNumber}</td>
                                   <td className="px-6 py-4">{statusBadge(row.status)}</td>
                                   <td className="px-6 py-4 text-center">
-                                    <Button variant="ghost" size="icon" className="text-slate-500 hover:text-[#1F5EFF]" onClick={() => router.push("/history")}>
+                                    <Button variant="ghost" size="icon" className="text-slate-500 dark:text-slate-400 hover:text-[#1F5EFF]" onClick={() => router.push("/history")}>
                                       <Eye className="w-4 h-4" />
                                     </Button>
                                   </td>
                                 </tr>
                               ))
-                            )}
+                            }
                           </tbody>
                         </table>
                       </div>
@@ -792,37 +792,37 @@ export default function Dashboard() {
                 <div className="space-y-4">
                   <div className="flex items-center gap-2">
                     <div className="w-1.5 h-6 bg-[#1F5EFF] rounded-full" />
-                    <h2 className="text-sm font-black uppercase tracking-[0.15em] text-slate-800">Como funciona</h2>
+                    <h2 className="text-sm font-black uppercase tracking-[0.15em] text-slate-800 dark:text-white">Como funciona</h2>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <Card className="bg-white rounded-2xl border border-slate-200">
+                    <Card className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700">
                       <CardContent className="p-6 text-center space-y-3">
-                        <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center mx-auto">
+                        <div className="w-12 h-12 rounded-full bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center mx-auto">
                           <Search className="w-6 h-6 text-[#1F5EFF]" />
                         </div>
                         <div className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-[#1F5EFF] text-white text-xs font-black">1</div>
-                        <p className="font-bold text-slate-900">Busca una persona o empresa</p>
-                        <p className="text-xs text-slate-500">Ingresa el nombre, número de cédula o NIT en la barra de búsqueda.</p>
+                        <p className="font-bold text-slate-900 dark:text-white">Busca una persona o empresa</p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400">Ingresa el nombre, número de cédula o NIT en la barra de búsqueda.</p>
                       </CardContent>
                     </Card>
-                    <Card className="bg-white rounded-2xl border border-slate-200">
+                    <Card className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700">
                       <CardContent className="p-6 text-center space-y-3">
-                        <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center mx-auto">
+                        <div className="w-12 h-12 rounded-full bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center mx-auto">
                           <BarChart3 className="w-6 h-6 text-[#1F5EFF]" />
                         </div>
                         <div className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-[#1F5EFF] text-white text-xs font-black">2</div>
-                        <p className="font-bold text-slate-900">Consulta el historial crediticio</p>
-                        <p className="text-xs text-slate-500">Observa si tiene deudas registradas, monto, estado y acreedor.</p>
+                        <p className="font-bold text-slate-900 dark:text-white">Consulta el historial crediticio</p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400">Observa si tiene deudas registradas, monto, estado y acreedor.</p>
                       </CardContent>
                     </Card>
-                    <Card className="bg-white rounded-2xl border border-slate-200">
+                    <Card className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700">
                       <CardContent className="p-6 text-center space-y-3">
-                        <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center mx-auto">
+                        <div className="w-12 h-12 rounded-full bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center mx-auto">
                           <AlertTriangle className="w-6 h-6 text-[#1F5EFF]" />
                         </div>
                         <div className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-[#1F5EFF] text-white text-xs font-black">3</div>
-                        <p className="font-bold text-slate-900">Toma decisiones informadas</p>
-                        <p className="text-xs text-slate-500">Usa la información para otorgar crédito, hacer negocios o contratar.</p>
+                        <p className="font-bold text-slate-900 dark:text-white">Toma decisiones informadas</p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400">Usa la información para otorgar crédito, hacer negocios o contratar.</p>
                       </CardContent>
                     </Card>
                   </div>
@@ -859,47 +859,47 @@ export default function Dashboard() {
 
                 {/* Desripcion de funciones para no autenticados */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <Card className="bg-white rounded-2xl border border-slate-200">
+                  <Card className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700">
                     <CardContent className="p-5 flex items-start gap-4">
-                      <div className="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center shrink-0">
-                        <AlertTriangle className="w-5 h-5 text-amber-600" />
+                      <div className="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-900/30 flex items-center justify-center shrink-0">
+                        <AlertTriangle className="w-5 h-5 text-amber-600 dark:text-amber-400" />
                       </div>
                       <div>
-                        <p className="font-bold text-slate-900 mb-1">Reporte de morosos</p>
-                        <p className="text-xs text-slate-500">Consulta si una persona o empresa tiene deudas pendientes reportadas por otros usuarios.</p>
+                        <p className="font-bold text-slate-900 dark:text-white mb-1">Reporte de morosos</p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400">Consulta si una persona o empresa tiene deudas pendientes reportadas por otros usuarios.</p>
                       </div>
                     </CardContent>
                   </Card>
-                  <Card className="bg-white rounded-2xl border border-slate-200">
+                  <Card className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700">
                     <CardContent className="p-5 flex items-start gap-4">
-                      <div className="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center shrink-0">
-                        <Shield className="w-5 h-5 text-emerald-600" />
+                      <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center shrink-0">
+                        <Shield className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
                       </div>
                       <div>
-                        <p className="font-bold text-slate-900 mb-1">Verificación en tiempo real</p>
-                        <p className="text-xs text-slate-500">Los datos se actualizan constantemente. Cada consulta refleja el estado actual del deudor.</p>
+                        <p className="font-bold text-slate-900 dark:text-white mb-1">Verificación en tiempo real</p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400">Los datos se actualizan constantemente. Cada consulta refleja el estado actual del deudor.</p>
                       </div>
                     </CardContent>
                   </Card>
-                  <Card className="bg-white rounded-2xl border border-slate-200">
+                  <Card className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700">
                     <CardContent className="p-5 flex items-start gap-4">
-                      <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center shrink-0">
+                      <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center shrink-0">
                         <Users className="w-5 h-5 text-[#1F5EFF]" />
                       </div>
                       <div>
-                        <p className="font-bold text-slate-900 mb-1">Comunidad colaborativa</p>
-                        <p className="text-xs text-slate-500">Usuarios registrados pueden reportar y actualizar referencias para mantener la base de datos activa.</p>
+                        <p className="font-bold text-slate-900 dark:text-white mb-1">Comunidad colaborativa</p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400">Usuarios registrados pueden reportar y actualizar referencias para mantener la base de datos activa.</p>
                       </div>
                     </CardContent>
                   </Card>
-                  <Card className="bg-white rounded-2xl border border-slate-200">
+                  <Card className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700">
                     <CardContent className="p-5 flex items-start gap-4">
-                      <div className="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center shrink-0">
-                        <TrendingUp className="w-5 h-5 text-purple-600" />
+                      <div className="w-10 h-10 rounded-xl bg-purple-50 dark:bg-purple-900/30 flex items-center justify-center shrink-0">
+                        <TrendingUp className="w-5 h-5 text-purple-600 dark:text-purple-400" />
                       </div>
                       <div>
-                        <p className="font-bold text-slate-900 mb-1">Reportes y estadísticas</p>
-                        <p className="text-xs text-slate-500">Accede a métricas de consultas, tasas de morosidad y tendencias del sistema.</p>
+                        <p className="font-bold text-slate-900 dark:text-white mb-1">Reportes y estadísticas</p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400">Accede a métricas de consultas, tasas de morosidad y tendencias del sistema.</p>
                       </div>
                     </CardContent>
                   </Card>
