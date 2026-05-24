@@ -294,7 +294,7 @@ export default function ProfilePage() {
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-gray-900">
-      <header className="bg-white dark:bg-gray-800 border-b border-slate-200 dark:border-gray-700 px-6 py-4">
+      <header className="bg-white dark:bg-gray-800 border-b border-slate-200 dark:border-gray-700 px-4 md:px-6 py-3 md:py-4">
         <div className="flex items-center justify-between max-w-7xl mx-auto flex-wrap gap-2">
           <div className="flex items-center gap-2 sm:gap-3">
             <Button
@@ -321,7 +321,7 @@ export default function ProfilePage() {
           <ThemeToggle />
         </div>
       </header>
-      <main className="max-w-4xl mx-auto px-6 py-8">
+      <main className="max-w-4xl mx-auto px-4 md:px-6 py-6 md:py-8">
         <Tabs defaultValue="profile" className="space-y-6">
           <TabsList className="grid w-full grid-cols-2 dark:bg-gray-800">
             <TabsTrigger

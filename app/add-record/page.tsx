@@ -209,7 +209,7 @@ export default function AddRecord() {
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-gray-900">
-      <header className="bg-white dark:bg-gray-800 border-b border-slate-200 dark:border-gray-700 px-6 py-4">
+      <header className="bg-white dark:bg-gray-800 border-b border-slate-200 dark:border-gray-700 px-4 md:px-6 py-3 md:py-4">
         <div className="flex items-center justify-between max-w-4xl mx-auto">
           <div className="flex items-center gap-3">
             <div className="flex items-center justify-center w-10 h-10 bg-slate-800 dark:bg-gray-700 rounded-xl">

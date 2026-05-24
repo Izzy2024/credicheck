@@ -406,7 +406,7 @@ function DisputesPageContent() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-gray-900 p-6">
+    <div className="min-h-screen bg-slate-50 dark:bg-gray-900 p-4 md:p-6">
       <div className="mx-auto max-w-5xl space-y-6">
         <header className="flex items-start justify-between gap-4">
           <div className="space-y-1">

@@ -423,7 +423,7 @@ export default function FeatureCenterPage() {
       <main className={cx(sidebarCollapsed ? "lg:ml-20" : "lg:ml-72")}>
         {/* Top header */}
         <header className="sticky top-0 z-40 bg-white/80 dark:bg-[#041221]/80 backdrop-blur-xl shadow-[0_8px_24px_rgba(25,28,30,0.06)]">
-          <div className="mx-auto max-w-7xl px-6 py-4 flex items-center justify-between gap-4">
+          <div className="mx-auto max-w-7xl px-4 md:px-6 py-3 md:py-4 flex items-center justify-between gap-4">
             <div className="flex-1 max-w-xl">
               <div className="relative">
                 <Input

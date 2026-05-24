@@ -214,8 +214,8 @@ export default function HistoryPage() {
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-gray-900">
       {/* Header */}
-      <header className="bg-white dark:bg-gray-900 border-b border-slate-200 dark:border-gray-700 px-6 py-4">
-        <div className="flex items-center justify-between max-w-7xl mx-auto">
+      <header className="bg-white dark:bg-gray-900 border-b border-slate-200 dark:border-gray-700 px-4 md:px-6 py-3 md:py-4">
+        <div className="flex items-center justify-between max-w-7xl mx-auto flex-wrap gap-3">
           <div className="flex items-center gap-3">
             <div className="flex items-center justify-center w-10 h-10 bg-slate-800 dark:bg-gray-700 rounded-xl">
               <Shield className="w-5 h-5 text-cyan-400" />
@@ -230,37 +230,40 @@ export default function HistoryPage() {
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             <ThemeToggle />
             <Button
               variant="outline"
+              size="sm"
               onClick={() => (window.location.href = "/disputes")}
               className="flex items-center gap-2"
             >
               <AlertTriangle className="w-4 h-4" />
-              Disputas
+              <span className="hidden sm:inline">Disputas</span>
             </Button>
             <Button
               variant="outline"
+              size="sm"
               onClick={() => (window.location.href = "/feature-center")}
               className="flex items-center gap-2"
             >
               <LayoutGrid className="w-4 h-4" />
-              Centro de Funciones
+              <span className="hidden sm:inline">Funciones</span>
             </Button>
             <Button
               variant="outline"
+              size="sm"
               onClick={() => (window.location.href = "/dashboard")}
               className="flex items-center gap-2"
             >
               <ArrowLeft className="w-4 h-4" />
-              Volver al Dashboard
+              <span className="hidden sm:inline">Volver</span>
             </Button>
           </div>
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-6 py-8">
+      <main className="max-w-7xl mx-auto px-4 md:px-6 py-6 md:py-8">
         {/* Título y estadísticas */}
         <div className="mb-8">
           <h2 className="text-2xl font-bold text-slate-800 dark:text-gray-100 mb-2">

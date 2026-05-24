@@ -503,13 +503,13 @@ export default function Dashboard() {
 
         <main className="flex-1 min-w-0">
           {accessToken ? (
-            <header className="sticky top-0 z-30 bg-white border-b border-slate-200 px-8 h-24">
+            <header className="sticky top-0 z-30 bg-white border-b border-slate-200 px-4 md:px-8 h-16 md:h-24">
               <div className="max-w-7xl mx-auto h-full flex items-center justify-between">
                 <div className="flex items-center gap-10">
-                  <span className="text-2xl font-black text-[#1F5EFF] tracking-tight">CrediCheck</span>
+                  <span className="text-xl md:text-2xl font-black text-[#1F5EFF] tracking-tight">CrediCheck</span>
                   <div className="hidden lg:flex gap-8">
-                    <button className="text-[#1F5EFF] font-extrabold border-b-2 border-[#1F5EFF] py-1 text-sm tracking-widest uppercase">Core Dashboard</button>
-                    <button className="text-slate-500 font-bold hover:text-[#1F5EFF] transition-colors text-sm tracking-widest uppercase">Analytics</button>
+                    <button className="text-[#1F5EFF] font-extrabold border-b-2 border-[#1F5EFF] py-1 text-xs md:text-sm tracking-widest uppercase">Core Dashboard</button>
+                    <button className="text-slate-500 font-bold hover:text-[#1F5EFF] transition-colors text-xs md:text-sm tracking-widest uppercase">Analytics</button>
                   </div>
                 </div>
 
@@ -551,7 +551,7 @@ export default function Dashboard() {
             </header>
           ) : null}
 
-          <div className={`${accessToken ? "max-w-7xl px-8 py-8 space-y-8" : "max-w-6xl px-6 md:px-10 py-10 md:py-14 space-y-8"} mx-auto`}>
+          <div className={`${accessToken ? "max-w-7xl px-4 md:px-8 py-6 md:py-8 space-y-6 md:space-y-8" : "max-w-6xl px-4 md:px-10 py-6 md:py-14 space-y-6 md:space-y-8"} mx-auto`}>
             {!accessToken && (
               <div className="text-center space-y-6">
                 {/* Hero badge */}
